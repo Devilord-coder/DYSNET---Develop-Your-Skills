@@ -1,0 +1,9 @@
+.venv/
+**__pycache__/
+build/
+dist/
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+system/
