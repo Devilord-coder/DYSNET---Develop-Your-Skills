@@ -1,16 +1,24 @@
 from flask import Flask
+from flask import render_template
+
+# Быза данных
+from backend import db_session
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'dysnet_secret_key'
 
 
 app.route("/")
 app.route("/index")
 def index():
-    return ""
+    return render_template("index.html")
 
-
+    
 def main():
-    app.run(host="$HOST$", port="$PORT$")
+    """ Главная функция """
+
+    db_session.global_init("server.db")
+    app.run(host='127.0.0.1', port=80)
 
 
 if __name__ == "__main__":
