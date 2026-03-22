@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error_style.css') }}">
+{% endblock %}
+
+{% block title %}
+    Ошибка {{ status_code }}
+{% endblock %}
+
+{% block content %}
+    <div class="error-page">
+        <div class="error-content">
+            <div class="error-image">
+                <img src="{{ url_for('static', filename='img/error_image.png') }}" alt="Ошибка" width="80">
+            </div>
+            <div class="error-text">
+                <h2>{{ title }}</h2>
+                <p>{{ message }}</p>
+            </div>
+        </div>
+
+        <div class="error-actions">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Вернуться на главную</a>
+            {% if status_code != 404 %}
+                <button onclick="window.history.back()" class="btn btn-secondary">Назад</button>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

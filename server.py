@@ -56,6 +56,7 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def reqister():
     """Регистрация пользователей"""
+
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -91,6 +92,32 @@ def logout():
     """Выход из аккаунта"""
     logout_user()
     return redirect("/")
+
+
+@app.errorhandler(Exception)
+def handle_exception(exсeption):
+    """Обработчик ошибок"""
+
+    error_message = (
+        str(exсeption) if str(exсeption) else "Произошла непредвиденная ошибка"
+    )
+    if hasattr(exсeption, "code"):
+        status_code = exсeption.code
+        error_title = f"Ошибка {status_code}"
+    else:
+        status_code = 500
+        error_title = "Внутренняя ошибка сервера"
+        error_message = "request failed"
+
+    return (
+        render_template(
+            "error.html",
+            title=error_title,
+            message=error_message,
+            status_code=status_code,
+        ),
+        status_code,
+    )
 
 
 def main():
