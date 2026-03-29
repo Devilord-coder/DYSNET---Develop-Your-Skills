@@ -7,6 +7,7 @@ from flask_login import (
     login_required,
     current_user,
 )
+import datetime
 
 # Формы регистрации/авторизации
 from backend.forms.register_form import RegisterForm
@@ -16,8 +17,15 @@ from backend.forms.login_form import LoginForm
 from backend import db_session
 from backend.database.models.users_model import User
 
+# Обработчик ошибок
+from backend.errors import *
+
+# Работа с rest
+from backend.api import user_api
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dysnet_secret_key"
+app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -37,6 +45,7 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Авторизация пользователя"""
+
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -94,36 +103,46 @@ def logout():
     return redirect("/")
 
 
-@app.errorhandler(Exception)
-def handle_exception(exсeption):
-    """Обработчик ошибок"""
-
-    error_message = (
-        str(exсeption) if str(exсeption) else "Произошла непредвиденная ошибка"
-    )
-    if hasattr(exсeption, "code"):
-        status_code = exсeption.code
-        error_title = f"Ошибка {status_code}"
-    else:
-        status_code = 500
-        error_title = "Внутренняя ошибка сервера"
-        error_message = "request failed"
-
-    return (
-        render_template(
-            "error.html",
-            title=error_title,
-            message=error_message,
-            status_code=status_code,
-        ),
-        status_code,
-    )
+def error_init():
+    app.register_error_handler(400, bad_request)
+    app.register_error_handler(401, unauthorized)
+    app.register_error_handler(403, forbidden)
+    app.register_error_handler(404, not_found)
+    app.register_error_handler(405, method_not_allowed)
+    app.register_error_handler(406, not_acceptable)
+    app.register_error_handler(408, request_timeout)
+    app.register_error_handler(409, conflict)
+    app.register_error_handler(410, gone)
+    app.register_error_handler(411, length_required)
+    app.register_error_handler(412, precondition_failed)
+    app.register_error_handler(413, payload_too_large)
+    app.register_error_handler(414, uri_too_long)
+    app.register_error_handler(415, unsupported_media_type)
+    app.register_error_handler(416, range_not_satisfiable)
+    app.register_error_handler(417, expectation_failed)
+    app.register_error_handler(418, im_a_teapot)
+    app.register_error_handler(421, misdirected_request)
+    app.register_error_handler(422, unprocessable_entity)
+    app.register_error_handler(423, locked)
+    app.register_error_handler(424, failed_dependency)
+    app.register_error_handler(428, precondition_required)
+    app.register_error_handler(429, too_many_requests)
+    app.register_error_handler(431, headers_too_large)
+    app.register_error_handler(451, legal_unavailable)
+    app.register_error_handler(500, internal_error)
+    app.register_error_handler(501, not_implemented)
+    app.register_error_handler(502, bad_gateway)
+    app.register_error_handler(503, service_unavailable)
+    app.register_error_handler(504, gateway_timeout)
+    app.register_error_handler(505, http_version_not_supported)
 
 
 def main():
     """Главная функция"""
 
+    error_init()
     db_session.global_init("backend/database/db/server.db")
+    app.register_blueprint(user_api.blueprint)
     app.run(host="127.0.0.1", port=8080)
 
 
