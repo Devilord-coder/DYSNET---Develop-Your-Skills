@@ -20,9 +20,12 @@ from backend.database.models.users_model import User
 # Обработчик ошибок
 from backend.errors import *
 
+# Работа с rest
+from backend.api import user_api
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dysnet_secret_key"
-app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=30)
+app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -42,7 +45,7 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Авторизация пользователя"""
-    
+
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -139,6 +142,7 @@ def main():
 
     error_init()
     db_session.global_init("backend/database/db/server.db")
+    app.register_blueprint(user_api.blueprint)
     app.run(host="127.0.0.1", port=8080)
 
 
