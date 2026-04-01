@@ -1,0 +1,151 @@
+* {
+    user-select: none;
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    max-width: 1100px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+button {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-back {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-retry {
+    background-color: #28a745;
+    color: white;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.sentence-area {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    text-align: center;
+    border: 2px solid #dee2e6;
+    min-height: 100px;
+}
+
+.sentence-text {
+    font-size: 28px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    word-break: break-all;
+    line-height: 1.5;
+}
+
+.sentence-text span {
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.sentence-text span.correct {
+    color: #28a745;
+}
+
+.sentence-text span.current {
+    background-color: #ffc107;
+    color: #000;
+    border-radius: 5px;
+    padding: 0 2px;
+}
+
+.sentence-text span.incorrect {
+    color: #dc3545;
+    text-decoration: underline;
+}
+
+.keyboard {
+    background: #2c3e50;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.key-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+    gap: 6px;
+}
+
+.key {
+    background: #ecf0f1;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 8px;
+    min-width: 50px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: monospace;
+    color: #2c3e50;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.1s ease;
+}
+
+.key.highlight {
+    background: #f39c12;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #f39c12;
+}
+
+.key.special {
+    background: #95a5a6;
+    color: white;
+    font-size: 14px;
+}
+
+.key-space {
+    min-width: 300px;
+}
+
+.key-backspace, .key-enter {
+    min-width: 80px;
+}
+
+.key:hover {
+    background: #bdc3c7;
+    transform: scale(1.02);
+}
+
+.stats {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+}
+
+.stats span {
+    font-weight: bold;
+    color: #2c3e50;
+}
