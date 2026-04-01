@@ -18,6 +18,7 @@ class User(SqlAlchemyBase, UserMixin):
         sqlalchemy.String, index=True, unique=True, nullable=False
     )
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    role = sqlalchemy.Column(sqlalchemy.String, nullable=False, default="user")
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     cursive_printing_statistics = orm.relationship(
         "CursivePrintingStatistics", back_populates="user_relationship"

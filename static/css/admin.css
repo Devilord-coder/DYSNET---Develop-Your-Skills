@@ -1,0 +1,48 @@
+.table-users {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.table-users thead {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.table-users th, .table-users td {
+    padding: 12px;
+    vertical-align: middle;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    margin: 0 2px;
+}
+
+.badge-admin {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.badge-user {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.modal-backdrop {
+    z-index: 1040;
+}

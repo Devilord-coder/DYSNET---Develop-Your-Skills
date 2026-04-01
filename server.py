@@ -23,6 +23,7 @@ from backend.errors import *
 # Работа с rest
 from backend.api import user_api
 from backend.api import cursive_printing
+from backend.api import admin_api
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dysnet_secret_key"
@@ -145,6 +146,7 @@ def main():
     db_session.global_init("data/server.db")
     app.register_blueprint(user_api.blueprint)
     app.register_blueprint(cursive_printing.blueprint)
+    app.register_blueprint(admin_api.blueprint)
     app.run(host="127.0.0.1", port=8080)
 
 
