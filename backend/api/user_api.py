@@ -9,6 +9,8 @@ blueprint = Blueprint("users_api", __name__, template_folder="templates")
 
 @blueprint.route("/api/users")
 def get_users():
+    """Получение всех пользователей"""
+
     db_sess = db_session.create_session()
     users = db_sess.query(User).all()
     if not users:
@@ -23,6 +25,7 @@ def get_users():
                     "email": item.email,
                     "hashed_password": item.hashed_password,
                     "created_date": item.created_date,
+                    "role": item.role,
                 }
                 for item in users
             ]
@@ -32,6 +35,8 @@ def get_users():
 
 @blueprint.route("/api/users/<int:user_id>", methods=["GET"])
 def get_one_user(user_id):
+    """Получение пользователя по id"""
+
     db_sess = db_session.create_session()
     users = db_sess.get(User, user_id)
     if not users:
@@ -45,13 +50,15 @@ def get_one_user(user_id):
                 "email": users.email,
                 "hashed_password": users.hashed_password,
                 "created_date": users.created_date,
+                "role": users.role,
             }
         }
     )
 
 
 @blueprint.route("/api/users", methods=["POST"])
-def create_job():
+def create_user():
+    """Создание пользователя"""
     if not request.json:
         return make_response(jsonify({"error": "Empty request"}), 400)
     elif not all(
@@ -71,6 +78,7 @@ def create_job():
         name=request.json["name"],
         email=request.json["email"],
         hashed_password=request.json["hashed_password"],
+        role="user",
     )
     user.set_password(user.hashed_password)
     db_sess.add(user)
@@ -80,6 +88,7 @@ def create_job():
 
 @blueprint.route("/api/users/<int:user_id>", methods=["POST"])
 def editing_user(user_id):
+    """Ищменение пользователя"""
 
     db_sess = db_session.create_session()
     user = db_sess.get(User, user_id)
@@ -92,12 +101,16 @@ def editing_user(user_id):
         user.email = request.json["email"]
     if "hashed_password" in request.json:
         user.hashed_password = user.set_password(request.json["hashed_password"])
+    if "role" in request.json:
+        user.role = request.json["role"]
     db_sess.commit()
     return jsonify({"id": user.id})
 
 
 @blueprint.route("/api/users/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
+    """Удаление пользователя"""
+
     db_sess = db_session.create_session()
     user = db_sess.get(User, user_id)
     if not user:

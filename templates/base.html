@@ -18,6 +18,11 @@
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="#">DYSNET - сайт для развития навыков</a>
         {% if current_user.is_authenticated %}
+            {% if current_user.role == 'admin' %}
+                <a class="nav-link text-warning me-3" href="{{ url_for('admin_api.admin') }}">
+                    <i class="fas fa-user-shield"></i> Админ-панель
+                </a>
+            {% endif %}
             <a class="navbar-brand" href="/logout">Выйти из профиля</a>
         {% else %}
             <p>

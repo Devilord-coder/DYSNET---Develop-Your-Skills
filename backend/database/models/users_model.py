@@ -1,5 +1,6 @@
 import datetime
 import sqlalchemy
+from sqlalchemy import orm
 from werkzeug.security import generate_password_hash, check_password_hash
 from ..db_session import SqlAlchemyBase
 from flask_login import UserMixin
@@ -17,7 +18,11 @@ class User(SqlAlchemyBase, UserMixin):
         sqlalchemy.String, index=True, unique=True, nullable=False
     )
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    role = sqlalchemy.Column(sqlalchemy.String, nullable=False, default="user")
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
+    cursive_printing_statistics = orm.relationship(
+        "CursivePrintingStatistics", back_populates="user_relationship"
+    )
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursive_printing/statistics.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1>Статистика тренировок</h1>
+        <p class="text-muted">История ваших тренировок по скоропечатанию</p>
+    </div>
+
+    <div class="controls mb-4">
+        <a href="{{ url_for('cursive_printing.choose_mode') }}" class="btn btn-secondary">
+            Вернуться к выбору режима
+        </a>
+    </div>
+
+    {% if statistic %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Дата и время</th>
+                        <th>Время тренировки</th>
+                        <th>Всего символов</th>
+                        <th>Скорость (символов/мин)</th>
+                        <th>Ошибок</th>
+                        <th>Язык</th>
+                        <th>Режим</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in statistic %}
+                    <tr>
+                        <td>{{ stat.datetime }}</td>
+                        <td>{{ stat.training_time }}</td>
+                        <td>{{ stat.quantity_symbols }}</td>
+                        <td>{{ stat.speed }}</td>
+                        <td>{{ stat.quantity_errors }}</td>
+                        <td>{{ stat.language }}</td>
+                        <td>{{ stat.mode }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info text-center">
+            <h4>У вас пока нет тренировок</h4>
+            <p>Начните первую тренировку, чтобы увидеть статистику!</p>
+            <a href="{{ url_for('cursive_printing.choose_mode') }}" class="btn btn-primary mt-2">
+                Начать тренировку
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

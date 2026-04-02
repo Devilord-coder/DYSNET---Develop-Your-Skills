@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursive_printing/training.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="controls">
+        <button class="btn-back" onclick="window.location.href='{{ url_for('cursive_printing.choose_mode') }}'">Назад</button>
+        <button class="btn-retry" onclick="if(window.resetTraining) window.resetTraining()">Начать заново</button>
+    </div>
+
+    <div class="sentence-area">
+        <div class="sentence-text" id="sentenceText">Загрузка...</div>
+    </div>
+
+    <div class="stats">
+        Прогресс: <span id="progress">0</span>% |
+        Правильно: <span id="correctCount">0</span> |
+        Ошибок: <span id="errorCount">0</span>
+    </div>
+
+    <div class="keyboard" id="keyboard"></div>
+</div>
+
+<script>
+    // Передаём тексты из Python в JavaScript + язык
+    const textsFromPython = {{ texts | tojson }};
+    const languageFromPython = "{{ language }}";
+</script>
+
+<script src="{{ url_for('static', filename='js/cursive_printing_training.js') }}"></script>
+
+<script>
+    // Инициализация после загрузки страницы
+    document.addEventListener('DOMContentLoaded', function() {
+            initTraining(textsFromPython);
+            setLanguage(languageFromPython);
+    });
+</script>
+{% endblock %}

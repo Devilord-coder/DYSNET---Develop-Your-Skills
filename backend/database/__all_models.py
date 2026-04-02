@@ -1,1 +1,4 @@
 from .models import users_model
+from .models.cursive_printing_models.modes_model import CursivePrintingModes
+from .models.cursive_printing_models.words_model import CursivePrintingWords
+from .models.cursive_printing_models.statistics_model import CursivePrintingStatistics
