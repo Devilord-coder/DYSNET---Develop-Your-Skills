@@ -294,7 +294,6 @@ function handleKeyPress(event) {
     sendKey(event.key);
 }
 
-
 // инициализация
 function initTraining(texts, language) {
     console.log('initTraining:', { texts, language });

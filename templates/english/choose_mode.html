@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/english/choose_mode.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1>Выбор режима обучения</h1>
+        <p class="text-muted">Изучение иностранных слов — расширяйте словарный запас</p>
+    </div>
+
+    <div class="top-bar mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex gap-3">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-house-door"></i> Главная
+                </a>
+                <a href="{{ url_for('english.english_statistics') }}" class="btn btn-outline-success btn-lg">
+                    <i class="bi bi-graph-up"></i> Просмотр статистики
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-center mb-4">Выберите режим тренировки</h3>
+    
+    <div class="modes-grid">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <a href="{{ url_for('english.words_matching') }}" class="text-decoration-none">
+                    <div class="card mode-card h-100 text-center">
+                        <div class="card-body">
+                            <img src="{{ url_for('static', filename='img/english/words_matching.png') }}" 
+                                 alt="Сопоставление слов"
+                                 class="mode-image img-fluid mb-3"
+                                 onerror="this.src='https://placehold.co/300x200?text=🔗+Сопоставление'">
+                            <button class="btn btn-primary btn-lg start-mode-btn mt-2">
+                                Сопоставление слов
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="{{ url_for('english.fill_gaps') }}" class="text-decoration-none">
+                    <div class="card mode-card h-100 text-center">
+                        <div class="card-body">
+                            <img src="{{ url_for('static', filename='img/english/fill_gaps.png') }}" 
+                                 alt="Вставка слов в текст"
+                                 class="mode-image img-fluid mb-3"
+                                 onerror="this.src='https://placehold.co/300x200?text=📝+Вставка+слов'">
+                            <button class="btn btn-primary btn-lg start-mode-btn mt-2">
+                                Вставка слов в текст
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-4">
+                <a href="{{ url_for('english.cards') }}" class="text-decoration-none">
+                    <div class="card mode-card h-100 text-center">
+                        <div class="card-body">
+                            <img src="{{ url_for('static', filename='img/english/cards.png') }}" 
+                                 alt="Интерактивные карточки"
+                                 class="mode-image img-fluid mb-3"
+                                 onerror="this.src='https://placehold.co/300x200?text=🃏+Карточки'">
+                            <button class="btn btn-primary btn-lg start-mode-btn mt-2">
+                                Интерактивные карточки
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/english/words_matching.css') }}">
+    <script src="{{ url_for('static', filename='js/words_matching.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="game-container">
+    <div class="topic-selector">
+        <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('english.choose_english_mode') }}'">
+            Назад
+        </button>
+        <div>
+            <label for="topicSelect">Тема слов:</label>
+            <select id="topicSelect" name="topic">
+                <option value="Случайные слова из разных категорий">Случайные слова из разных категорий</option>
+                <option value="Животные и растительный мир">Животные и растительный мир</option>
+                <option value="Еда">Еда</option>
+                <option value="Профессии">Профессии</option>
+                <option value="Одежда">Одежда</option>
+                <option value="Хобби">Хобби</option>
+                <option value="Спорт">Спорт</option>
+                <option value="Музыка">Музыка</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" id="refreshBtn">
+            Начать заново
+        </button>
+    </div>
+
+    <div class="words-grid">
+        <div class="column">
+            <div id="russian-words-list" class="russian-words-list"></div>
+        </div>
+        <div class="column">
+            <div id="english-words-list" class="english-words-list"></div>
+        </div>
+    </div>
+
+    <div class="selected-pairs-section mt-4">
+        <h4>Выбранные пары (<span id="pairsCount">0</span>/8):</h4>
+        <div id="selectedPairsList" class="selected-pairs-list"></div>
+    </div>
+
+    <div class="controls mt-4">
+        <button type="button" class="btn btn-success" id="submitAllBtn">Отправить все пары</button>
+        <button type="button" class="btn btn-secondary" id="clearAllBtn">Очистить всё</button>
+    </div>
+</div>
+{% endblock %}

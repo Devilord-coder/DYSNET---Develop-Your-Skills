@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/english/words_matching_results.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    <div class="results-card">
+        <h2 class="text-center mb-4">Результаты проверки</h2>
+        
+        <div class="score-summary text-center">
+            <div class="score-big">{{ correct_count }}/{{ total }}</div>
+            <div class="score-percent">{{ percent }}%</div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Русское слово</th>
+                        <th>→</th>
+                        <th>Выбранный перевод</th>
+                        <th>Результат</th>
+                        <th>Правильный ответ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr class="result-row {% if result.is_correct %}correct-row{% else %}incorrect-row{% endif %}">
+                        <td>{{ loop.index }}</td>
+                        <td><strong>{{ result.russian }}</strong></td>
+                        <td>→</td>
+                        <td class="{% if not result.is_correct %}wrong-answer{% endif %}">{{ result.english }}</td>
+                        <td class="status-cell">
+                            {% if result.is_correct %}
+                                <span class="status-correct">✓</span>
+                            {% else %}
+                                <span class="status-incorrect">✗</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not result.is_correct %}
+                                <span class="correct-answer">{{ result.correct_english }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="result-actions">
+            <a href="{{ url_for('english.words_matching') }}" class="btn btn-primary">Играть снова</a>
+            <a href="{{ url_for('english.choose_english_mode') }}" class="btn btn-secondary">Выбрать тему</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
