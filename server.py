@@ -82,7 +82,7 @@ def reqister():
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template(
-                "register.html",
+                "register_form.html",
                 title="Регистрация",
                 form=form,
                 message="Такой пользователь уже есть",
