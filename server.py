@@ -123,7 +123,7 @@ def handle_exception(exсeption):
 def main():
     """Главная функция"""
 
-    db_session.global_init("backend/database/db/server.db")
+    db_session.global_init("data/server.db")
     app.run(host="127.0.0.1", port=8080)
 
 
