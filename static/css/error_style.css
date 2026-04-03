@@ -1,3 +1,27 @@
+.error-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.error-icon-status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.error-icon-status i {
+    font-size: 32px;
+    color: #dc3545;
+}
+
+.error-status {
+    font-size: 24px;
+    font-weight: 600;
+    color: #495057;
+}
+
 .error-page {
     display: flex;
     flex-direction: column;

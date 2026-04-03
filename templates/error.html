@@ -4,12 +4,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/error_style.css') }}">
 {% endblock %}
 
-{% block title %}
-    Ошибка {{ status_code }}
-{% endblock %}
-
 {% block content %}
     <div class="error-page">
+        <div class="error-header">
+            <div class="error-icon-status">
+                <i class="{{ icon_class }}"></i>
+                <span class="error-status">Ошибка {{ status_code }}</span>
+            </div>
+        </div>
         <div class="error-content">
             <div class="error-image">
                 <img src="{{ url_for('static', filename='img/error_image.png') }}" alt="Ошибка" width="80">

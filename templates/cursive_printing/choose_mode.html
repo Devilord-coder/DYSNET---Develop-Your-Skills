@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursive_printing/choose_mode.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1>Выбор режима тренировки</h1>
+        <p class="text-muted">Скоропечатание — развивайте скорость набора текста</p>
+    </div>
+
+    <div class="top-bar mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex gap-3">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-house-door"></i> Главная
+                </a>
+                <a href="{{ url_for('cursive_printing.statistics') }}" class="btn btn-outline-success btn-lg">
+                    <i class="bi bi-graph-up"></i> Просмотр статистики
+                </a>
+            </div>
+            
+            <div class="language-selector">
+                <label for="languageSelect" class="me-2 fw-bold">Язык:</label>
+                <select id="languageSelect" name="language" form="trainingForm" class="form-select form-select-sm">
+                    <option value="russian" selected>🇷🇺 Русский</option>
+                    <option value="english">🇬🇧 English</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-center mb-4">Выберите режим тренировки</h3>
+    
+    <!-- Форма для отправки выбранного режима -->
+    <form id="trainingForm" action="{{ url_for('cursive_printing.training') }}" method="POST">
+        <div class="modes-grid">
+            <div class="row g-4 justify-content-center">
+                <!-- Режим верхней строки -->
+                <div class="col-md-5 col-lg-5">
+                    <div class="card mode-card h-100 text-center" onclick="document.getElementById('modeInput').value='first'; this.closest('form').submit();">
+                        <div class="card-body">
+                            <img src="{{ url_for('static', filename='img/cursive_printing/first_mode_image.jpg') }}" 
+                                 alt="Режим верхней строки"
+                                 class="mode-image img-fluid mb-3"
+                                 onerror="this.src='https://placehold.co/300x200?text=Верхняя+строка'">
+                            <button type="submit" name="mode" value="first" class="btn btn-primary btn-lg start-mode-btn mt-2">
+                                Режим верхней строки
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Режим средней строки -->
+                <div class="col-md-5 col-lg-5">
+                    <div class="card mode-card h-100 text-center" onclick="document.getElementById('modeInput').value='third'; this.closest('form').submit();">
+                        <div class="card-body">
+                            <img src="{{ url_for('static', filename='img/cursive_printing/second_mode_image.jpg') }}" 
+                                 alt="Режим средней строки"
+                                 class="mode-image img-fluid mb-3"
+                                 onerror="this.src='https://placehold.co/300x200?text=Средняя+строка'">
+                            <button type="submit" name="mode" value="third" class="btn btn-primary btn-lg start-mode-btn mt-2">
+                                Режим средней строки
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Режим нижней строки -->
+                <div class="col-md-5 col-lg-5">
+                    <div class="card mode-card h-100 text-center" onclick="document.getElementById('modeInput').value='second'; this.closest('form').submit();">
+                        <div class="card-body">
+                            <img src="{{ url_for('static', filename='img/cursive_printing/third_mode_image.jpg') }}" 
+                                 alt="Режим нижней строки"
+                                 class="mode-image img-fluid mb-3"
+                                 onerror="this.src='https://placehold.co/300x200?text=Нижняя+строка'">
+                            <button type="submit" name="mode" value="second" class="btn btn-primary btn-lg start-mode-btn mt-2">
+                                Режим нижней строки
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Общий режим -->
+                <div class="col-md-5 col-lg-5">
+                    <div class="card mode-card h-100 text-center" onclick="document.getElementById('modeInput').value='fourth'; this.closest('form').submit();">
+                        <div class="card-body">
+                            <img src="{{ url_for('static', filename='img/cursive_printing/fourth_mode_image.jpg') }}" 
+                                 alt="Общий режим"
+                                 class="mode-image img-fluid mb-3"
+                                 onerror="this.src='https://placehold.co/300x200?text=Общий+режим'">
+                            <button type="submit" name="mode" value="fourth" class="btn btn-primary btn-lg start-mode-btn mt-2">
+                                Общий режим
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <input type="hidden" name="language" id="languageInput">
+        <input type="hidden" name="mode" id="modeInput">
+    </form>
+</div>
+
+{% endblock %}

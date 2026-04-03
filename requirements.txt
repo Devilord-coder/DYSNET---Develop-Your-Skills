@@ -11,3 +11,4 @@ Werkzeug==3.1.6
 zipp==3.23.0
 flask_wtf
 flask_login
+requests
