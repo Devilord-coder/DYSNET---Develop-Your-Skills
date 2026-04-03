@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if logged %}
+...
+{% else %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="text-center">
+        <h2 class="mb-4">Добро пожаловать!</h2>
+        <div class="d-flex gap-3 justify-content-center">
+            <a class="btn btn-primary btn-lg" href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success btn-lg" href="/login">Войти</a>
+        </div>
+    </div>
+</div>
+<!--
+    <nav class="navbar navbar-light bg-light">
+        <p>
+            <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success" href="/login">Войти</a>
+        </p>
+    </nav>
+-->
+{% endif %}
+{% endblock %}

@@ -42,6 +42,7 @@ def load_user(user_id):
 @app.route("/")
 @app.route("/index")
 def index():
+    """Главная страница"""
     return render_template("index.html", title="Главная страница")
 
 
@@ -138,6 +139,15 @@ def error_init():
     app.register_error_handler(503, service_unavailable)
     app.register_error_handler(504, gateway_timeout)
     app.register_error_handler(505, http_version_not_supported)
+
+
+app.route("/profile")
+def profile():
+    if current_user.is_authenticated:
+        logged = True
+    else:
+        logged = False
+    return render_template("profile.html", logged=logged)
 
 
 def main():
