@@ -99,6 +99,12 @@ def reqister():
     return render_template("register_form.html", title="Регистрация", form=form)
 
 
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    return render_template("profile.html", title="Профиль")
+
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -139,15 +145,6 @@ def error_init():
     app.register_error_handler(503, service_unavailable)
     app.register_error_handler(504, gateway_timeout)
     app.register_error_handler(505, http_version_not_supported)
-
-
-app.route("/profile")
-def profile():
-    if current_user.is_authenticated:
-        logged = True
-    else:
-        logged = False
-    return render_template("profile.html", logged=logged)
 
 
 def main():
