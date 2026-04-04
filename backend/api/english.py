@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, jsonify, session
-from random import sample, shuffle
+from random import sample, shuffle, choice
 
 from backend.database import db_session
 from backend.database.models.english_models.topics_model import EnglishTopics
 from backend.database.models.english_models.words_model import EnglishWords
+from backend.database.models.english_models.texts_model import EnglishTexts
 
 blueprint = Blueprint("english", __name__, template_folder="templates")
 
@@ -135,7 +136,67 @@ def api_get_words():
 
 @blueprint.route("/fill_gaps")
 def fill_gaps():
-    return "Вставка слов в текст"
+    """Вставка слов в текст, заполнение шаблона данными"""
+
+    db_sess = db_session.create_session()
+    texts = db_sess.query(EnglishTexts).all()
+    current_text = choice(texts)
+    text = current_text.text
+    text = [
+        part.strip() for part in text.split("<пропуск>")
+    ]  # Разделение текста по частя (по пропускам)
+    answers = current_text.answers.split("; ")
+    session["answers"] = answers
+    shuffled_answers = answers.copy()
+    shuffle(shuffled_answers)
+    return render_template(
+        "english/fill_gaps.html",
+        title="Вставка слов в текст",
+        title_text=current_text.title,
+        text_parts=text,
+        answers_list=shuffled_answers,
+        gaps_count=6,
+    )
+
+
+@blueprint.route("/check_fill_gaps", methods=["POST"])
+def check_fill_gaps():
+    """Проверка еорректности заполнения слов пользователем"""
+
+    # Получение ответов пользователя
+    user_answers = []
+    for key, value in request.form.items():
+        if key.startswith("gap_"):
+            user_answers.append(value)
+
+    correct_answers = session.get("answers", [])  # Получение правильных ответов
+    results = []
+    correct_count = 0
+    for i, answer in enumerate(user_answers):
+        is_correct = False
+        if answer == correct_answers[i]:
+            is_correct = True
+            correct_count += 1
+        results.append(
+            {
+                "index": i,
+                "user_answer": answer,
+                "correct_answer": correct_answers[i],
+                "is_correct": is_correct,
+            }
+        )
+
+    # Возрат результата проверки
+    total = len(correct_answers)
+    percent = round(correct_count / total * 100)
+    return jsonify(
+        {
+            "results": results,
+            "correct_count": correct_count,
+            "total": total,
+            "percent": percent,
+        }
+    )
 
 
 @blueprint.route("/cards")
