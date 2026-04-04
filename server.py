@@ -1,3 +1,4 @@
+# Подключение flask
 from flask import Flask
 from flask import render_template, redirect
 from flask_login import (
@@ -7,6 +8,10 @@ from flask_login import (
     login_required,
     current_user,
 )
+from werkzeug.utils import secure_filename
+
+# Встроенные библиотеки
+import os
 import datetime
 
 # Формы регистрации/авторизации
@@ -25,6 +30,7 @@ from backend.api import *
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dysnet_secret_key"
 app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -106,7 +112,27 @@ def profile():
 @app.route("/profile/edit", methods=["GET", "POST"])
 @login_required
 def edit_profile():
+    """Изменение профиля пользователя"""
     form = EditProfileForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == current_user.email).first()
+        if form.avatar.data:
+            file = form.avatar.data
+            safe_email = secure_filename(current_user.email.replace('@', '_at_'))
+            file_extension = file.filename.rsplit('.', 1)[1].lower()
+            filename = f"{safe_email}.{file_extension}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            user.set_avatar(filepath)
+        if form.name.data:
+            user.set_name(form.name.data)
+        if form.surname.data:
+            user.set_surname(form.surname.data)
+        if form.aboutme.data:
+            user.set_aboutme(form.aboutme.data)
+        db_sess.commit()
+
     return render_template("edit_profile.html", title="Профиль", form=form)
 
 

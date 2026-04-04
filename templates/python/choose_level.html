@@ -1,7 +1,69 @@
 {% extends "base.html" %}
 
-{% block head %}
-{% endblock %}
-
 {% block content %}
+<div class="container-fluid h-100">
+    <div class="row h-100">
+        <!-- Левая и центральная часть с контентом -->
+        <div class="col-md-8 col-lg-9 d-flex flex-column position-relative">
+            <!-- Кнопка "Назад" в левом верхнем углу -->
+            <div class="position-absolute top-0 start-0 p-3">
+                <a href="/" class="btn btn-outline-secondary">
+                    &larr; Назад
+                </a>
+            </div>
+
+            <!-- Центрированные кнопки уровней -->
+            <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+                <div class="d-flex gap-4 flex-wrap justify-content-center">
+                    <button class="btn btn-success btn-lg px-5 py-3 fs-3 fw-bold">
+                        Junior
+                    </button>
+                    <button class="btn btn-warning btn-lg px-5 py-3 fs-3 fw-bold">
+                        Middle
+                    </button>
+                    <button class="btn btn-danger btn-lg px-5 py-3 fs-3 fw-bold">
+                        Senior
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка со статическим рисунком змеи Python (не пролистывается) -->
+        <div class="col-md-4 col-lg-3 position-relative p-0 overflow-hidden" style="height: 100vh;">
+            <div
+                class="position-sticky top-0 h-100 w-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-10">
+                <img src="{{ url_for('static', filename='img/python/python_snake.gif') }}" alt="Python Snake"
+                    class="img-fluid" style="object-fit: cover; max-height: 100%; width: 100%;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Дополнительный стиль для фиксации правой колонки -->
+<style>
+    /* Гарантируем, что правая колонка всегда на всю высоту и не скроллится */
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .position-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+    }
+
+    /* Для мобильных устройств: чтобы змея не пропадала, но оставалась статичной */
+    @media (max-width: 767.98px) {
+        .col-md-4 {
+            display: none;
+            /* На маленьких экранах змею можно скрыть, чтобы не мешала */
+        }
+
+        .col-md-8 {
+            width: 100%;
+        }
+    }
+</style>
 {% endblock %}

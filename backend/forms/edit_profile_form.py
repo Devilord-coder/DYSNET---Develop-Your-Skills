@@ -1,12 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, EmailField, TextAreaField
+from wtforms import StringField, SubmitField, FileField, TextAreaField
+from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired
 
 
 class EditProfileForm(FlaskForm):
     """Форма для изменения профиля"""
 
-    name = StringField("Имя", validators=[DataRequired()])
-    surname = StringField("Фамилия", validators=[DataRequired()])
-    aboutme = TextAreaField("Расскажите о себе", validators=[DataRequired()])
+    avatar = FileField("Загрузите картинку", validators=[
+        FileAllowed(["jpg", "png", "jpeg", "gif", "ico"], message="Только изображения!")
+        ])
+    name = StringField("Имя")
+    surname = StringField("Фамилия")
+    aboutme = TextAreaField("Расскажите о себе")
     submit = SubmitField("Сохранить")
