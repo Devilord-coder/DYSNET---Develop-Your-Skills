@@ -10,8 +10,7 @@ from flask_login import (
 import datetime
 
 # Формы регистрации/авторизации
-from backend.forms.register_form import RegisterForm
-from backend.forms.login_form import LoginForm
+from backend.forms import *
 
 # База данных
 from backend import db_session
@@ -21,10 +20,7 @@ from backend.database.models.users_model import User
 from backend.errors import *
 
 # Работа с rest
-from backend.api import user_api
-from backend.api import cursive_printing
-from backend.api import admin_api
-from backend.api import english
+from backend.api import *
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dysnet_secret_key"
@@ -42,6 +38,7 @@ def load_user(user_id):
 @app.route("/")
 @app.route("/index")
 def index():
+    """Главная страница"""
     return render_template("index.html", title="Главная страница")
 
 
@@ -90,12 +87,27 @@ def reqister():
             name=form.name.data,
             surname=form.surname.data,
             email=form.email.data,
+            aboutme=form.aboutme.data,
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect("/login")
     return render_template("register_form.html", title="Регистрация", form=form)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    """Профиль пользователя"""
+    return render_template("profile.html", title="Профиль")
+
+
+@app.route("/profile/edit", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    return render_template("edit_profile.html", title="Профиль", form=form)
 
 
 @app.route("/logout")
@@ -107,6 +119,8 @@ def logout():
 
 
 def error_init():
+    """Обработка ошибок"""
+
     app.register_error_handler(400, bad_request)
     app.register_error_handler(401, unauthorized)
     app.register_error_handler(403, forbidden)
@@ -140,16 +154,21 @@ def error_init():
     app.register_error_handler(505, http_version_not_supported)
 
 
-def main():
-    """Главная функция"""
-
-    error_init()
-    db_session.global_init("data/server.db")
+def blueprint_init():
     app.register_blueprint(user_api.blueprint)
     app.register_blueprint(cursive_printing.blueprint)
     app.register_blueprint(admin_api.blueprint)
     app.register_blueprint(english.blueprint)
-    app.run(host="127.0.0.1", port=8080)
+    app.register_blueprint(python_api.bp)
+
+
+def main():
+    """Главная функция"""
+
+    error_init()
+    blueprint_init()
+    db_session.global_init("data/server.db")
+    app.run(host="0.0.0.0", port=8080)
 
 
 if __name__ == "__main__":
