@@ -5,35 +5,38 @@
 }
 
 .results-card {
-    background: white;
+    background: rgba(30, 30, 47, 0.85);
+    backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .score-summary {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: rgba(30, 30, 47, 0.6);
     border-radius: 15px;
     padding: 25px;
     margin-bottom: 30px;
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .score-big {
     font-size: 48px;
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--text-white);
 }
 
 .score-percent {
     font-size: 24px;
-    color: #3498db;
+    color: var(--accent-blue);
     margin-top: 5px;
 }
 
 .score-message {
     font-size: 18px;
     margin-top: 10px;
-    color: #6c757d;
+    color: var(--light-blue);
 }
 
 .results-table {
@@ -41,38 +44,40 @@
     border-collapse: collapse;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 30px;
 }
 
 .results-table thead {
-    background: #2c3e50;
-    color: white;
+    background: linear-gradient(135deg, var(--primary-blue), var(--dark-gray));
+    color: var(--text-white);
 }
 
 .results-table th {
     padding: 12px 15px;
     text-align: center;
     font-weight: bold;
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .results-table td {
     padding: 10px 15px;
     text-align: center;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+    color: var(--text-white);
 }
 
 .result-row.correct-row {
-    background-color: #d4edda;
+    background-color: rgba(40, 167, 69, 0.2);
 }
 
 .result-row.incorrect-row {
-    background-color: #f8d7da;
+    background-color: rgba(220, 53, 69, 0.2);
 }
 
 .wrong-answer {
     text-decoration: line-through;
-    color: #c62828;
+    color: #dc3545;
 }
 
 .status-correct {
@@ -93,14 +98,16 @@
 }
 
 .corrections-section {
-    background: #f8f9fa;
+    background: rgba(30, 30, 47, 0.6);
     border-radius: 12px;
     padding: 20px;
     margin-top: 20px;
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .corrections-section.success {
-    background: #d4edda;
+    background: rgba(40, 167, 69, 0.15);
+    border-color: rgba(40, 167, 69, 0.3);
 }
 
 .corrections-list {
@@ -111,7 +118,7 @@
 }
 
 .correction-item {
-    background: white;
+    background: rgba(30, 30, 47, 0.8);
     padding: 12px 15px;
     border-radius: 8px;
     display: flex;
@@ -123,7 +130,7 @@
 
 .correction-russian {
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--text-white);
 }
 
 .correction-wrong {
@@ -137,7 +144,7 @@
 }
 
 .correction-sep {
-    color: #6c757d;
+    color: var(--light-blue);
 }
 
 .no-errors {
@@ -159,7 +166,7 @@
     font-size: 16px;
     font-weight: bold;
     border: none;
-    border-radius: 10px;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -167,8 +174,13 @@
 }
 
 .btn-primary {
-    background-color: #3498db;
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
     color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
 }
 
 .btn-secondary {
@@ -176,9 +188,9 @@
     color: white;
 }
 
-.btn:hover {
+.btn-secondary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
 }
 
 .table-responsive {
