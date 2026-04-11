@@ -40,6 +40,52 @@ def get_words_by_topic(topic):
     return russian_words, english_words
 
 
+def get_next_word():
+    """Фунция смены слова на следующее из загруженных"""
+
+    cards_data = session.get("cards_data", [])  # получение загруженных слов
+    direction = session.get("direction", "russian")  # получение языка перевода
+
+    if not cards_data:
+        return None
+
+    next_word = choice(cards_data)
+    session["current_card"] = next_word
+    cards_data.remove(next_word)  # удаление использованного слова из загруженных
+    session["cards_data"] = cards_data
+
+    # Определение слова и ответа в зависимости от языка
+    if direction == "russian":
+        word = next_word["russian"]
+        answer = next_word["english"]
+    else:
+        word = next_word["english"]
+        answer = next_word["russian"]
+
+    session["current_correct_answer"] = answer
+    return word
+
+
+def prepare_cards_data(topic, direction):
+    """Подготовка данных для карточек"""
+
+    get_words_by_topic(topic)  # получение слов по теме
+    correct_answers = session["current_words"]
+    all_cards = [
+        {"russian": rus, "english": eng} for rus, eng in correct_answers.items()
+    ]
+
+    session['cards_data'] = all_cards
+    session['direction'] = direction
+    session['current_topic'] = topic
+    
+    if all_cards:
+        current_word = get_next_word()  # получение первого слова
+        return {"success": True, "current_word": current_word}
+
+    return {"success": False, "error": "Нет слов"}
+
+
 @blueprint.route("/choose_english_mode")
 def choose_english_mode():
     """Выбор режима изучения"""
@@ -126,7 +172,7 @@ def check_words():
 
 
 @blueprint.route("/get_words", methods=["GET"])
-def api_get_words():
+def get_words():
     """Получение слов по теме, если пользователь её поменял"""
 
     topic = request.args.get("topic", "Случайные слова из разных категорий")
@@ -201,4 +247,98 @@ def check_fill_gaps():
 
 @blueprint.route("/cards")
 def cards():
-    return "Интерактивные карточки"
+    """Создание шаблона для навыка"""
+
+    return render_template("english/cards.html", title="Интерактивные карточки")
+
+
+@blueprint.route("/cards/next", methods=["POST"])
+def next_card():
+    """Получение новой порции слов"""
+
+    data = request.get_json()
+    topic = data.get(
+        "topic", "Случайные слова из разных категорий"
+    )  # получение темы от пользователя
+    direction = data.get("direction", "russian")  # получение языка
+    session["direction"] = direction
+    result = prepare_cards_data(topic, direction)
+    return jsonify(result)
+
+
+@blueprint.route("/cards/current", methods=["GET", "POST"])
+def get_current_card():
+    """Получение слова при изменении языка"""
+
+    if request.method == "POST":
+        data = request.get_json()
+        new_direction = data.get("direction", "russian")  # получение нового языка
+        if new_direction:
+            session["direction"] = new_direction
+
+        next_word = get_next_word()  # получение следующего слова
+        if not next_word:  # если слова кончились, добавляем новые
+            topic = session.get("current_topic", "Случайные слова из разных категорий")
+            result = prepare_cards_data(topic, new_direction)
+            if result["success"]:
+                next_word = result["current_word"]
+
+    # иземенение ответа в зависимости от языка
+    current_card = session.get("current_card", "")
+    direction = session.get("direction", "")
+    correct_answer = session.get("current_correct_answer", "")
+
+    if not current_card:
+        return jsonify({"success": False, "empty": True})
+
+    if direction == "russian":
+        current_word = current_card["russian"]
+    else:
+        current_word = current_card["english"]
+
+    return jsonify(
+        {
+            "success": True,
+            "current_word": current_word,
+            "correct_answer": correct_answer,
+        }
+    )
+
+
+@blueprint.route("/cards/check", methods=["POST"])
+def check_card():
+    """Проверка ответа"""
+
+    data = request.get_json()
+    user_answer = data.get("answer", "").strip().lower()  # получаем ответ пользавателя
+    direction = session.get("direction", "russian")
+    correct_answer = session.get(
+        "current_correct_answer", ""
+    ).lower()  # получаем правильный ответ из сессии
+    is_correct = False
+    if user_answer == correct_answer:
+        is_correct = True
+
+    next_word = get_next_word()  # меняем слово, загружаем новую порцию при нехватке
+    if not next_word:
+        topic = session.get("current_topic", "Случайные слова из разных категорий")
+        direction = session.get("direction", "russian")
+        result = prepare_cards_data(topic, direction)
+        next_word = result["current_word"]
+
+    return jsonify(
+        {
+            "is_correct": is_correct,
+            "correct_answer": correct_answer,
+            "finished": False,
+            "next_word": next_word,
+        }
+    )
+
+
+@blueprint.route("/cards/next_word", methods=["GET"])
+def next_word():
+    """Смена слова на следующее, если пользователь посмотрел ответ"""
+
+    next_word = get_next_word()
+    return jsonify({"finished": False, "next_word": next_word})
