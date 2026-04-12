@@ -10,22 +10,34 @@ def choose_level():
     return render_template("python/choose_level.html", title="Выбор режима")
 
 
-@bp.route("/task/junior")
-def task_easy():
-    """уровень сложности Junior"""
+@bp.route("/tasks", methods=["POST", "GET"])
+def tasks():
+    if request.method == "POST":
+        level = request.form.get("level")
+        session['level'] = level
+        print(level)
+
+    return render_template(
+        "python/tasks.html"
+    )
+
+
+@bp.route("/tasks/junior")
+def junior():
+    """Уровень сложности Junior"""
 
     return ""
 
 
-@bp.route("/task/middle")
-def task_medium():
-    """уровень сложности Middle"""
+@bp.route("/tasks/middle")
+def middle():
+    """Уровень сложности Middle"""
 
     return ""
 
 
-@bp.route("/task/senior")
-def task_hard():
-    """уровень сложности Senior"""
+@bp.route("/tasks/senior")
+def senior():
+    """Уровень сложности Senior"""
 
     return ""

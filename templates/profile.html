@@ -17,8 +17,8 @@
                     <!-- Аватар пользователя -->
                     <div class="mb-4">
                         {% if current_user.avatar != None %}
-                        <img src="{{ url_for('static', filename='img/error_image.png') }}" alt="Аватар пользователя"
-                            class="rounded-circle img-fluid border border-3 border-primary"
+                        <img src="static/img/{{ secure_filename(current_user.email.replace('@', '_at_')) }}"
+                            alt="Аватар пользователя" class="rounded-circle img-fluid border border-3 border-primary"
                             style="width: 150px; height: 150px; object-fit: cover;">
                         {% else %}
                         <div class="mx-auto bg-primary rounded-circle d-flex align-items-center justify-content-center"

@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask
+from flask import Flask, request
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -26,6 +26,12 @@ from backend.errors import *
 
 # Работа с rest
 from backend.api import *
+
+# Путь к БД
+DATABASE_PATH = "data/server.db"
+
+HOST = "0.0.0.0"
+PORT = 8080
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dysnet_secret_key"
@@ -118,9 +124,10 @@ def edit_profile():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == current_user.email).first()
         if form.avatar.data:
-            file = form.avatar.data
+            file = request.files['file']
+            print("We have a file")
             safe_email = secure_filename(current_user.email.replace('@', '_at_'))
-            file_extension = file.filename.rsplit('.', 1)[1].lower()
+            file_extension = form.avatar.data.rsplit('.', 1)[1].lower()
             filename = f"{safe_email}.{file_extension}"
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
@@ -132,6 +139,7 @@ def edit_profile():
         if form.aboutme.data:
             user.set_aboutme(form.aboutme.data)
         db_sess.commit()
+        return redirect("/profile")
 
     return render_template("edit_profile.html", title="Профиль", form=form)
 
@@ -193,8 +201,8 @@ def main():
 
     error_init()
     blueprint_init()
-    db_session.global_init("data/server.db")
-    app.run(host="0.0.0.0", port=8080)
+    db_session.global_init(DATABASE_PATH)
+    app.run(host=HOST, port=PORT)
 
 
 if __name__ == "__main__":
