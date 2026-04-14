@@ -1,11 +1,13 @@
 .game-container {
-    background: white;
+    background: rgba(30, 30, 47, 0.85);
+    backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .words-grid {
@@ -16,15 +18,16 @@
 }
 
 .column {
-    background: #f8f9fa;
+    background: rgba(30, 30, 47, 0.6);
     border-radius: 15px;
     padding: 20px;
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .column h3 {
     text-align: center;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: var(--text-white);
 }
 
 .word-btn {
@@ -37,28 +40,30 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background-color: #3498db;
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
     color: white;
 }
 
 .word-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
 }
 
 .word-btn.selected {
     background-color: #f39c12;
     transform: scale(1.02);
+    background: linear-gradient(135deg, #f39c12, #e67e22);
 }
 
 .word-btn.matched {
     background-color: #27ae60;
-    opacity: 0.6;
+    opacity: 1;
     cursor: not-allowed;
+    background: linear-gradient(135deg, #27ae60, #1e8449);
 }
 
 .word-btn:disabled {
-    opacity: 0.6;
+    opacity: 1;
     cursor: not-allowed;
 }
 
@@ -82,10 +87,11 @@
 }
 
 .selected-pairs-section {
-    background: #f8f9fa;
+    background: rgba(30, 30, 47, 0.6);
     border-radius: 15px;
     padding: 20px;
     margin-top: 30px;
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .pairs-grid {
@@ -101,19 +107,24 @@
     align-items: center;
     gap: 10px;
     transition: all 0.3s ease;
+    background: rgba(30, 30, 47, 0.8);
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .pair-card:hover {
     transform: translateX(5px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(33, 150, 243, 0.5);
 }
 
 .pair-russian {
     font-weight: bold;
+    color: var(--text-white);
 }
 
 .pair-arrow {
     margin: 0 5px;
+    color: var(--light-blue);
 }
 
 .btn-remove-pair {
@@ -125,6 +136,7 @@
     border-radius: 50%;
     cursor: pointer;
     font-size: 14px;
+    background-color: #dc3545;
 }
 
 .btn {
@@ -132,29 +144,39 @@
     font-size: 16px;
     font-weight: bold;
     border: none;
-    border-radius: 10px;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .btn-primary {
-    background-color: #3498db;
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
     color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
 }
 
 .btn-secondary {
-    background-color: #95a5a6;
+    background-color: #6c757d;
     color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
 }
 
 .btn-success {
-    background-color: #27ae60;
+    background: linear-gradient(135deg, #28a745, #20c997);
     color: white;
 }
 
-.btn:hover {
+.btn-success:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
 }
 
 .controls {
@@ -171,13 +193,24 @@
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 15px;
+    background: rgba(30, 30, 47, 0.6);
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 select {
     padding: 8px 15px;
     font-size: 14px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    background-color: rgba(30, 30, 47, 0.9);
+    color: var(--text-white);
+}
+
+select option {
+    background-color: var(--dark-gray);
+    color: var(--text-white);
 }
 
 .result {
@@ -188,39 +221,43 @@ select {
 }
 
 .result.success {
-    color: #27ae60;
+    color: #28a745;
 }
 
 .result.error {
-    color: #e74c3c;
+    color: #dc3545;
 }
 
 .results-card {
-    background: white;
+    background: rgba(30, 30, 47, 0.85);
+    backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 30px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 .score-summary {
     margin: 20px 0;
     padding: 20px;
-    background: #f8f9fa;
+    background: rgba(30, 30, 47, 0.6);
     border-radius: 15px;
 }
 
 .score-big {
     font-size: 48px;
     font-weight: bold;
+    color: var(--text-white);
 }
 
 .score-percent {
     font-size: 24px;
-    color: #3498db;
+    color: var(--accent-blue);
 }
 
 .score-message {
     font-size: 18px;
     margin-top: 10px;
+    color: var(--light-blue);
 }

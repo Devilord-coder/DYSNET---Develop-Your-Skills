@@ -291,6 +291,9 @@ function updateFromServer(data) {
 
 // обработка нажатий пользователем на клавиши
 function handleKeyPress(event) {
+    if (event.key === ' ' || event.key === 'Space' || event.key === 'Spacebar') {
+        event.preventDefault();
+    }
     sendKey(event.key);
 }
 

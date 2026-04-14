@@ -30,6 +30,12 @@
                         {% if current_user.is_authenticated %}
                         <div class="user-info">
                             <div class="user-actions">
+                                {% if current_user.role == 'admin' %}
+                                <a class="btn-admin" href="{{ url_for('admin_api.admin') }}">
+                                    <i class="fas fa-user-shield"></i>
+                                    Админ-панель
+                                </a>
+                                {% endif %}
                                 <a class="btn-profile" href="/profile">
                                     <i class="fas fa-user-circle"></i>
                                     Профиль

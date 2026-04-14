@@ -100,7 +100,7 @@ def reqister():
             name=form.name.data,
             surname=form.surname.data,
             email=form.email.data,
-            aboutme=form.aboutme.data
+            aboutme=form.aboutme.data,
         )
         user.set_password(form.password.data)
         db_sess.add(user)
