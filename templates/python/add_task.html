@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Добавление задания для уровня: {{ level }}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('python.tasks') }}" id="taskForm">
+                        <!-- ОДИН CSRF-токен для всей формы -->
+                        <input type="hidden" name="csrf_token"
+                            value="{{ form.csrf_token._value() if form.csrf_token else '' }}">
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Название задания</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                value="{{ form.name.data or '' }}">
+                            {% for error in form.name.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Введите суть задания</label>
+                            <textarea class="form-control" id="text" name="text"
+                                rows="5">{{ form.text.data or '' }}</textarea>
+                            {% for error in form.text.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Тесты (от 1 до 20)</label>
+                            <div id="tests-container">
+                                {% for test_form in form.tests %}
+                                <div class="test-item card mb-3">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <label class="form-label">Ввод</label>
+                                            <textarea class="form-control" name="tests-{{ loop.index0 }}-input_data"
+                                                rows="2">{{ test_form.input_data.data or '' }}</textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label">Ожидаемый результат</label>
+                                            <textarea class="form-control"
+                                                name="tests-{{ loop.index0 }}-expected_output"
+                                                rows="2">{{ test_form.expected_output.data or '' }}</textarea>
+                                        </div>
+                                        {% if loop.index0 > 0 %}
+                                        <button type="button" class="btn btn-danger btn-sm remove-test">
+                                            <i class="bi bi-trash me-1"></i>Удалить тест
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="button" id="add-test" class="btn btn-secondary">
+                                <i class="bi bi-plus-circle me-1"></i>Добавить тест
+                            </button>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('python.tasks') }}" class="btn btn-secondary">Назад</a>
+                            <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Подключаем JavaScript файлы -->
+<script src="{{ url_for('static', filename='js/tests-manager.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
