@@ -9,6 +9,7 @@ class PythonTest(SqlAlchemyBase):
     __tablename__ = "python_tests"
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    # id задания
     task_id = sa.Column(
         sa.Integer,
         sa.ForeignKey("python_tasks.id"),
@@ -16,4 +17,5 @@ class PythonTest(SqlAlchemyBase):
     )
     args = sa.Column(sa.String)
     result = sa.Column(sa.String)
+    # связь с заданиями
     task = orm.relationship("PythonTask", back_populates="tests")

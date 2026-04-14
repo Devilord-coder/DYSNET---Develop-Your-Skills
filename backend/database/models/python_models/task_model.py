@@ -12,4 +12,5 @@ class PythonTask(SqlAlchemyBase):
     name = sa.Column(sa.String, nullable=False)
     task_type = sa.Column(sa.String, nullable=False)
     text = sa.Column(sa.String, nullable=False)
+    # связь с тестами
     tests = orm.relationship("PythonTest", back_populates="task")

@@ -190,6 +190,8 @@ def error_init():
 
 
 def blueprint_init():
+    """Инициализация всех веток"""
+
     app.register_blueprint(user_api.blueprint)
     app.register_blueprint(cursive_printing.blueprint)
     app.register_blueprint(admin_api.blueprint)

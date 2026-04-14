@@ -1,5 +1,3 @@
-// static/js/tests-manager.js
-
 class TestsManager {
     constructor(options = {}) {
         this.containerId = options.containerId || 'tests-container';

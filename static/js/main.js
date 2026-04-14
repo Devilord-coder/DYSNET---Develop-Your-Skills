@@ -1,5 +1,3 @@
-// static/js/main.js
-
 document.addEventListener('DOMContentLoaded', function () {
     // Получаем начальное количество тестов
     const initialTestCount = document.querySelectorAll('.test-item').length;
