@@ -18,8 +18,8 @@ import datetime
 from backend.forms import *
 
 # База данных
-from backend import db_session
-from backend.database.models.users_model import User
+from backend.database import db_session
+from backend.database.__all_models import User
 
 # Обработчик ошибок
 from backend.errors import *
@@ -51,6 +51,7 @@ def load_user(user_id):
 @app.route("/index")
 def index():
     """Главная страница"""
+
     return render_template("index.html", title="Главная страница")
 
 
