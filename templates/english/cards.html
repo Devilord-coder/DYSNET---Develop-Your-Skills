@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/english/cards.css') }}">
+    <script src="{{ url_for('static', filename='js/cards.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="cards-container">
+    <div class="topic-selector">
+        <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('english.choose_english_mode') }}'">
+            Назад
+        </button>
+
+        <div>
+            <label for="topicSelect">Тема слов:</label>
+            <select id="topicSelect">
+                <option value="Случайные слова из разных категорий">Случайные слова из разных категорий</option>
+                <option value="Животные и растительный мир">Животные и растительный мир</option>
+                <option value="Еда">Еда</option>
+                <option value="Профессии">Профессии</option>
+                <option value="Одежда">Одежда</option>
+                <option value="Хобби">Хобби</option>
+                <option value="Спорт">Спорт</option>
+                <option value="Музыка">Музыка</option>
+            </select>
+        
+        </div>
+        <div class="language-selector">
+            <label for="languageSelect" class="me-2 fw-bold">Язык:</label>
+            <select id="languageSelect" name="language" form="trainingForm" class="form-select form-select-sm">
+                <option value="russian" selected>🇷🇺 Русский -> English</option>
+                <option value="english">🇬🇧 English -> Русский</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="flashcard-static">
+        <div class="card-content">
+            <i class="fas fa-question-circle"></i>
+            <h2 id="word-display">Загрузка...</h2>
+        </div>
+    </div>
+
+    <div class="answer-section">
+        <div class="input-group">
+            <input type="text" id="answerInput" class="form-control" 
+                   placeholder="Введите перевод на английский..." autocomplete="off">
+            <button class="btn btn-success" id="checkAnswerBtn">
+                <i class="fas fa-check"></i> Проверить
+            </button>
+            <button class="btn btn-info" id="revealAnswerBtn">
+                <i class="fas fa-eye"></i> Ответ
+            </button>
+        </div>
+        <div class="answer-feedback" id="answerFeedback"></div>
+        <div id="translation-display" class="translation-box" style="display: none;">
+            <i class="fas fa-lightbulb"></i>
+            <span></span>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -757,3 +757,63 @@ li {
     background: var(--accent-blue);
     color: var(--text-white);
 }
+
+/* Карточки навыков на главной странице */
+.card.border-primary {
+    background: rgba(30, 30, 47, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.card.border-primary:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-blue);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.card.border-primary .card-title {
+    color: var(--text-white);
+    font-weight: 600;
+}
+
+.card.border-primary .card-text {
+    color: var(--light-blue);
+}
+
+.card.border-primary img {
+    filter: brightness(0.9) contrast(1.1);
+    transition: all 0.3s ease;
+}
+
+.card.border-primary:hover img {
+    filter: brightness(1) contrast(1.2);
+    transform: scale(1.02);
+}
+
+/* Кнопка админ-панели */
+.btn-admin {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 5px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-admin:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-admin i {
+    margin-right: 5px;
+}

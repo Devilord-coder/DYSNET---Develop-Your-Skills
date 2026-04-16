@@ -9,6 +9,10 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="card shadow-lg border-0 rounded-4">
+                <button class="btn btn-outline-danger btn-edit position-absolute top-0 end-0 m-3"
+                    onclick="location.href='/profile/edit'">
+                    <i class="fas fa-edit me-1"></i> Изменить
+                </button>
                 <div class="card-body text-center p-5">
                     <!-- Аватар пользователя -->
                     <div class="mb-4">
@@ -26,10 +30,11 @@
 
                     <!-- Имя пользователя -->
                     <h2 class="mb-1">
-                        Dan
+                        {{ current_user.name }} {{ current_user.surname }}
                     </h2>
 
-                    <p class="text-muted mb-3">@{{ current_user.username }}</p>
+                    <p class="text-muted mb-3">{{ current_user.email }}</p>
+                    <p class="mb-3"> {{ current_user.aboutme }} </p>
                 </div>
             </div>
         </div>

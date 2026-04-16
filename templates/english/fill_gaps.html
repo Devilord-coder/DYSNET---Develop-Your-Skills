@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/english/fill_gaps.css') }}">
+    <script src="{{ url_for('static', filename='js/fill_gaps.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="fill-gaps-container">
+    <div class="top-panel">
+        <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('english.choose_english_mode') }}'">
+            Назад
+        </button>
+        <button class="btn btn-primary" id="newTextBtn">
+            Новый текст
+        </button>
+    </div>
+
+    <div class="title-section">
+        <h3 class="text-title">{{ title_text }}</h3>
+    </div>
+
+    <div class="game-area">
+        <div class="text-with-gaps">
+            <div class="paragraph">
+                {% for i in range(text_parts|length) %}
+                    <span class="normal-word">{{ text_parts[i] }}</span>
+                    {% if i < gaps_count %}
+                        <div class="gap-container" id="gap-container-{{ i }}">
+                            <select name="gap_{{ i }}" class="gap-select" data-gap-index="{{ i }}" form="checkForm" required>
+                                <option value="">Выберите слово</option>
+                                {% for option in answers_list %}
+                                    <option value="{{ option }}">{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="answers-area">
+            <h4>Слова для вставки:</h4>
+            <div class="answers-list">
+                {% for answer in answers_list %}
+                    <div class="answer-item" data-word="{{ answer }}">
+                        <span class="answer-word">{{ answer }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="check-section">
+        <button type="button" id="checkBtn" class="btn btn-success btn-check">
+            Проверить
+        </button>
+        <button type="button" id="resetBtn" class="btn btn-secondary" style="display: none;">
+            Новая попытка
+        </button>
+    </div>
+
+    <form id="checkForm" method="POST" action="{{ url_for('english.check_fill_gaps') }}" style="display: none;">
+        {% for i in range(gaps_count) %}
+            <input type="hidden" name="gap_{{ i }}" id="gap_input_{{ i }}">
+        {% endfor %}
+    </form>
+    
+    <div id="results-summary" class="results-summary" style="display: none;">
+        <h4>Результаты:</h4>
+        <div class="score">Правильно: <span id="correct-count">0</span> из <span id="total-count">0</span> (<span id="percent">0</span>%)</div>
+    </div>
+</div>
+{% endblock %}
