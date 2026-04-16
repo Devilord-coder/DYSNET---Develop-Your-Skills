@@ -1,3 +1,5 @@
+"""Все модели для работы с БД"""
+
 from .models.users_model import User
 from .models.cursive_printing_models.modes_model import CursivePrintingModes
 from .models.cursive_printing_models.words_model import CursivePrintingWords

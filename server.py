@@ -30,12 +30,17 @@ from backend.api import *
 # Путь к БД
 DATABASE_PATH = "data/server.db"
 
+# Хост и порт
 HOST = "0.0.0.0"
 PORT = 8080
 
+# Приложение
 app = Flask(__name__)
+# Ключ доступа (нужен для login_manager)
 app.config["SECRET_KEY"] = "dysnet_secret_key"
+# время хранения сессий
 app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
+# путь, куда загружать файлы
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -43,6 +48,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
+    """Загрузка пользователя"""
     db_sess = db_session.create_session()
     return db_sess.get(User, user_id)
 
@@ -60,7 +66,7 @@ def login():
     """Авторизация пользователя"""
 
     form = LoginForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit(): # форма успешно отправлена
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):

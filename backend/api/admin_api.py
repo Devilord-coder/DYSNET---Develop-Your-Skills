@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect
 from backend.database import db_session
 from backend.database.models.users_model import User
 
+# Отдельная ветка
 blueprint = Blueprint("admin_api", __name__, template_folder="templates")
 
 

@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, NumberRange, ValidationError, Optio
 
 class TestForm(FlaskForm):
     """Форма для одного теста"""
+
     input_data = TextAreaField("Ввод", validators=[DataRequired(message="Поле 'Ввод' обязательно")])
     expected_output = TextAreaField("Ожидаемый результат", validators=[DataRequired(message="Поле 'Ожидаемый результат' обязательно")])
 
