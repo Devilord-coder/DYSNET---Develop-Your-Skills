@@ -8,6 +8,7 @@ from flask_login import (
     login_required,
     current_user,
 )
+from flask_restful import reqparse, abort, Api, Resource
 from werkzeug.utils import secure_filename
 
 # Встроенные библиотеки
@@ -27,23 +28,31 @@ from backend.errors import *
 # Работа с rest
 from backend.api import *
 
+# ENV
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 # Путь к БД
-DATABASE_PATH = "data/server.db"
+DATABASE_PATH = os.getenv("DATABASE_PATH", "data/server.db")
 
 # Хост и порт
-HOST = "0.0.0.0"
-PORT = 8080
+HOST = os.getenv("FLASK_HOST", "0.0.0.0")
+PORT = os.getenv("FLASK_PORT", 8080)
 
 # Приложение
 app = Flask(__name__)
 # Ключ доступа (нужен для login_manager)
-app.config["SECRET_KEY"] = "dysnet_secret_key"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "secret")
 # время хранения сессий
-app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
+app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(
+    days=int(os.getenv("PERMANENT_SESSION_LIFETIME_DAYS", "secret"))
+)
 # путь, куда загружать файлы
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 login_manager = LoginManager()
 login_manager.init_app(app)
+api = Api(app)
 
 
 @login_manager.user_loader
