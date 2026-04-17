@@ -1,10 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, session
 from flask_wtf.csrf import generate_csrf
+
 # Формы
 from backend.forms import AddTaskForm
+
 # БД
 from backend.database.__all_models import PythonTask, PythonTest
 from backend.database import db_session
+
+# Работа с admin_api
+from .admin_api import admin_required
 
 # Отдельная ветка
 bp = Blueprint("python", __name__, template_folder="templates")
@@ -33,6 +38,7 @@ def tasks():
 
 
 @bp.route("/tasks/add", methods=['GET', 'POST'])
+@admin_required
 def add_task():
     """Добавление заданий"""
 

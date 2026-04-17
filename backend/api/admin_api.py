@@ -1,4 +1,7 @@
-from flask import Blueprint, render_template, request, redirect
+from functools import wraps
+
+from flask import Blueprint, render_template, request, redirect, abort
+from flask_login import current_user
 
 from backend.database import db_session
 from backend.database.models.users_model import User
@@ -37,3 +40,15 @@ def delete_user(user_id):
     db_sess.delete(user)
     db_sess.commit()
     return redirect("/admin")
+
+
+def admin_required(f):
+    """Декоратор — доступ только для админов"""
+
+    @wraps(f)  # сохраняет имя и докстринг оригинальной функции
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != "admin":
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+
+    return decorated_function
