@@ -1,9 +1,10 @@
 from ...db_session import SqlAlchemyBase
 import sqlalchemy as sa
 from sqlalchemy import orm
+from sqlalchemy_serializer import SerializerMixin
 
 
-class PythonTask(SqlAlchemyBase):
+class PythonTask(SqlAlchemyBase, SerializerMixin):
     """Модель для заданий по Python"""
 
     __tablename__ = "python_tasks"

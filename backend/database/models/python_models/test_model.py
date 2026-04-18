@@ -1,9 +1,10 @@
 from ...db_session import SqlAlchemyBase
 import sqlalchemy as sa
 from sqlalchemy import orm
+from sqlalchemy_serializer import SerializerMixin
 
 
-class PythonTest(SqlAlchemyBase):
+class PythonTest(SqlAlchemyBase, SerializerMixin):
     """Модель для теста программы на Python"""
 
     __tablename__ = "python_tests"

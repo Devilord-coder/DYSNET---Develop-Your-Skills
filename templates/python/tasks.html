@@ -8,7 +8,7 @@
         border-radius: 16px;
         background: linear-gradient(135deg, #1a1a3e, #2a2a5e);
         box-shadow: 0 0 30px rgba(74, 158, 255, 0.3),
-                    inset 0 0 30px rgba(74, 158, 255, 0.05);
+            inset 0 0 30px rgba(74, 158, 255, 0.05);
         color: #ffffff;
         font-size: 48px;
         font-weight: 700;
@@ -17,23 +17,36 @@
         text-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
     }
 </style>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tasks.css') }}">
 {% endblock %}
 
 {% block content %}
-{% if level %}
-<h1>{{ level.title() }}</h1>
-{% endif %}
-
-<!-- Кнопка для добавления задания -->
-{% if current_user.role == 'admin' %}
-<div class="mt-4">
-    <a href="/tasks/add" class="btn btn-lg"
-        style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: 2px solid #3b82f6; border-radius: 25px; padding: 10px 30px; font-weight: 600;">
-        <i class="bi bi-plus-circle-fill me-2"></i>Добавить задание
-    </a>
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1>Выбор задания</h1>
+        <p class="text-muted">Уровень {{ level.upper() }}</p>
+    </div>
+    <!-- Кнопка для добавления задания -->
+    {% if current_user.role == 'admin' %}
+    <div class="mt-4">
+        <a href="/tasks/add" class="btn btn-lg"
+            style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: 2px solid #3b82f6; border-radius: 25px; padding: 10px 30px; font-weight: 600;">
+            <i class="bi bi-plus-circle-fill me-2"></i>Добавить задание
+        </a>
+    </div>
+    {% endif %}
+    <div class="list-group">
+        {% for task in tasks %}
+        <div class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between align-items-center">
+                <h5 class="mb-1">{{ task.name }}</h5>
+                <span class="badge bg-secondary rounded-pill">Задание {{ loop.index }}</span>
+            </div>
+            <p class="mb-1 text-muted">{{ task.description | default('') }}</p>
+            <small class="text-primary">Нажмите для просмотра</small>
+        </div>
+        {% endfor %}
+    </div>
 </div>
-{% endif %}
-{% for task in tasks %}
-<a href="/" class="title-box">{{ task.name }}</a>
-{% endfor %}
 {% endblock %}

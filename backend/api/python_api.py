@@ -1,7 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, session, g
+from flask import (
+    Blueprint, render_template,
+    request, redirect, session,
+    g, jsonify, make_response
+)
 
 # Формы
-from backend.forms import AddTaskForm
+from backend.forms import AddTaskForm, CodeForm
 
 # БД
 from backend.database.__all_models import PythonTask, PythonTest
@@ -12,6 +16,39 @@ from .admin_api import admin_required
 
 # Отдельная ветка
 bp = Blueprint("python", __name__, template_folder="templates")
+
+
+@bp.route("/tasks/check", methods=["GET", "POST"])
+def check_answer():
+    return ""
+
+
+@bp.route("/tasks/<int:task_id>", methods=["GET"])
+def get_task(task_id):
+    db_sess = g.db_session
+    task = db_sess.get(PythonTask, task_id)
+    if not task:
+        return make_response(jsonify({'error': 'Not found'}), 404)
+    form = CodeForm()
+    return render_template(
+        "python/task.html", task_title=task.name,
+        task_text=task.text, form=form
+        )
+
+
+@bp.route("/api/tasks/<string:level>", methods=["GET"])
+def get_tasks(level):
+    db_sess = g.db_session
+    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == level).all()
+    if not tasks:
+        return make_response(jsonify({'error': 'Not found'}), 404)
+    return jsonify(
+        {
+            'tasks': [task.to_dict(only=(
+                "name", "task_type", "text"
+            )) for task in tasks]
+        }
+    )
 
 
 @bp.route("/choose_level")
@@ -30,7 +67,7 @@ def tasks():
         session['level'] = level
         print(session['level'])
         redirect(f"tasks/{session['level']}")
-    
+
     db_sess = g.db_session
     tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == session['level']).all()
 

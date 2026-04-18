@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
-    <title>{{title}}</title>
+    <title>{{ title }}</title>
 
     {% block head %}{% endblock %}
 
@@ -107,17 +107,17 @@
 
     {% block scripts %}{% endblock %}
 
-<!-- Scripts (локально, порядок ВАЖЕН!) -->
-<!-- 1. jQuery (обязательно для Bootstrap 4) -->
-<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <!-- Scripts (локально, порядок ВАЖЕН!) -->
+    <!-- 1. jQuery (обязательно для Bootstrap 4) -->
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
 
-<!-- 2. Popper.js (нужен для выпадающих меню, тултипов и т.д.) -->
-<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <!-- 2. Popper.js (нужен для выпадающих меню, тултипов и т.д.) -->
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
 
-<!-- 3. Bootstrap JS -->
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- 3. Bootstrap JS -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
-<!-- Опционально: если используете bootstrap.bundle.min.js (включает Popper), замените строки 2-3 на:
+    <!-- Опционально: если используете bootstrap.bundle.min.js (включает Popper), замените строки 2-3 на:
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 -->
 
