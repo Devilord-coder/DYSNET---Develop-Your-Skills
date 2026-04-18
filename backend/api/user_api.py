@@ -60,6 +60,7 @@ def get_one_user(user_id):
 @blueprint.route("/api/users", methods=["POST"])
 def create_user():
     """Создание пользователя"""
+
     if not request.json:
         return make_response(jsonify({"error": "Empty request"}), 400)
     elif not all(

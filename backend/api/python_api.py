@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, session
-from flask_wtf.csrf import generate_csrf
 
 # Формы
 from backend.forms import AddTaskForm
@@ -24,16 +23,22 @@ def choose_level():
 @bp.route("/tasks", methods=["POST", "GET"])
 def tasks():
     """Просмотр заданий"""
+    
+    db_sess = db_session.create_session()
+    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == session['level']).all()
 
     if request.method == "POST":
         level = request.form.get("level")
         session['level'] = level
         print(session['level'])
+        redirect(f"tasks/{session['level']}")
 
     ...
 
     return render_template(
-        "python/tasks.html"
+        "python/tasks.html",
+        tasks=tasks,
+        level=session['level']
     )
 
 
@@ -56,6 +61,7 @@ def add_task():
             task_type=session['level'],
             text=form.text.data
         )
+        print(f"task {task} added")
         db_sess.add(task)
 
         # Сохраняем тесты
@@ -66,9 +72,11 @@ def add_task():
                     args=test_form.input_data.data,
                     result=test_form.expected_output.data
                 )
+                print(f"test {test} added")
                 db_sess.add(test)
 
         db_sess.commit()
+        db_sess.close()
         return redirect("/tasks")
 
     return render_template("python/add_task.html", level=session['level'], form=form)
@@ -78,18 +86,27 @@ def add_task():
 def junior():
     """Уровень сложности Junior"""
 
-    return ""
+    return render_template(
+        "python/tasks.html",
+        level="junior"
+    )
 
 
 @bp.route("/tasks/middle")
 def middle():
     """Уровень сложности Middle"""
 
-    return ""
+    return render_template(
+        "python/tasks.html",
+        level="middle"
+    )
 
 
 @bp.route("/tasks/senior")
 def senior():
     """Уровень сложности Senior"""
 
-    return ""
+    return render_template(
+        "python/tasks.html",
+        level="senior"
+    )

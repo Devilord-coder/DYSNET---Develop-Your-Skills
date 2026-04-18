@@ -58,6 +58,7 @@ api = Api(app)
 @login_manager.user_loader
 def load_user(user_id):
     """Загрузка пользователя"""
+
     db_sess = db_session.create_session()
     return db_sess.get(User, user_id)
 
@@ -128,6 +129,7 @@ def reqister():
 @login_required
 def profile():
     """Профиль пользователя"""
+
     return render_template("profile.html", title="Профиль")
 
 
@@ -135,6 +137,7 @@ def profile():
 @login_required
 def edit_profile():
     """Изменение профиля пользователя"""
+
     form = EditProfileForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -164,6 +167,7 @@ def edit_profile():
 @login_required
 def logout():
     """Выход из аккаунта"""
+
     logout_user()
     return redirect("/")
 

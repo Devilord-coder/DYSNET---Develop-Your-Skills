@@ -1,6 +1,29 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style>
+    .title-box {
+        padding: 40px 80px;
+        border: 3px solid #4a9eff;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #1a1a3e, #2a2a5e);
+        box-shadow: 0 0 30px rgba(74, 158, 255, 0.3),
+                    inset 0 0 30px rgba(74, 158, 255, 0.05);
+        color: #ffffff;
+        font-size: 48px;
+        font-weight: 700;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        text-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+{% if level %}
+<h1>{{ level.title() }}</h1>
+{% endif %}
+
 <!-- Кнопка для добавления задания -->
 {% if current_user.role == 'admin' %}
 <div class="mt-4">
@@ -10,4 +33,7 @@
     </a>
 </div>
 {% endif %}
+{% for task in tasks %}
+<a href="/" class="title-box">{{ task.name }}</a>
+{% endfor %}
 {% endblock %}
