@@ -66,18 +66,18 @@ def add_task():
 
         # Сохраняем тесты
         for test_form in form.tests.entries:
-            if test_form.input_data.data and test_form.expected_output.data:
+            if test_form.args.data and test_form.result.data:
                 test = PythonTest(
                     task_id=task.id,
-                    args=test_form.input_data.data,
-                    result=test_form.expected_output.data
+                    args=test_form.args.data,
+                    result=test_form.result.data
                 )
                 print(f"test {test} added")
                 db_sess.add(test)
 
         db_sess.commit()
         db_sess.close()
-        return redirect("/tasks")
+        return redirect(f"/tasks/{session['level']}")
 
     return render_template("python/add_task.html", level=session['level'], form=form)
 

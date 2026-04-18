@@ -5,8 +5,8 @@ from wtforms.validators import DataRequired, NumberRange, ValidationError, Optio
 class TestForm(FlaskForm):
     """Форма для одного теста"""
 
-    input_data = TextAreaField("Ввод", validators=[DataRequired(message="Поле 'Ввод' обязательно")])
-    expected_output = TextAreaField("Ожидаемый результат", validators=[DataRequired(message="Поле 'Ожидаемый результат' обязательно")])
+    args = TextAreaField("Ввод", validators=[DataRequired(message="Поле 'Ввод' обязательно")])
+    result = TextAreaField("Ожидаемый результат", validators=[DataRequired(message="Поле 'Ожидаемый результат' обязательно")])
 
 class AddTaskForm(FlaskForm):
     """Форма для добавления заданий с тестами"""
@@ -27,7 +27,7 @@ class AddTaskForm(FlaskForm):
         # Проверяем, что хотя бы один тест полностью заполнен
         has_valid_test = False
         for test_form in field.entries:
-            if test_form.input_data.data and test_form.expected_output.data:
+            if test_form.args.data and test_form.result.data:
                 has_valid_test = True
                 break
 
