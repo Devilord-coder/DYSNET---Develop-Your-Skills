@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session
+from flask import Blueprint, render_template, request, redirect, session, g
 
 # Формы
 from backend.forms import AddTaskForm
@@ -13,6 +13,7 @@ from .admin_api import admin_required
 # Отдельная ветка
 bp = Blueprint("python", __name__, template_folder="templates")
 
+
 @bp.route("/choose_level")
 def choose_level():
     """Выбор уровня сложности"""
@@ -23,15 +24,15 @@ def choose_level():
 @bp.route("/tasks", methods=["POST", "GET"])
 def tasks():
     """Просмотр заданий"""
-    
-    db_sess = db_session.create_session()
-    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == session['level']).all()
 
     if request.method == "POST":
         level = request.form.get("level")
         session['level'] = level
         print(session['level'])
         redirect(f"tasks/{session['level']}")
+    
+    db_sess = g.db_session
+    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == session['level']).all()
 
     ...
 
@@ -48,7 +49,7 @@ def add_task():
     """Добавление заданий"""
 
     form = AddTaskForm()
-    db_sess = db_session.create_session()
+    db_sess = g.db_session
 
     # При GET-запросе добавляем один пустой тест
     if request.method == 'GET' and len(form.tests) == 0:
@@ -66,17 +67,16 @@ def add_task():
 
         # Сохраняем тесты
         for test_form in form.tests.entries:
-            if test_form.args.data and test_form.result.data:
+            if test_form.input_data.data and test_form.expected_output.data:
                 test = PythonTest(
                     task_id=task.id,
-                    args=test_form.args.data,
-                    result=test_form.result.data
+                    args=test_form.input_data.data,
+                    result=test_form.expected_output.data
                 )
                 print(f"test {test} added")
                 db_sess.add(test)
 
         db_sess.commit()
-        db_sess.close()
         return redirect(f"/tasks/{session['level']}")
 
     return render_template("python/add_task.html", level=session['level'], form=form)

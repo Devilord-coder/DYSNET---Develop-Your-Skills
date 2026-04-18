@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask, request
+from flask import Flask, request, g
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -55,11 +55,24 @@ login_manager.init_app(app)
 api = Api(app)
 
 
+@app.before_request
+def create_session():
+    """Создает сессию перед каждым запросом"""
+    g.db_session = db_session.create_session()
+
+@app.teardown_appcontext
+def close_session(exception=None):
+    """Закрывает сессию после запроса"""
+    db_sess = g.pop('db_session', None)
+    if db_sess is not None:
+        db_sess.close()
+
+
 @login_manager.user_loader
 def load_user(user_id):
     """Загрузка пользователя"""
 
-    db_sess = db_session.create_session()
+    db_sess = g.db_session
     return db_sess.get(User, user_id)
 
 
@@ -77,7 +90,7 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit(): # форма успешно отправлена
-        db_sess = db_session.create_session()
+        db_sess = g.db_session
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -104,7 +117,7 @@ def reqister():
                 form=form,
                 message="Пароли не совпадают",
             )
-        db_sess = db_session.create_session()
+        db_sess = g.db_session
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template(
                 "register_form.html",
@@ -140,7 +153,7 @@ def edit_profile():
 
     form = EditProfileForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        db_sess = g.db_session
         user = db_sess.query(User).filter(User.email == current_user.email).first()
         if form.avatar.data:
             file = request.files['file']
