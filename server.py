@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, redirect
+from flask import render_template, redirect, abort
 from flask_login import (
     LoginManager,
     login_user,
@@ -100,7 +100,7 @@ def reqister():
 @login_required
 def profile():
     """Профиль пользователя"""
-    return render_template("profile.html", title="Профиль")
+    return render_template("profile.html", title="Профиль", user=current_user)
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -108,6 +108,18 @@ def profile():
 def edit_profile():
     form = EditProfileForm()
     return render_template("edit_profile.html", title="Профиль", form=form)
+
+
+@app.route("/profile/<int:user_id>")
+@login_required
+def view_profile(user_id):
+    """Просмотр профиля пользователя по ID"""
+
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    if not user:
+        abort(404)
+    return render_template("profile.html", title=f"Профиль {user.name}", user=user)
 
 
 @app.route("/logout")
