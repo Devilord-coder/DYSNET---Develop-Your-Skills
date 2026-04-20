@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/english/statistic.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="statistics-container">
+    <div class="navigation-buttons">
+        <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('index') }}'">
+            На главную
+        </button>
+        <button class="btn btn-primary" onclick="window.location.href='{{ url_for('english.choose_english_mode') }}'">
+            Назад к навыкам
+        </button>
+    </div>
+    <h1>Статистика по английскому языку</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="skill1">Вставка слов в текст</button>
+        <button class="tab-btn" data-tab="skill2">Сопоставление слов</button>
+        <button class="tab-btn" data-tab="skill3">Интерактивные карточки</button>
+    </div>
+
+    <div id="skill1" class="tab-content active">
+        <h3>Результаты тренировок "Вставка слов в текст"</h3>
+        <table class="statistics-table">
+            <thead>
+                <tr>
+                    <th>Дата и время</th>
+                    <th>Текст</th>
+                    <th>Количество правильных ответов равильных ответов</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in skill1_data %}
+                <tr>
+                    <td>{{ stat.datetime }}</td>
+                    <td>{{ stat.category }}</td>
+                    <td>{{ stat.quantity_correct_answers }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="skill2" class="tab-content">
+        <h3>Результаты тренировок "Сопоставление слов"</h3>
+        <table class="statistics-table">
+            <thead>
+                <tr>
+                    <th>Дата и время</th>
+                    <th>Категория</th>
+                    <th>Правильных пар</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in skill2_data %}
+                <tr>
+                    <td>{{ stat.datetime }}</td>
+                    <td>{{ stat.category }}</td>
+                    <td>{{ stat.quantity_correct_answers }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="skill3" class="tab-content">
+        <h3>Результаты тренировок "Интерактивные карточки"</h3>
+        <table class="statistics-table">
+            <thead>
+                <tr>
+                    <th>Дата и время</th>
+                    <th>Категория</th>
+                    <th>Русское слово</th>
+                    <th>Английское слово</th>
+                    <th>Направление</th>
+                    <th>Результат</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in skill3_data %}
+                <tr>
+                    <td>{{ stat.datetime }}</td>
+                    <td>{{ stat.category }}</td>
+                    <td>{{ stat.russian_word }}</td>
+                    <td>{{ stat.english_word }}</td>
+                    <td>{% if stat.language == 'russian' %}Русский -> Английский{% else %}Английский -> Русский{% endif %}</td>
+                    <td>{{ stat.status }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.dataset.tab;
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

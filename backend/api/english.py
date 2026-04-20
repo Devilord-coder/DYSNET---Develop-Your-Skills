@@ -1,12 +1,54 @@
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, abort
+from flask_login import current_user
 from random import sample, shuffle, choice
+from sqlalchemy import desc
 
 from backend.database import db_session
 from backend.database.models.english_models.topics_model import EnglishTopics
 from backend.database.models.english_models.words_model import EnglishWords
 from backend.database.models.english_models.texts_model import EnglishTexts
+from backend.database.models.english_models.statistic_model import EnglishStatistics
+from datetime import datetime
 
 blueprint = Blueprint("english", __name__, template_folder="templates")
+
+
+def save_statistics(
+    skill,
+    category=None,
+    quantity_correct_answers=None,
+    english_word=None,
+    russian_word=None,
+    language=None,
+    status=None,
+):
+    """Сохранение статистики для всех навыков"""
+
+    if not current_user.is_authenticated:
+        return
+    user_id = current_user.id
+    db_sess = db_session.create_session()
+    statistic = EnglishStatistics()
+    statistic.skill = skill
+    statistic.user = user_id
+    statistic.datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Сохранение передаваемой информации
+    if category:
+        statistic.category = category
+    if quantity_correct_answers is not None:
+        statistic.quantity_correct_answers = quantity_correct_answers
+    if english_word:
+        statistic.english_word = english_word
+    if russian_word:
+        statistic.russian_word = russian_word
+    if language:
+        statistic.language = language
+    if status:
+        statistic.status = status
+
+    db_sess.add(statistic)
+    db_sess.commit()
 
 
 def get_words_by_topic(topic):
@@ -75,10 +117,10 @@ def prepare_cards_data(topic, direction):
         {"russian": rus, "english": eng} for rus, eng in correct_answers.items()
     ]
 
-    session['cards_data'] = all_cards
-    session['direction'] = direction
-    session['current_topic'] = topic
-    
+    session["cards_data"] = all_cards
+    session["direction"] = direction
+    session["current_topic"] = topic
+
     if all_cards:
         current_word = get_next_word()  # получение первого слова
         return {"success": True, "current_word": current_word}
@@ -97,7 +139,41 @@ def choose_english_mode():
 def english_statistics():
     """Просмотр статистики по всем навыкам"""
 
-    return "statistics"
+    if not current_user.is_authenticated:
+        abort(401)
+
+    db_sess = db_session.create_session()
+    fill_gaps_statistics = (
+        db_sess.query(EnglishStatistics)
+        .filter(
+            (EnglishStatistics.user == current_user.id) & (EnglishStatistics.skill == 1)
+        )
+        .order_by(desc(EnglishStatistics.datetime))
+        .all()
+    )
+    words_matching_statistics = (
+        db_sess.query(EnglishStatistics)
+        .filter(
+            (EnglishStatistics.user == current_user.id) & (EnglishStatistics.skill == 2)
+        )
+        .order_by(desc(EnglishStatistics.datetime))
+        .all()
+    )
+    cards_statistics = (
+        db_sess.query(EnglishStatistics)
+        .filter(
+            (EnglishStatistics.user == current_user.id) & (EnglishStatistics.skill == 3)
+        )
+        .order_by(desc(EnglishStatistics.datetime))
+        .all()
+    )
+    return render_template(
+        "english/statistics.html",
+        title="Статистика английских навыков",
+        skill1_data=fill_gaps_statistics,
+        skill2_data=words_matching_statistics,
+        skill3_data=cards_statistics,
+    )
 
 
 @blueprint.route("/words_matching")
@@ -123,7 +199,13 @@ def words_matching_results():
     results = all_results.get("results", [])
     total = all_results.get("total", 0)
     correct_count = all_results.get("correct_count", 0)
+    topic = session.get("topic", "Случайные слова из разных категорий")
     percent = round(correct_count / total * 100)
+    save_statistics(
+        skill=2,
+        category=topic,
+        quantity_correct_answers=correct_count,
+    )
     return render_template(
         "english/words_matching_result.html",
         results=results,
@@ -176,6 +258,7 @@ def get_words():
     """Получение слов по теме, если пользователь её поменял"""
 
     topic = request.args.get("topic", "Случайные слова из разных категорий")
+    session["topic"] = topic
     russian_words, english_words = get_words_by_topic(topic)
     return jsonify({"russian_words": russian_words, "english_words": english_words})
 
@@ -195,10 +278,12 @@ def fill_gaps():
     session["answers"] = answers
     shuffled_answers = answers.copy()
     shuffle(shuffled_answers)
+    title = current_text.title
+    session["title"] = title
     return render_template(
         "english/fill_gaps.html",
         title="Вставка слов в текст",
-        title_text=current_text.title,
+        title_text=title,
         text_parts=text,
         answers_list=shuffled_answers,
         gaps_count=6,
@@ -232,6 +317,12 @@ def check_fill_gaps():
             }
         )
 
+    title = session.get("title", "")
+    save_statistics(
+        skill=1,
+        category=title,
+        quantity_correct_answers=correct_count,
+    )
     # Возрат результата проверки
     total = len(correct_answers)
     percent = round(correct_count / total * 100)
@@ -319,13 +410,28 @@ def check_card():
     if user_answer == correct_answer:
         is_correct = True
 
+    topic = session.get("current_topic", "Случайные слова из разных категорий")
+    direction = session.get("direction", "russian")
+
+    answer_status = "Неправильно"
+    if is_correct:
+        answer_status = "Правильно"
+
+    current_card = session.get("current_card", {})
+    russian_word = current_card.get("russian", "")
+    english_word = current_card.get("english", "")
+    save_statistics(
+        skill=3,
+        category=topic,
+        english_word=english_word,
+        russian_word=russian_word,
+        language=direction,
+        status=answer_status,
+    )
     next_word = get_next_word()  # меняем слово, загружаем новую порцию при нехватке
     if not next_word:
-        topic = session.get("current_topic", "Случайные слова из разных категорий")
-        direction = session.get("direction", "russian")
         result = prepare_cards_data(topic, direction)
         next_word = result["current_word"]
-
     return jsonify(
         {
             "is_correct": is_correct,
@@ -340,5 +446,18 @@ def check_card():
 def next_word():
     """Смена слова на следующее, если пользователь посмотрел ответ"""
 
+    current_card = session.get("current_card", {})
+    russian_word = current_card.get("russian", "")
+    english_word = current_card.get("english", "")
+    topic = session.get("topic", "Случайные слова из разных категорий")
+    direction = session.get("direction", "russian")
     next_word = get_next_word()
+    save_statistics(
+        skill=3,
+        category=topic,
+        english_word=english_word,
+        russian_word=russian_word,
+        language=direction,
+        status="Не отвечено",
+    )
     return jsonify({"finished": False, "next_word": next_word})

@@ -26,6 +26,9 @@ class User(SqlAlchemyBase, UserMixin):
     cursive_printing_statistics = orm.relationship(
         "CursivePrintingStatistics", back_populates="user_relationship"
     )
+    english_statistics = orm.relationship(
+        "EnglishStatistics", back_populates="user_relationship"
+    )
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
