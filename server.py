@@ -22,9 +22,16 @@ from backend.errors import *
 # Работа с rest
 from backend.api import *
 
+# ENV
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "dysnet_secret_key"
-app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "secret")
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
+    days=int(os.getenv("PERMANENT_SESSION_LIFETIME_DAYS", "secret"))
+)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -179,8 +186,10 @@ def main():
 
     error_init()
     blueprint_init()
-    db_session.global_init("data/server.db")
-    app.run(host="0.0.0.0", port=8080)
+    db_session.global_init(os.getenv("DATABASE_FILE", "data/server.db"))
+    port = os.getenv("PORT", 80)
+    host = os.getenv("HOST", '0.0.0.0')
+    app.run(host=host, port=port)
 
 
 if __name__ == "__main__":
