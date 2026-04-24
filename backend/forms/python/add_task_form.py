@@ -33,6 +33,3 @@ class AddTaskForm(FlaskForm):
 
         if not has_valid_test:
             raise ValidationError("Необходимо добавить хотя бы один полностью заполненный тест")
-
-    class Meta:
-        csrf = False
