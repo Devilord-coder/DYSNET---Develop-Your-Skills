@@ -24,6 +24,11 @@ def debug_form():
     return jsonify(dict(request.form))
 
 
+@bp.route("tasks/check")
+def check_answer():
+    return ""
+
+
 @bp.route("/tasks/<int:task_id>", methods=["GET"])
 def get_task(task_id):
     db_sess = g.db_session
