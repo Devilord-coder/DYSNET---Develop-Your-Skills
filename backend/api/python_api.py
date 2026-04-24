@@ -19,13 +19,7 @@ from .admin_api import admin_required
 bp = Blueprint("python", __name__, template_folder="templates")
 
 
-@bp.route("/tasks/check", methods=["GET", "POST"])
-def check_answer():
-    return ""
-
-
-# Временно добавьте этот маршрут для отладки
-@bp.route("/debug/form-data", methods=['POST'])
+@bp.route("/tasks/debug", methods=['POST'])
 def debug_form():
     return jsonify(dict(request.form))
 
