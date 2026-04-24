@@ -24,7 +24,7 @@ def debug_form():
     return jsonify(dict(request.form))
 
 
-@bp.route("tasks/check")
+@bp.route("/tasks/check", methods=["GET", "POST"])
 def check_answer():
     return ""
 
