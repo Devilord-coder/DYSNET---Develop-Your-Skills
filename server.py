@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask, request, g
+from flask import Flask, request, g, send_from_directory
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -49,10 +49,15 @@ app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(
     days=int(os.getenv("PERMANENT_SESSION_LIFETIME_DAYS", "secret"))
 )
 # путь, куда загружать файлы
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = 'data/uploads'
 login_manager = LoginManager()
 login_manager.init_app(app)
 api = Api(app)
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('data/uploads', filename)
 
 
 @app.before_request
@@ -142,8 +147,15 @@ def reqister():
 @login_required
 def profile():
     """Профиль пользователя"""
+    
+    def get_user_avatar():
+        for file in os.listdir("data/uploads"):
+            if secure_filename(current_user.email.replace('@', '_at_').replace(".", "_dot_")) in file:
+                print(file)
+                return file
+        return None
 
-    return render_template("profile.html", title="Профиль")
+    return render_template("profile.html", title="Профиль", avatar=get_user_avatar())
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -152,14 +164,15 @@ def edit_profile():
     """Изменение профиля пользователя"""
 
     form = EditProfileForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() or (request.method == "POST" and 
+                                     request.files['file']):
         db_sess = g.db_session
-        user = db_sess.query(User).filter(User.email == current_user.email).first()
-        if form.avatar.data:
+        user = db_sess.get(User, current_user.id)
+        if request.files['file']:
             file = request.files['file']
             print("We have a file")
-            safe_email = secure_filename(current_user.email.replace('@', '_at_'))
-            file_extension = form.avatar.data.rsplit('.', 1)[1].lower()
+            safe_email = secure_filename(current_user.email.replace('@', '_at_').replace(".", "_dot_"))
+            file_extension = file.filename.rsplit('.', 1)[1].lower()
             filename = f"{safe_email}.{file_extension}"
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)

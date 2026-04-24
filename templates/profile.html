@@ -16,9 +16,9 @@
                 <div class="card-body text-center p-5">
                     <!-- Аватар пользователя -->
                     <div class="mb-4">
-                        {% if current_user.avatar != None %}
-                        <img src="static/img/{{ secure_filename(current_user.email.replace('@', '_at_')) }}"
-                            alt="Аватар пользователя" class="rounded-circle img-fluid border border-3 border-primary"
+                        {% if avatar %}
+                        <img src="{{ url_for("uploaded_file", filename=avatar) }}"
+                        class="rounded-circle img-fluid border border-3 border-primary"
                             style="width: 150px; height: 150px; object-fit: cover;">
                         {% else %}
                         <div class="mx-auto bg-primary rounded-circle d-flex align-items-center justify-content-center"
