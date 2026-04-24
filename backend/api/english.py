@@ -6,6 +6,7 @@ from backend.database.models.english_models.topics_model import EnglishTopics
 from backend.database.models.english_models.words_model import EnglishWords
 from backend.database.models.english_models.texts_model import EnglishTexts
 
+#  Отдельная ветка
 blueprint = Blueprint("english", __name__, template_folder="templates")
 
 

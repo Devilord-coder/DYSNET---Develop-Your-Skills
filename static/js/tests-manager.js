@@ -87,19 +87,22 @@ class TestsManager {
     }
 
     reindexTests() {
-        const tests = this.container.querySelectorAll('.test-item');
-        tests.forEach((test, idx) => {
-            const inputs = test.querySelectorAll('textarea');
-            inputs.forEach(input => {
-                const name = input.getAttribute('name');
-                if (name) {
-                    const newName = name.replace(/tests-\d+-(input_data|expected_output)/, `tests-${idx}-$1`);
-                    input.setAttribute('name', newName);
-                }
-            });
+    const tests = this.container.querySelectorAll('.test-item');
+    tests.forEach((test, idx) => {
+        // Находим все textarea внутри теста
+        const textareas = test.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const name = textarea.getAttribute('name');
+            if (name) {
+                // Обновляем индекс в имени поля
+                const newName = name.replace(/tests-\d+-(input_data|expected_output)/, `tests-${idx}-$1`);
+                textarea.setAttribute('name', newName);
+                console.log(`Переименован: ${name} -> ${newName}`); // Для отладки
+            }
         });
-        this.testIndex = tests.length;
-    }
+    });
+    this.testIndex = tests.length;
+}
 
     getTestCount() {
         return this.container.children.length;

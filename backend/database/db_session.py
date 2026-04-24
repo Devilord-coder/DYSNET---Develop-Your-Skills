@@ -8,6 +8,8 @@ __factory = None
 
 
 def global_init(db_file):
+    """Подключение к БД"""
+
     global __factory
 
     if __factory:
@@ -22,6 +24,7 @@ def global_init(db_file):
     engine = sa.create_engine(conn_str, echo=False)
     __factory = orm.sessionmaker(bind=engine)
 
+    # Импорт всех моделей
     from . import __all_models
 
     SqlAlchemyBase.metadata.create_all(engine)

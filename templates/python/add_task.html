@@ -9,7 +9,7 @@
                     <h3>Добавление задания для уровня: {{ level }}</h3>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('python.tasks') }}" id="taskForm">
+                    <form method="POST" action="{{ url_for('python.add_task') }}" id="taskForm">
                         <!-- ОДИН CSRF-токен для всей формы -->
                         <input type="hidden" name="csrf_token"
                             value="{{ form.csrf_token._value() if form.csrf_token else '' }}">
