@@ -48,5 +48,22 @@
             </a>
         </div>
     </div>
+
+    <div class="row justify-content-center g-4 mt-2">
+        <!-- Навык Кликер -->
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url_for('clicker.clicker') }}" class="text-decoration-none d-block h-100">
+                <div class="card border-primary shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <img src="{{ url_for('static', filename='img/clicker/clicker.png') }}"
+                            alt="Кликер"
+                            style="width: 120px; height: 80px; display: block; margin: 0 auto 15px;">
+                        <h5 class="card-title">Кликер</h5>
+                        <p class="card-text text-muted">Реакция и внимание — кликай по кругам!</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>
 {% endblock %}

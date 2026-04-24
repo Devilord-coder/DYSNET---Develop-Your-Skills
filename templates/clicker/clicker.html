@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clicker/clicker.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="clicker-container">
+    <div class="game-header">
+        <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('index') }}'">
+            <i class="fas fa-arrow-left"></i> На главную
+        </button>
+        
+        <div class="stats">
+            <div>Осталось: <span id="remaining">8</span></div>
+            <div>Попаданий: <span id="correct">0</span></div>
+        </div>
+        
+        <a href="{{ url_for('index') }}" class="btn btn-outline-success btn-lg">
+            <i class="bi bi-graph-up"></i> Просмотр статистики
+        </a>
+    </div>
+    
+    <div class="game-canvas-container">
+        <canvas id="gameCanvas" width="800" height="600">
+            Ваш браузер не поддерживает Canvas
+        </canvas>
+    </div>
+    
+    <div class="game-buttons">
+        <button class="btn btn-primary" id="startBtn">
+            <i class="fas fa-play"></i> Начать игру
+        </button>
+        <button class="btn btn-warning" id="retryBtn" style="display: none;">
+            <i class="fas fa-redo"></i> Играть снова
+        </button>
+    </div>
+    
+    <div class="message-area" id="messageArea">
+        Нажмите "Начать игру", чтобы начать!
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/clicker.js') }}"></script>
+{% endblock %}
