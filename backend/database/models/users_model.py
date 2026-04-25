@@ -17,9 +17,7 @@ class User(SqlAlchemyBase, UserMixin):
     email = sqlalchemy.Column(
         sqlalchemy.String, index=True, unique=True, nullable=False
     )
-    aboutme  = sqlalchemy.Column(
-        sqlalchemy.String, nullable=True
-    )
+    aboutme = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     role = sqlalchemy.Column(sqlalchemy.String, nullable=False, default="user")
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
@@ -28,6 +26,9 @@ class User(SqlAlchemyBase, UserMixin):
     )
     english_statistics = orm.relationship(
         "EnglishStatistics", back_populates="user_relationship"
+    )
+    clicker_statistics = orm.relationship(
+        "ClickerStatistics", back_populates="user_relationship"
     )
 
     def set_password(self, password):

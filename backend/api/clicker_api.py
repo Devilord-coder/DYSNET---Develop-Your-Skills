@@ -1,12 +1,30 @@
 from flask import Blueprint, render_template, session, jsonify, request, abort
+from flask_login import current_user
+from sqlalchemy import desc
 from random import randint
 from datetime import datetime
 import time
+
+from backend.database.models.clicker_models.statistics_model import ClickerStatistics
+from backend.database import db_session
 
 blueprint = Blueprint("clicker", __name__, template_folder="templates")
 
 
 APPEARANCE_TIME = [1500, 1450, 1400, 1350, 1300, 1250, 1200, 1150]
+
+
+def save_statistics(quantity_correct):
+    """Сохранение статистики для авторизованных пользователей"""
+
+    if current_user.is_authenticated:
+        statistics = ClickerStatistics()
+        statistics.datetime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        statistics.quantity_correct_answers = quantity_correct
+        statistics.user = current_user.id
+        db_sess = db_session.create_session()
+        db_sess.add(statistics)
+        db_sess.commit()
 
 
 def is_intersecting(x, y, size, circles):
@@ -70,12 +88,14 @@ def generate_circles():
 
 @blueprint.route("/clicker")
 def clicker():
+    """Возврат страницы с полем для отрисовки"""
+
     return render_template("clicker/clicker.html", title="Кликер")
 
 
 @blueprint.route("/clicker/start", methods=["POST"])
 def start():
-    """Начальная генерация поля"""
+    """Подготовка кругов"""
 
     circles, clients_circles_information = generate_circles()
     session["clicker_game"] = {
@@ -83,6 +103,7 @@ def start():
         "remaining": 8,
         "correct": 0,
         "round_id": datetime.now().strftime("%Y%m%d%H%M%S"),
+        "statistics_save": False,
     }
     return jsonify(
         {"success": True, "circles": clients_circles_information, "total": 8}
@@ -91,6 +112,8 @@ def start():
 
 @blueprint.route("/clicker/click", methods=["POST"])
 def click():
+    """Проверка клика пользователя"""
+
     data = request.get_json()
     click_x = data.get("x")
     click_y = data.get("y")
@@ -103,7 +126,9 @@ def click():
     for circle in circles:
         if circle["clicked"]:
             continue
-        if circle["show_at"] <= time_now <= circle["hide_at"]:
+        if (
+            circle["show_at"] <= time_now <= circle["hide_at"]
+        ):  # проверяем активен ли круг
             circle_x = circle["x"]
             circle_y = circle["y"]
             radius = circle["size"] / 2
@@ -111,15 +136,23 @@ def click():
             center_y = circle_y + radius
             dx = click_x - center_x
             dy = click_y - center_y
-            if dx**2 + dy**2 <= radius**2:
+            if dx**2 + dy**2 <= radius**2:  # находится ли клик внутри круга
                 circle["clicked"] = True
                 game["remaining"] -= 1
                 game["correct"] += 1
                 session["clicker_game"] = game
 
                 game_over = False
-                if game.get("remaining", 0) == 0:
+                if (
+                    game.get("remaining", 0) == 0
+                ):  # если кругов больше не осталось, заканчиваем игру
                     game_over = True
+                    if not session["statistics_save"]:
+                        save_statistics(
+                            game["correct"]
+                        )  # сохраняем статистику, если кругов больше нет
+                        game["statistics_save"] = True
+                        session["clicker_game"] = game
                 return jsonify(
                     {
                         "hit": True,
@@ -135,13 +168,15 @@ def click():
 
 @blueprint.route("/clicker/state")
 def state():
+    """Проверка состояния кругов (активен ли в данное время, кликнул ли пользователь)"""
+
     game = session.get("clicker_game", "")
     if not game:
         return jsonify({"error": "Игра не начата"}), 400
 
     circles = game.get("circles", [])
-    current_circles = []
-    clicked_circles = []
+    current_circles = []  # активны сейчас
+    clicked_circles = []  # пользователь кликнул на них
     time_now = int(time.time() * 1000)
     for circle in circles:
         id = circle["id"]
@@ -163,6 +198,12 @@ def state():
             game["remaining"] -= 1
             circle["clicked"] = "expired"
             session["clicker_game"] = game
+    if (
+        game["remaining"] == 0 and not game["statistics_save"]
+    ):  # если кругов не осталось, то сохраняем статистику
+        save_statistics(game["correct"])
+        game["statistics_save"] = True
+        session["clicker_game"] = game
     return jsonify(
         {
             "active_circles": current_circles,
@@ -175,4 +216,20 @@ def state():
 
 @blueprint.route("/clicker/statistics")
 def statistics():
-    return
+    """Просмотр статистики для авторизованных пользователей"""
+
+    if not current_user.is_authenticated:
+        abort(401)
+
+    db_sess = db_session.create_session()
+    user_statistics = (
+        db_sess.query(ClickerStatistics)
+        .filter(ClickerStatistics.user == current_user.id)
+        .order_by(desc(ClickerStatistics.datetime))
+        .all()
+    )
+    return render_template(
+        "clicker/statistics.html",
+        title="Статистика кликера",
+        statistic=user_statistics,
+    )
