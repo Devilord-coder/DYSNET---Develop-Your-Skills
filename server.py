@@ -25,11 +25,12 @@ from backend.api import *
 # ENV
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "secret")
-app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "secret")
+app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(
     days=int(os.getenv("PERMANENT_SESSION_LIFETIME_DAYS", "secret"))
 )
 login_manager = LoginManager()
@@ -179,6 +180,7 @@ def blueprint_init():
     app.register_blueprint(admin_api.blueprint)
     app.register_blueprint(english.blueprint)
     app.register_blueprint(python_api.bp)
+    app.register_blueprint(clicker_api.blueprint)
 
 
 def main():
@@ -188,7 +190,7 @@ def main():
     blueprint_init()
     db_session.global_init(os.getenv("DATABASE_FILE", "data/server.db"))
     port = os.getenv("PORT", 80)
-    host = os.getenv("HOST", '0.0.0.0')
+    host = os.getenv("HOST", "0.0.0.0")
     app.run(host=host, port=port)
 
 
