@@ -18,9 +18,7 @@
                 <div class="card-body text-center p-5">
                     <!-- Аватар пользователя -->
                     <div class="mb-4">
-                        {% if user.avatar %}
-                        <img src="{{ user.avatar.url }}" alt="Аватар пользователя"
-                            class="rounded-circle img-fluid border border-3 border-primary" {% if avatar %} <img
+                        {% if avatar %} <img
                             src="{{ url_for('uploaded_file', filename=avatar) }}"
                             class="rounded-circle img-fluid border border-3 border-primary"
                             style="width: 150px; height: 150px; object-fit: cover;">
