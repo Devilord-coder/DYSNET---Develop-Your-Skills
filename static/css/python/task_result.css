@@ -470,3 +470,47 @@ body::before {
     background: var(--accent-blue);
     color: var(--text-white);
 }
+
+/* Добавьте эти стили к существующим */
+
+/* Синий цвет для номера теста */
+.test-id {
+    color: #2196f3 !important;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Синий цвет для времени */
+.time-cell {
+    color: #2196f3 !important;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+/* Убедимся, что текст в таблице читаемый */
+.table tbody td {
+    color: #333;  /* Тёмный цвет для остального текста на белом фоне */
+}
+
+/* Для строк с ошибками сохраняем читаемость */
+.status-error-row td,
+.status-wrong-row td {
+    color: #333;
+}
+
+/* Иконки в ячейках */
+.table tbody td i {
+    margin-right: 8px;
+    color: #2196f3;
+}
+
+/* Стиль для иконки времени */
+.time-cell i {
+    color: #2196f3;
+}
+
+/* Общий стиль для текста в таблице (кроме статусов) */
+.table tbody td:first-child,
+.table tbody td:last-child {
+    color: #2196f3;
+}

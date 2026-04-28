@@ -8,6 +8,8 @@ import sys
 
 def check_task(code: str, task_id: int, filename: str) -> str:
     """Функция для проверки задания"""
+    
+    print(f"Проверяем задание {task_id}")
 
     def del_file():
         os.remove(filename + '.py')
@@ -57,8 +59,7 @@ def check_task(code: str, task_id: int, filename: str) -> str:
 
         if result.stdout.strip() == test.result.strip():
             accept = True
-        else:
-            results.append({
+        results.append({
                 "test_id": test.id,
                 "accept": accept,
                 "stdin": stdin,
@@ -69,6 +70,8 @@ def check_task(code: str, task_id: int, filename: str) -> str:
                 "answer": test.result
 
             })
+        if not accept:
+            print("Данные не сходятся")
             del_file()
             return results
         del_file()

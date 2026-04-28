@@ -155,7 +155,7 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar())
+    return render_template("profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user)
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
