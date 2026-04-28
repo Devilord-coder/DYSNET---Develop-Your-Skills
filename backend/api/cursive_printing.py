@@ -16,6 +16,7 @@ from backend.database.models.cursive_printing_models.statistics_model import (
     CursivePrintingStatistics,
 )
 
+#  Отдельная ветка
 blueprint = Blueprint("cursive_printing", __name__, template_folder="templates")
 
 

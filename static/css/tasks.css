@@ -1,0 +1,527 @@
+/* task-list.css - Стили для списка заданий */
+
+/* ========== ОСНОВНЫЕ СТИЛИ ДЛЯ СПИСКА ========== */
+.list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+/* Элемент списка заданий */
+.list-group-item {
+    position: relative;
+    background: rgba(30, 30, 47, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    border-radius: 15px !important;
+    padding: 20px 24px !important;
+    margin-bottom: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+/* Анимированная полоска слева */
+.list-group-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.list-group-item:hover::before {
+    transform: scaleY(1);
+}
+
+/* Hover эффекты */
+.list-group-item:hover {
+    transform: translateX(8px);
+    border-color: rgba(33, 150, 243, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: rgba(30, 30, 47, 0.95);
+}
+
+/* Активный/выбранный элемент */
+.list-group-item.active {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.15), rgba(118, 75, 162, 0.15));
+    border-color: var(--accent-blue);
+    box-shadow: 0 5px 20px rgba(33, 150, 243, 0.2);
+}
+
+.list-group-item.active::before {
+    transform: scaleY(1);
+}
+
+/* ========== ЗАГОЛОВОК ЗАДАНИЯ ========== */
+.list-group-item h5 {
+    color: var(--text-white);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.list-group-item:hover h5 {
+    color: var(--light-blue);
+}
+
+/* Иконка перед названием (опционально) */
+.list-group-item h5::before {
+    content: '📋';
+    font-size: 1.1rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.list-group-item:hover h5::before {
+    opacity: 1;
+}
+
+/* ========== БЭЙДЖ (номер задания) ========== */
+.badge {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(118, 75, 162, 0.2)) !important;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    color: var(--light-blue) !important;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px !important;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+.list-group-item:hover .badge {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.3), rgba(118, 75, 162, 0.3)) !important;
+    border-color: var(--accent-blue);
+    transform: scale(1.05);
+}
+
+/* Разные цвета для бэйджей в зависимости от сложности */
+.badge.badge-easy {
+    background: rgba(40, 167, 69, 0.2) !important;
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #28a745 !important;
+}
+
+.badge.badge-medium {
+    background: rgba(255, 193, 7, 0.2) !important;
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #ffc107 !important;
+}
+
+.badge.badge-hard {
+    background: rgba(220, 53, 69, 0.2) !important;
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #dc3545 !important;
+}
+
+/* ========== ОПИСАНИЕ ЗАДАНИЯ ========== */
+.list-group-item p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    transition: color 0.3s ease;
+}
+
+.list-group-item:hover p {
+    color: var(--text-white);
+}
+
+/* Стиль для пустого описания */
+.list-group-item p:empty {
+    display: none;
+}
+
+/* ========== ССЫЛКА "НАЖМИТЕ ДЛЯ ПРОСМОТРА" ========== */
+.text-primary {
+    color: var(--light-blue) !important;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.text-primary::after {
+    content: '→';
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.list-group-item:hover .text-primary {
+    color: var(--accent-blue) !important;
+    gap: 10px;
+}
+
+.list-group-item:hover .text-primary::after {
+    transform: translateX(4px);
+}
+
+/* ========== ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ ========== */
+/* Иконка статуса выполнения */
+.task-status-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
+}
+
+.status-completed {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+
+.status-pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.status-in-progress {
+    background: rgba(33, 150, 243, 0.15);
+    color: var(--accent-blue);
+}
+
+/* Мета-информация (дата, сложность, баллы) */
+.task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+    font-size: 0.75rem;
+}
+
+.meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--light-blue);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.list-group-item:hover .meta-item {
+    opacity: 1;
+}
+
+.meta-item i {
+    font-size: 0.8rem;
+}
+
+/* Теги задания */
+.task-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.task-tag {
+    background: rgba(33, 150, 243, 0.1);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 0.7rem;
+    color: var(--light-blue);
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover .task-tag {
+    background: rgba(33, 150, 243, 0.2);
+    border-color: rgba(33, 150, 243, 0.4);
+}
+
+/* ========== АНИМАЦИИ ========== */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.list-group-item {
+    animation: slideIn 0.4s ease-out;
+    animation-fill-mode: backwards;
+}
+
+/* Задержки для каждого элемента */
+.list-group-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.list-group-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.list-group-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.list-group-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.list-group-item:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.list-group-item:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.list-group-item:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.list-group-item:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+.list-group-item:nth-child(9) {
+    animation-delay: 0.45s;
+}
+
+.list-group-item:nth-child(10) {
+    animation-delay: 0.5s;
+}
+
+/* Эффект пульсации для новых заданий */
+.list-group-item.new-task {
+    animation: pulse 2s infinite;
+    border-color: rgba(33, 150, 243, 0.5);
+}
+
+/* ========== РАЗЛИЧНЫЕ ВАРИАНТЫ ОФОРМЛЕНИЯ ========== */
+/* Вариант с иконкой слева */
+.list-group-item.with-icon {
+    padding-left: 60px !important;
+}
+
+.list-group-item.with-icon::after {
+    content: '📘';
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.list-group-item.with-icon:hover::after {
+    opacity: 1;
+}
+
+/* Вариант с градиентной рамкой */
+.list-group-item.gradient-border {
+    border-image: linear-gradient(135deg, var(--accent-blue), var(--gradient-end)) 1;
+    border-image-slice: 1;
+}
+
+/* Вариант с тенью при наведении */
+.list-group-item.glow-hover:hover {
+    box-shadow: 0 0 25px rgba(33, 150, 243, 0.4);
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 768px) {
+    .list-group-item {
+        padding: 16px 18px !important;
+    }
+
+    .list-group-item h5 {
+        font-size: 1rem;
+    }
+
+    .badge {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+    }
+
+    .list-group-item p {
+        font-size: 0.85rem;
+    }
+
+    .task-meta {
+        gap: 10px;
+    }
+
+    .list-group-item:hover {
+        transform: translateX(4px);
+    }
+}
+
+@media (max-width: 576px) {
+    .list-group-item {
+        padding: 14px 16px !important;
+    }
+
+    .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    .badge {
+        align-self: flex-start;
+    }
+
+    .list-group-item h5 {
+        font-size: 0.95rem;
+    }
+
+    .task-meta {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .list-group-item:hover {
+        transform: translateX(2px);
+    }
+}
+
+/* ========== СТИЛИ ДЛЯ РАЗНЫХ СОСТОЯНИЙ ========== */
+/* Заблокированное задание */
+.list-group-item.disabled,
+.list-group-item.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.list-group-item.disabled:hover,
+.list-group-item.locked:hover {
+    transform: none;
+    border-color: rgba(33, 150, 243, 0.2);
+}
+
+.list-group-item.disabled::before,
+.list-group-item.locked::before {
+    display: none;
+}
+
+/* Выполненное задание */
+.list-group-item.completed {
+    border-left: 4px solid #28a745;
+}
+
+.list-group-item.completed h5::before {
+    content: '✅';
+}
+
+/* Задание в процессе */
+.list-group-item.in-progress {
+    border-left: 4px solid var(--accent-blue);
+}
+
+.list-group-item.in-progress h5::before {
+    content: '🔄';
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========== КАСТОМНЫЙ СКРОЛЛ ДЛЯ СПИСКА ========== */
+.list-group {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-blue) var(--dark-gray);
+}
+
+.list-group::-webkit-scrollbar {
+    width: 6px;
+}
+
+.list-group::-webkit-scrollbar-track {
+    background: var(--dark-gray);
+    border-radius: 3px;
+}
+
+.list-group::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
+    border-radius: 3px;
+}
+
+/* ========== ЭФФЕКТ ЗАГРУЗКИ ДЛЯ ЭЛЕМЕНТОВ ========== */
+.list-group-item.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.list-group-item.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(33, 150, 243, 0.1),
+            transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+/* ========== ДОПОЛНИТЕЛЬНЫЕ УЛУЧШЕНИЯ ========== */
+/* Риппл эффект при клике */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(33, 150, 243, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.ripple:active:after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Фокус для accessibility */
+.list-group-item:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+}
+
+/* Выделение текста */
+.list-group-item ::selection {
+    background: var(--accent-blue);
+    color: var(--text-white);
+}

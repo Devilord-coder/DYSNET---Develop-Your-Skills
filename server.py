@@ -1,5 +1,6 @@
-from flask import Flask
-from flask import render_template, redirect, abort
+# Подключение flask
+from flask import Flask, request, g, send_from_directory
+from flask import render_template, redirect
 from flask_login import (
     LoginManager,
     login_user,
@@ -7,39 +8,76 @@ from flask_login import (
     login_required,
     current_user,
 )
+from flask_restful import reqparse, abort, Api, Resource
+
+# Встроенные библиотеки
+import os
 import datetime
 
 # Формы регистрации/авторизации
 from backend.forms import *
 
 # База данных
-from backend import db_session
-from backend.database.models.users_model import User
+from backend.database import db_session
+from backend.database.__all_models import User
 
 # Обработчик ошибок
 from backend.errors import *
 
 # Работа с rest
 from backend.api import *
+from backend.utils.secure_email import secure_email
 
 # ENV
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 
+# Путь к БД
+DATABASE_PATH = os.getenv("DATABASE_PATH", "data/server.db")
+
+# Хост и порт
+HOST = os.getenv("FLASK_HOST", "0.0.0.0")
+PORT = os.getenv("FLASK_PORT", 8080)
+
+# Приложение
 app = Flask(__name__)
+# Ключ доступа (нужен для login_manager)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "secret")
+# время хранения сессий
 app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(
     days=int(os.getenv("PERMANENT_SESSION_LIFETIME_DAYS", "secret"))
 )
+# путь, куда загружать файлы
+app.config['UPLOAD_FOLDER'] = 'data/uploads'
 login_manager = LoginManager()
 login_manager.init_app(app)
+api = Api(app)
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('data/uploads', filename)
+
+
+@app.before_request
+def create_session():
+    """Создает сессию перед каждым запросом"""
+    g.db_session = db_session.create_session()
+
+@app.teardown_appcontext
+def close_session(exception=None):
+    """Закрывает сессию после запроса"""
+    db_sess = g.pop('db_session', None)
+    if db_sess is not None:
+        db_sess.close()
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
+    """Загрузка пользователя"""
+
+    db_sess = g.db_session
     return db_sess.get(User, user_id)
 
 
@@ -47,6 +85,7 @@ def load_user(user_id):
 @app.route("/index")
 def index():
     """Главная страница"""
+
     return render_template("index.html", title="Главная страница")
 
 
@@ -55,8 +94,8 @@ def login():
     """Авторизация пользователя"""
 
     form = LoginForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
+    if form.validate_on_submit(): # форма успешно отправлена
+        db_sess = g.db_session
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -83,7 +122,7 @@ def reqister():
                 form=form,
                 message="Пароли не совпадают",
             )
-        db_sess = db_session.create_session()
+        db_sess = g.db_session
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template(
                 "register_form.html",
@@ -108,13 +147,45 @@ def reqister():
 @login_required
 def profile():
     """Профиль пользователя"""
-    return render_template("profile.html", title="Профиль", user=current_user)
+
+    def get_user_avatar():
+        for file in os.listdir("data/uploads"):
+            if secure_email(current_user) in file:
+                print(file)
+                return file
+        return None
+
+    return render_template("profile.html", title="Профиль", avatar=get_user_avatar())
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
 @login_required
 def edit_profile():
+    """Изменение профиля пользователя"""
+
     form = EditProfileForm()
+    if form.validate_on_submit() or (request.method == "POST" and
+                                     request.files['file']):
+        db_sess = g.db_session
+        user = db_sess.get(User, current_user.id)
+        if request.files['file']:
+            file = request.files['file']
+            print("We have a file")
+            safe_email = secure_email(current_user)
+            file_extension = file.filename.rsplit('.', 1)[1].lower()
+            filename = f"{safe_email}.{file_extension}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            user.set_avatar(filepath)
+        if form.name.data:
+            user.set_name(form.name.data)
+        if form.surname.data:
+            user.set_surname(form.surname.data)
+        if form.aboutme.data:
+            user.set_aboutme(form.aboutme.data)
+        db_sess.commit()
+        return redirect("/profile")
+
     return render_template("edit_profile.html", title="Профиль", form=form)
 
 
@@ -134,6 +205,7 @@ def view_profile(user_id):
 @login_required
 def logout():
     """Выход из аккаунта"""
+
     logout_user()
     return redirect("/")
 
@@ -175,6 +247,8 @@ def error_init():
 
 
 def blueprint_init():
+    """Инициализация всех веток"""
+
     app.register_blueprint(user_api.blueprint)
     app.register_blueprint(cursive_printing.blueprint)
     app.register_blueprint(admin_api.blueprint)
@@ -188,10 +262,8 @@ def main():
 
     error_init()
     blueprint_init()
-    db_session.global_init(os.getenv("DATABASE_FILE", "data/server.db"))
-    port = os.getenv("PORT", 80)
-    host = os.getenv("HOST", "0.0.0.0")
-    app.run(host=host, port=port)
+    db_session.global_init(DATABASE_PATH)
+    app.run(host=HOST, port=PORT)
 
 
 if __name__ == "__main__":

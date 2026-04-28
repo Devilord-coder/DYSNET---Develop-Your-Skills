@@ -1,5 +1,7 @@
 from flask import render_template
 
+"""Файл с обработкой всех ошибок"""
+
 
 def render_error_template(icon, title, message, code):
     return (

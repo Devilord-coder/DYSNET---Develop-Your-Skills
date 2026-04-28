@@ -1,7 +1,11 @@
-from .models import users_model
+"""Все модели для работы с БД"""
+
+from .models.users_model import User
 from .models.cursive_printing_models.modes_model import CursivePrintingModes
 from .models.cursive_printing_models.words_model import CursivePrintingWords
 from .models.cursive_printing_models.statistics_model import CursivePrintingStatistics
+from .models.python_models.task_model import PythonTask
+from .models.python_models.test_model import PythonTest
 from .models.english_models.words_model import EnglishWords
 from .models.english_models.topics_model import EnglishTopics
 from .models.english_models.texts_model import EnglishTexts

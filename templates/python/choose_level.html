@@ -1,7 +1,59 @@
 {% extends "base.html" %}
 
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cursive_printing/choose_mode.css') }}">
 {% endblock %}
 
 {% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1>Выбор уровня сложности</h1>
+        <p class="text-muted">Программирование на Python</p>
+    </div>
+
+    <div class="top-bar mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex gap-3">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-house-door"></i> Главная
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-center mb-4">Выберите уровень сложности</h3>
+
+    <!-- Форма для отправки выбранного режима -->
+    <form id="tasksForm" action="{{ url_for('python.tasks') }}" method="POST">
+        <div class="modes-grid">
+            <div class="row g-4 justify-content-center">
+                <!-- Кнопки по центру -->
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                    <a href="{{ url_for('python.junior') }}" class="text-decoration-none">
+                        <button type="submit" name="level" value="junior"
+                            class="btn btn-success btn-lg px-5 py-3 fs-3 fw-bold">
+                            Junior
+                        </button>
+                    </a>
+                    <a href="{{ url_for('python.middle') }}" class="text-decoration-none">
+                        <button type="submit" name="level" value="middle"
+                            class="btn btn-warning btn-lg px-5 py-3 fs-3 fw-bold">
+                            Middle
+                        </button>
+                    </a>
+                    <a href="{{ url_for('python.senior') }}" class="text-decoration-none">
+                        <button type="submit" name="level" value="senior"
+                            class="btn btn-danger btn-lg px-5 py-3 fs-3 fw-bold">
+                            Senior
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="language" id="languageInput">
+        <input type="hidden" name="mode" id="modeInput">
+    </form>
+</div>
+
 {% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Карточка с заданием -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">{{ task_title }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="task-content">
+                        {{ task_text | safe }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма для отправки решения -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="h5 mb-0">Ваше решение</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('python.check_answer') }}">
+                        {{ form.hidden_tag() }}
+
+                        <input type="hidden" name="task_id" value="{{ task_id }}">
+                        <input type="hidden" name="task_name" value="{{ task_title }}">
+
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Введите код решения:</label>
+                            {{ form.code(class="form-control font-monospace", id="code", rows="12",
+                            placeholder="def solution():\n # Ваш код здесь\n pass",
+                            style="font-family: 'Courier New', monospace; font-size: 14px;") }}
+                            {% if form.code.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.code.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <small class="text-muted">Просим соблюдать стандарты написания кода PEP-8</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-send"></i> Отправить решение
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Сообщение об успешной отправке (если есть) -->
+            {% if message %}
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-check-circle"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+
+            <!-- Сообщение об ошибке (если есть) -->
+            {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-exclamation-triangle"></i> {{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .task-content {
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    .task-content pre {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        border-left: 4px solid #0d6efd;
+        overflow-x: auto;
+    }
+
+    .task-content code {
+        background-color: #f8f9fa;
+        padding: 2px 4px;
+        border-radius: 3px;
+        color: #d63384;
+    }
+
+    textarea.form-control {
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        resize: vertical;
+    }
+
+    textarea.form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+{% endblock %}
