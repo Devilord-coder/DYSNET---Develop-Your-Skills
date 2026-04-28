@@ -181,6 +181,7 @@ def blueprint_init():
     app.register_blueprint(english.blueprint)
     app.register_blueprint(python_api.bp)
     app.register_blueprint(clicker_api.blueprint)
+    app.register_blueprint(memory_api.blueprint)
 
 
 def main():
