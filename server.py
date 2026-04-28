@@ -9,7 +9,6 @@ from flask_login import (
     current_user,
 )
 from flask_restful import reqparse, abort, Api, Resource
-from werkzeug.utils import secure_filename
 
 # Встроенные библиотеки
 import os
@@ -27,6 +26,7 @@ from backend.errors import *
 
 # Работа с rest
 from backend.api import *
+from backend.utils.secure_email import secure_email
 
 # ENV
 import os
@@ -147,10 +147,10 @@ def reqister():
 @login_required
 def profile():
     """Профиль пользователя"""
-    
+
     def get_user_avatar():
         for file in os.listdir("data/uploads"):
-            if secure_filename(current_user.email.replace('@', '_at_').replace(".", "_dot_")) in file:
+            if secure_email(current_user) in file:
                 print(file)
                 return file
         return None
@@ -164,14 +164,14 @@ def edit_profile():
     """Изменение профиля пользователя"""
 
     form = EditProfileForm()
-    if form.validate_on_submit() or (request.method == "POST" and 
+    if form.validate_on_submit() or (request.method == "POST" and
                                      request.files['file']):
         db_sess = g.db_session
         user = db_sess.get(User, current_user.id)
         if request.files['file']:
             file = request.files['file']
             print("We have a file")
-            safe_email = secure_filename(current_user.email.replace('@', '_at_').replace(".", "_dot_"))
+            safe_email = secure_email(current_user)
             file_extension = file.filename.rsplit('.', 1)[1].lower()
             filename = f"{safe_email}.{file_extension}"
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -187,6 +187,18 @@ def edit_profile():
         return redirect("/profile")
 
     return render_template("edit_profile.html", title="Профиль", form=form)
+
+
+@app.route("/profile/<int:user_id>")
+@login_required
+def view_profile(user_id):
+    """Просмотр профиля пользователя по ID"""
+
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    if not user:
+        abort(404)
+    return render_template("profile.html", title=f"Профиль {user.name}", user=user)
 
 
 @app.route("/logout")
@@ -242,6 +254,7 @@ def blueprint_init():
     app.register_blueprint(admin_api.blueprint)
     app.register_blueprint(english.blueprint)
     app.register_blueprint(python_api.bp)
+    app.register_blueprint(clicker_api.blueprint)
 
 
 def main():

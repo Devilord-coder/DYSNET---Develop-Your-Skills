@@ -9,3 +9,5 @@ from .models.python_models.test_model import PythonTest
 from .models.english_models.words_model import EnglishWords
 from .models.english_models.topics_model import EnglishTopics
 from .models.english_models.texts_model import EnglishTexts
+from .models.english_models.statistic_model import EnglishStatistics
+from .models.clicker_models.statistics_model import ClickerStatistics
