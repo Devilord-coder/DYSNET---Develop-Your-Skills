@@ -489,7 +489,8 @@ body::before {
 
 /* Убедимся, что текст в таблице читаемый */
 .table tbody td {
-    color: #333;  /* Тёмный цвет для остального текста на белом фоне */
+    color: #333;
+    /* Тёмный цвет для остального текста на белом фоне */
 }
 
 /* Для строк с ошибками сохраняем читаемость */
@@ -513,4 +514,243 @@ body::before {
 .table tbody td:first-child,
 .table tbody td:last-child {
     color: #2196f3;
+}
+
+/* Стиль для кнопки деталей ошибки */
+.details-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ff9800;
+    margin-left: 8px;
+    padding: 4px 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.details-btn:hover {
+    background-color: rgba(255, 152, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.details-btn i {
+    pointer-events: none;
+    /* Чтобы иконка не перехватывала клик */
+}
+
+/* Стиль для строк с ошибками при наведении */
+.status-error-row:hover,
+.status-wrong-row:hover {
+    background-color: rgba(255, 152, 0, 0.05);
+    cursor: pointer;
+}
+
+/* ========== СТИЛИ ДЛЯ ОШИБОК ========== */
+
+/* Контейнер ошибки в модальном окне */
+.error-section .error-content {
+    background: #0a0a0a !important;
+    /* Чёрный фон */
+    border-left: 4px solid #f44336 !important;
+    /* Красная полоса слева */
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: #ff6b6b !important;
+    /* Ярко-красный текст */
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Стиль для текста ошибки */
+.error-content {
+    background: #0a0a0a;
+    color: #ff4444 !important;
+    font-weight: 500;
+}
+
+/* Дополнительный стиль для stderr в модальном окне */
+.modal-body .error-section .error-content {
+    background: #000000 !important;
+    color: #ff3333 !important;
+    border-left: 4px solid #ff0000 !important;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Заголовок секции ошибки */
+.error-section h3 {
+    color: #ff6b6b;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    border-left: 3px solid #f44336;
+    padding-left: 12px;
+}
+
+/* Иконка ошибки */
+.error-section h3 i {
+    color: #f44336;
+    margin-right: 8px;
+}
+
+/* Стиль для кода возврата при ошибке */
+.returncode-nonzero {
+    background: rgba(244, 67, 54, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #f44336;
+}
+
+/* Стиль для стека вызова ошибки */
+.error-stack-trace {
+    background: #0a0a0a;
+    color: #ff8888;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 12px;
+    overflow-x: auto;
+}
+
+/* Красная подсветка для строк с ошибкой в таблице */
+.status-error-row {
+    border-left: 3px solid #f44336;
+    background: rgba(244, 67, 54, 0.05);
+}
+
+.status-error-row:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+/* Бейдж ошибки */
+.status-badge.status-error {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Стиль для скроллбара в блоке ошибки */
+.error-content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.error-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.error-content::-webkit-scrollbar-thumb {
+    background: #f44336;
+    border-radius: 4px;
+}
+
+.error-content::-webkit-scrollbar-thumb:hover {
+    background: #ff6666;
+}
+
+/* ========== СТИЛИ ДЛЯ ПОДСВЕТКИ PYTHON КОДА ========== */
+
+.code-container {
+    background: #0a0a0a;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+    border: 1px solid #333;
+}
+
+.code-header {
+    background: #1a1a1a;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.code-header span {
+    color: #fff;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.copy-code-btn {
+    background: #2196f3;
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.copy-code-btn:hover {
+    background: #1976d2;
+    transform: translateY(-1px);
+}
+
+.python-code {
+    margin: 0;
+    padding: 15px;
+    overflow-x: auto;
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #fff;
+    background: #0a0a0a;
+}
+
+/* Цвета для подсветки синтаксиса Python */
+.python-code .python-keyword {
+    color: #c792ea;
+    font-weight: bold;
+}
+
+.python-code .python-string {
+    color: #c3e88d;
+}
+
+.python-code .python-comment {
+    color: #546e7a;
+    font-style: italic;
+}
+
+.python-code .python-number {
+    color: #f78c6c;
+}
+
+.python-code .python-function {
+    color: #82aaff;
+}
+
+.python-code .python-operator {
+    color: #89ddff;
+}
+
+/* Стиль для скроллбара в блоке кода */
+.python-code::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.python-code::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.python-code::-webkit-scrollbar-thumb {
+    background: #2196f3;
+    border-radius: 4px;
+}
+
+.python-code::-webkit-scrollbar-thumb:hover {
+    background: #64b5f6;
 }
