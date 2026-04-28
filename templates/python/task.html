@@ -25,6 +25,9 @@
                     <form method="POST" action="{{ url_for('python.check_answer') }}">
                         {{ form.hidden_tag() }}
 
+                        <input type="hidden" name="task_id" value="{{ task_id }}">
+                        <input type="hidden" name="task_name" value="{{ task_title }}">
+
                         <div class="mb-3">
                             <label for="code" class="form-label">Введите код решения:</label>
                             {{ form.code(class="form-control font-monospace", id="code", rows="12",
@@ -37,8 +40,7 @@
                                 {% endfor %}
                             </div>
                             {% endif %}
-                            <small class="text-muted">Просим соблюдать стандарты написания кода PEP-8
-                                языков</small>
+                            <small class="text-muted">Просим соблюдать стандарты написания кода PEP-8</small>
                         </div>
 
                         <div class="d-grid gap-2">
