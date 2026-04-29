@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contacts.css') }}">
+<script src="{{ url_for('static', filename='js/contacts.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="contacts-page">
+    <div class="container">
+        <!-- Hero секция -->
+        <div class="contacts-hero">
+            <h1 class="contacts-title">
+                <i class="fas fa-address-card"></i>
+                Свяжитесь с нами
+            </h1>
+            <p class="contacts-subtitle">
+                Мы всегда рады помочь вам! Выберите удобный способ связи
+            </p>
+        </div>
+
+        <div class="contacts-grid">
+            <!-- Левая колонка - контактная информация -->
+            <div class="contacts-info">
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Контактная информация</h3>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-text">
+                            <h4>Адрес</h4>
+                            <p>г. Москва, пр. Вернадского 86 с2</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="info-text">
+                            <h4>Телефон</h4>
+                            <p>+7 (999) 666 66 66</p>
+                            <p class="small">Пн-Пт: 7:00 - 22:00</p>
+                            <p class="small">Пн-Пт: 9:00 - 18:00</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-text">
+                            <h4>Email</h4>
+                            <p>dysnet@yandex.ru</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="info-text">
+                            <h4>Режим работы</h4>
+                            <p>Понедельник - Пятница: 7:00 - 22:00</p>
+                            <p>Суббота: 10:00 - 16:00</p>
+                            <p>Воскресенье: Выходной</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Социальные сети -->
+                <div class="social-card">
+                    <h3><i class="fas fa-share-alt"></i> Мы в соцсетях</h3>
+                    <div class="social-links">
+                        <a href="https://t.me/dysnet" target="_blank" class="social-link telegram">
+                            <i class="fab fa-telegram"></i>
+                            <span>Telegram</span>
+                        </a>
+                        <!--
+                        <a href="https://vk.com/dysnet" target="_blank" class="social-link vk">
+                            <i class="fab fa-vk"></i>
+                            <span>VK</span>
+                        </a>
+                        <a href="https://youtube.com/@dysnet" target="_blank" class="social-link youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                        -->
+                        <a href="https://github.com/Devilord-coder/DYSNET---Develop-Your-Skills" target="_blank"
+                            class="social-link github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub сайта</span>
+                        </a>
+                        <p>GitHub разработчиков</p>
+                        <a href="https://github.com/Devilord-coder" target="_blank" class="social-link github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub Devilord-coder</span>
+                        </a>
+                        <a href="https://github.com/ttan4ick" target="_blank" class="social-link github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub ttan4ick</span>
+                        </a>
+                        <!--
+                        <a href="https://discord.gg/dysnet" target="_blank" class="social-link discord">
+                            <i class="fab fa-discord"></i>
+                            <span>Discord</span>
+                        </a>
+                        -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Правая колонка - форма обратной связи -->
+            <div class="contacts-form-wrapper">
+                <div class="form-card">
+                    <h3><i class="fas fa-paper-plane"></i> Напишите нам</h3>
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">
+                                <i class="fas fa-user"></i> Ваше имя
+                            </label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Иван Иванов"
+                                required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">
+                                    <i class="fas fa-envelope"></i> Email
+                                </label>
+                                <input type="email" id="email" name="email" class="form-control"
+                                    placeholder="ivan@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">
+                                    <i class="fas fa-phone"></i> Телефон
+                                </label>
+                                <input type="tel" id="phone" name="phone" class="form-control"
+                                    placeholder="+7 (999) 123-45-67">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">
+                                <i class="fas fa-tag"></i> Тема сообщения
+                            </label>
+                            <select id="subject" name="subject" class="form-control" required>
+                                <option value="">Выберите тему</option>
+                                <option value="Вопрос по обучению">Вопрос по обучению</option>
+                                <option value="Техническая проблема">Техническая проблема</option>
+                                <option value="Сотрудничество">Сотрудничество</option>
+                                <option value="Предложение">Предложение</option>
+                                <option value="Другое">Другое</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">
+                                <i class="fas fa-comment"></i> Сообщение
+                            </label>
+                            <textarea id="message" name="message" rows="5" class="form-control"
+                                placeholder="Опишите ваш вопрос или предложение..." required></textarea>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agree" required>
+                                <span class="checkmark"></span>
+                                Я согласен на обработку персональных данных
+                            </label>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Отправить сообщение
+                        </button>
+                    </form>
+
+                    <div id="formMessage" class="form-message"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карта -->
+        <div class="map-card">
+            <h3><i class="fas fa-map-marked-alt"></i> Мы на карте</h3>
+            <div class="map-container">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2244.3943075894427!2d37.61506831593107!3d55.75693498055388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54a5a2b1b8c6b%3A0x8b9c5c5c5c5c5c5c!2z0JLRg9GC0LzQvtGA0LrQsA!5e0!3m2!1sru!2sru!4v1645520000000!5m2!1sru!2sru"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                </iframe>
+            </div>
+            <div class="map-address">
+                <i class="fas fa-location-dot"></i>
+                г. Москва, пр. Вернадского 86с2
+            </div>
+        </div>
+
+        <!-- FAQ секция -->
+        <div class="faq-card">
+            <h3><i class="fas fa-question-circle"></i> Часто задаваемые вопросы</h3>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        Как зарегистрироваться на платформе?
+                    </div>
+                    <div class="faq-answer">
+                        Нажмите на кнопку "Зарегистрироваться" в правом верхнем углу, заполните форму и подтвердите
+                        email. После этого вы сможете начать обучение.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        Есть ли бесплатные курсы?
+                    </div>
+                    <div class="faq-answer">
+                        Да, на платформе представлены как бесплатные, так и платные курсы. Бесплатные курсы можно найти
+                        в разделе "Навыки".
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        Как получить сертификат?
+                    </div>
+                    <div class="faq-answer">
+                        После успешного завершения курса и сдачи итогового теста, сертификат автоматически появится в
+                        вашем профиле.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        Можно ли связаться с преподавателем?
+                    </div>
+                    <div class="faq-answer">
+                        Да, в каждом курсе есть чат с преподавателем. Также вы можете написать нам через форму обратной
+                        связи.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

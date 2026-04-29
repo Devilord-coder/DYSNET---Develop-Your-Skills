@@ -89,6 +89,20 @@ def index():
     return render_template("index.html", title="Главная страница")
 
 
+@app.route("/contacts")
+def contacts():
+    """Страница с контактами"""
+
+    return render_template("contacts.html", title="Контакты")
+
+
+@app.route("/skills")
+def skills():
+    """Страница навыков"""
+
+    return render_template("skills.html", title="Улучшение навыков")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Авторизация пользователя"""
@@ -155,7 +169,9 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user)
+    return render_template("profile.html",
+                           title=f'Профиль пользователя "{current_user.name}"',
+                           avatar=get_user_avatar(), user=current_user)
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -186,7 +202,7 @@ def edit_profile():
         db_sess.commit()
         return redirect("/profile")
 
-    return render_template("edit_profile.html", title="Профиль", form=form)
+    return render_template("edit_profile.html", title=f'Профиль пользователя "{current_user.name}"', form=form)
 
 
 @app.route("/profile/<int:user_id>")

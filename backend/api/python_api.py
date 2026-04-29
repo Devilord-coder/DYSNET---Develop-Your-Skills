@@ -48,7 +48,8 @@ def check_answer():
     return render_template(
         'python/task_results.html',
         data_json=data_json,
-        task_name=task_name
+        task_name=task_name,
+        title=f"Задание {task_name}"
     )
 
 
@@ -62,7 +63,8 @@ def get_task(task_id):
     return render_template(
         "python/task.html", task_title=task.name,
         task_text=task.text, form=form,
-        task_id=task_id
+        task_id=task_id,
+        title=f"Задание {task.name}"
         )
 
 
