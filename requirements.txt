@@ -28,3 +28,8 @@ urllib3==2.6.3
 Werkzeug==3.1.6
 WTForms==3.2.1
 zipp==3.23.0
+flask_wtf
+flask_login
+requests
+dotenv
+Devilord

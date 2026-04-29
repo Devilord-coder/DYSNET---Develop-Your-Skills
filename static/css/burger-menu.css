@@ -1,0 +1,269 @@
+/* Круглые кнопки навигации */
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    margin-left: 30px;
+}
+
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 50px;
+    background: transparent;
+    border: 2px solid rgba(33, 150, 243, 0.5);
+    color: #64b5f6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.nav-btn i {
+    font-size: 16px;
+}
+
+.nav-btn:hover {
+    border-color: #2196f3;
+    color: white;
+    background: rgba(33, 150, 243, 0.2);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* АКТИВНАЯ КНОПКА - БЕЛАЯ С ТЁМНЫМ ТЕКСТОМ (хорошо видно) */
+.nav-btn.active {
+    background: white !important;
+    border-color: white !important;
+    color: #0a0e27 !important;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+.nav-btn.active:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+}
+
+/* Альтернатива для мобильного меню */
+.nav-btn-mobile.active {
+    background: white !important;
+    color: #0a0e27 !important;
+    border-color: white !important;
+}
+
+/* Кнопка Профиль в круглой рамке */
+.btn-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 50px;
+    background: transparent;
+    border: 2px solid rgba(33, 150, 243, 0.5);
+    color: #64b5f6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-profile:hover {
+    border-color: #2196f3;
+    color: #2196f3;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* Бургер-меню (только для мобильных) */
+.burger-menu {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 35px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    z-index: 1001;
+    transition: all 0.3s ease;
+}
+
+.burger-line {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #2196f3, #64b5f6);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.burger-menu.active .burger-line:nth-child(1) {
+    transform: translateY(11px) rotate(45deg);
+}
+
+.burger-menu.active .burger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.burger-menu.active .burger-line:nth-child(3) {
+    transform: translateY(-11px) rotate(-45deg);
+}
+
+/* Мобильное меню */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 350px;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1a2f 100%);
+    backdrop-filter: blur(15px);
+    z-index: 1000;
+    transition: right 0.3s ease-in-out;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+    padding: 80px 25px 30px 25px;
+    overflow-y: auto;
+    border-left: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.mobile-menu.active {
+    right: 0;
+}
+
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-menu-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.mobile-menu-header {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(33, 150, 243, 0.3);
+}
+
+.mobile-nav-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.nav-btn-mobile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(33, 150, 243, 0.1);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    color: #64b5f6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.nav-btn-mobile:hover {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196f3;
+    transform: translateX(5px);
+    text-decoration: none;
+}
+
+.mobile-divider {
+    height: 1px;
+    background: rgba(33, 150, 243, 0.2);
+    margin: 20px 0;
+}
+
+/* Кнопки в мобильном меню */
+#mobileAuthButtons .user-actions,
+#mobileAuthButtons .auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#mobileAuthButtons .btn-profile,
+#mobileAuthButtons .btn-logout,
+#mobileAuthButtons .btn-admin,
+#mobileAuthButtons .btn-register,
+#mobileAuthButtons .btn-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .nav-buttons {
+        gap: 10px;
+        margin-left: 15px;
+    }
+
+    .nav-btn {
+        padding: 6px 15px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-buttons {
+        display: none;
+    }
+
+    .auth-buttons-wrapper {
+        display: none !important;
+    }
+
+    .burger-menu {
+        display: flex;
+        margin-left: auto;
+    }
+
+    .navbar-brand {
+        margin-right: auto;
+    }
+
+    .btn-profile,
+    .btn-logout,
+    .btn-admin,
+    .btn-register,
+    .btn-login {
+        border-radius: 50px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .mobile-menu {
+        width: 100%;
+        max-width: 100%;
+    }
+}

@@ -26,7 +26,6 @@ from backend.errors import *
 
 # Работа с rest
 from backend.api import *
-
 from backend.utils.secure_email import secure_email
 
 # ENV
@@ -88,6 +87,20 @@ def index():
     """Главная страница"""
 
     return render_template("index.html", title="Главная страница")
+
+
+@app.route("/contacts")
+def contacts():
+    """Страница с контактами"""
+
+    return render_template("contacts.html", title="Контакты")
+
+
+@app.route("/skills")
+def skills():
+    """Страница навыков"""
+
+    return render_template("skills.html", title="Улучшение навыков")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -156,7 +169,9 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar())
+    return render_template("profile.html",
+                           title=f'Профиль пользователя "{current_user.name}"',
+                           avatar=get_user_avatar(), user=current_user)
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -187,7 +202,19 @@ def edit_profile():
         db_sess.commit()
         return redirect("/profile")
 
-    return render_template("edit_profile.html", title="Профиль", form=form)
+    return render_template("edit_profile.html", title=f'Профиль пользователя "{current_user.name}"', form=form)
+
+
+@app.route("/profile/<int:user_id>")
+@login_required
+def view_profile(user_id):
+    """Просмотр профиля пользователя по ID"""
+
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    if not user:
+        abort(404)
+    return render_template("profile.html", title=f"Профиль {user.name}", user=user)
 
 
 @app.route("/logout")
@@ -243,6 +270,7 @@ def blueprint_init():
     app.register_blueprint(admin_api.blueprint)
     app.register_blueprint(english.blueprint)
     app.register_blueprint(python_api.bp)
+    app.register_blueprint(clicker_api.blueprint)
 
 
 def main():
