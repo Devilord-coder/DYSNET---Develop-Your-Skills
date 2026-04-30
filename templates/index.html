@@ -1,5 +1,125 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
 {% block content %}
-<h1>Это главная страница нашего сайта!</h1>
+<div class="index-container">
+    <!-- Описание проекта -->
+    <div class="hero-section text-center mb-5">
+        <h1 class="hero-title">
+            <i class="fas fa-brain"></i> DYSNET
+        </h1>
+        <p class="hero-subtitle">Развивай навыки, становись лучше каждый день</p>
+        <div class="hero-description">
+            <p>DYSNET — это платформа для тренировки ключевых навыков, которые пригодятся в IT и повседневной жизни. 
+            Выбирай упражнение, развивай скорость, память, реакцию и логику — всё в одном месте!</p>
+        </div>
+    </div>
+
+    <!-- Краткое описание 5 навыков -->
+    <div class="skills-description mb-5">
+        <h2 class="section-title text-center mb-4">
+            <i class="fas fa-star"></i> Что вас ждёт?
+        </h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="skill-item">
+                    <i class="fas fa-keyboard"></i>
+                    <div>
+                        <h4>Скоропечатание</h4>
+                        <p>Тренируйте скорость набора текста</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="skill-item">
+                    <i class="fas fa-language"></i>
+                    <div>
+                        <h4>Иностранные слова</h4>
+                        <p>Карточки, сопоставление, вставка слов</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="skill-item">
+                    <i class="fab fa-python"></i>
+                    <div>
+                        <h4>Программирование Python</h4>
+                        <p>Тесты и задачи разного уровня</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="skill-item">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <div>
+                        <h4>Кликер</h4>
+                        <p>Реакция и внимание</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="skill-item">
+                    <i class="fas fa-brain"></i>
+                    <div>
+                        <h4>Мемори</h4>
+                        <p>Тренировка памяти</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок новостей -->
+    <div class="news-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0">
+                <i class="fas fa-newspaper"></i> Новости проекта
+            </h2>
+            {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                <a href="{{ url_for('news.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Добавить новость
+                </a>
+            {% endif %}
+        </div>
+
+        {% if news %}
+            <div class="news-list">
+                {% for item in news %}
+                    <div class="news-card">
+                        <div class="news-header">
+                            <h3 class="news-title">{{ item.title }}</h3>
+                            <div class="news-meta">
+                                <span><i class="far fa-calendar-alt"></i> {{ item.created_date.strftime('%d.%m.%Y') }}</span>
+                                <span><i class="far fa-user"></i> {{ item.author.name }} {{ item.author.surname }}</span>
+                            </div>
+                        </div>
+                        <div class="news-content">
+                            <p>{{ item.content }}</p>
+                        </div>
+                        {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                            <div class="news-actions">
+                                <a href="{{ url_for('news.edit', news_id=item.id) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </a>
+                                <form action="{{ url_for('news.delete', news_id=item.id) }}" method="POST" style="display: inline;" 
+                                      onsubmit="return confirm('Удалить новость «{{ item.title }}»? Это действие нельзя отменить!');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i> Удалить
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> Пока нет новостей. Загляните позже!
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

@@ -9,6 +9,7 @@ from flask_login import (
     current_user,
 )
 from flask_restful import reqparse, abort, Api, Resource
+from sqlalchemy import desc
 
 # Встроенные библиотеки
 import os
@@ -19,7 +20,7 @@ from backend.forms import *
 
 # База данных
 from backend.database import db_session
-from backend.database.__all_models import User
+from backend.database.__all_models import User, News
 
 # Обработчик ошибок
 from backend.errors import *
@@ -31,6 +32,7 @@ from backend.utils.secure_email import secure_email
 # ENV
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Путь к БД
@@ -49,15 +51,15 @@ app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(
     days=int(os.getenv("PERMANENT_SESSION_LIFETIME_DAYS", "secret"))
 )
 # путь, куда загружать файлы
-app.config['UPLOAD_FOLDER'] = 'data/uploads'
+app.config["UPLOAD_FOLDER"] = "data/uploads"
 login_manager = LoginManager()
 login_manager.init_app(app)
 api = Api(app)
 
 
-@app.route('/uploads/<filename>')
+@app.route("/uploads/<filename>")
 def uploaded_file(filename):
-    return send_from_directory('data/uploads', filename)
+    return send_from_directory("data/uploads", filename)
 
 
 @app.before_request
@@ -65,10 +67,11 @@ def create_session():
     """Создает сессию перед каждым запросом"""
     g.db_session = db_session.create_session()
 
+
 @app.teardown_appcontext
 def close_session(exception=None):
     """Закрывает сессию после запроса"""
-    db_sess = g.pop('db_session', None)
+    db_sess = g.pop("db_session", None)
     if db_sess is not None:
         db_sess.close()
 
@@ -86,7 +89,9 @@ def load_user(user_id):
 def index():
     """Главная страница"""
 
-    return render_template("index.html", title="Главная страница")
+    db_sess = g.db_session
+    news = db_sess.query(News).order_by(desc(News.created_date)).all()
+    return render_template("index.html", title="Главная страница", news=news)
 
 
 @app.route("/contacts")
@@ -108,7 +113,7 @@ def login():
     """Авторизация пользователя"""
 
     form = LoginForm()
-    if form.validate_on_submit(): # форма успешно отправлена
+    if form.validate_on_submit():  # форма успешно отправлена
         db_sess = g.db_session
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
@@ -178,17 +183,18 @@ def edit_profile():
     """Изменение профиля пользователя"""
 
     form = EditProfileForm()
-    if form.validate_on_submit() or (request.method == "POST" and
-                                     request.files['file']):
+    if form.validate_on_submit() or (
+        request.method == "POST" and request.files["file"]
+    ):
         db_sess = g.db_session
         user = db_sess.get(User, current_user.id)
-        if request.files['file']:
-            file = request.files['file']
+        if request.files["file"]:
+            file = request.files["file"]
             print("We have a file")
             safe_email = secure_email(current_user)
-            file_extension = file.filename.rsplit('.', 1)[1].lower()
+            file_extension = file.filename.rsplit(".", 1)[1].lower()
             filename = f"{safe_email}.{file_extension}"
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(filepath)
             user.set_avatar(filepath)
         if form.name.data:
@@ -270,6 +276,7 @@ def blueprint_init():
     app.register_blueprint(python_api.bp)
     app.register_blueprint(clicker_api.blueprint)
     app.register_blueprint(memory_api.blueprint)
+    app.register_blueprint(news_api.blueprint)
 
 
 def main():
