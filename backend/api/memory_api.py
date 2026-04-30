@@ -1,10 +1,29 @@
-from flask import Blueprint, render_template, request, session, jsonify
+from flask import Blueprint, render_template, request, session, jsonify, abort
+from flask_login import current_user
+from datetime import datetime
+from sqlalchemy import desc
+from backend.database.models.memory_models.statistics_model import MemoryStatistics
 from random import sample, shuffle
 
 from backend.database import db_session
 from backend.database.models.memory_models.animals_model import Animals
 
 blueprint = Blueprint("memory", __name__, template_folder="templates")
+
+
+def save_statistics(grid_size=0, moves=0, found_pairs=0):
+    """Сохранение статистики для авторизованных пользователей"""
+
+    if current_user.is_authenticated:
+        statistics = MemoryStatistics()
+        statistics.datetime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        statistics.grid_size = grid_size
+        statistics.moves = moves
+        statistics.found_pairs = found_pairs
+        statistics.user = current_user.id
+        db_sess = db_session.create_session()
+        db_sess.add(statistics)
+        db_sess.commit()
 
 
 def clients_info(cards):
@@ -81,7 +100,7 @@ def start():
 
 @blueprint.route("/memory/flip", methods=["POST"])
 def flip():
-    """Проверка нажатия на карточки, проверка пар"""
+    """Проверка нажатия на карточки, проверка пар, обработка конца игры"""
 
     game = session.get("memory_game", {})
     if not game:
@@ -158,6 +177,14 @@ def flip():
     game["first_opened"] = None
     game["moves"] += 1
     session["memory_game"] = game
+    
+    # Проверка конца игры
+    if game["found_pairs"] == len(game["cards"]) // 2:
+        if current_user.is_authenticated:
+            grid_size = game["size"]
+            moves = game["moves"]
+            found_pairs = game["found_pairs"]
+            save_statistics(grid_size, moves, found_pairs)
 
     return jsonify(
         {
@@ -177,7 +204,7 @@ def state():
     if not game:
         return jsonify({"error": "Игра не начата"}), 400
 
-    if game.get("waiting", False):  # ЗАкрываем карточки, если они открыты, но не пара
+    if game.get("waiting", False):  # Закрываем карточки, если они открыты, но не пара
         for card in game["cards"]:
             if card["flipped"] and not card["matched"]:
                 card["flipped"] = False
@@ -197,4 +224,18 @@ def state():
 def statistics():
     """Просмотр статистики для авторизованных пользователей"""
 
-    return "ups..."
+    if not current_user.is_authenticated:
+        abort(401)
+
+    db_sess = db_session.create_session()
+    user_statistics = (
+        db_sess.query(MemoryStatistics)
+        .filter(MemoryStatistics.user == current_user.id)
+        .order_by(desc(MemoryStatistics.datetime))
+        .all()
+    )
+    return render_template(
+        "memory/statistics.html",
+        title="Статистика памяти",
+        statistics=user_statistics,
+    )

@@ -30,6 +30,9 @@ class User(SqlAlchemyBase, UserMixin):
     clicker_statistics = orm.relationship(
         "ClickerStatistics", back_populates="user_relationship"
     )
+    memory_statistics = orm.relationship(
+        "MemoryStatistics", back_populates="user_relationship"
+    )
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
