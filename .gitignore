@@ -9,3 +9,5 @@ dist/
 system/
 **test.py
 **test.html
+.vscode/
+Icon

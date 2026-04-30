@@ -10,6 +10,7 @@ from backend.database.models.english_models.texts_model import EnglishTexts
 from backend.database.models.english_models.statistic_model import EnglishStatistics
 from datetime import datetime
 
+#  Отдельная ветка
 blueprint = Blueprint("english", __name__, template_folder="templates")
 
 

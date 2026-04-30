@@ -10,16 +10,16 @@
         <div class="col-md-6 col-lg-5">
             <div class="card shadow-lg border-0 rounded-4">
                 {% if current_user.id == user.id %}
-                    <button class="btn btn-outline-danger btn-edit position-absolute top-0 end-0 m-3"
-                        onclick="location.href='/profile/edit'">
-                        <i class="fas fa-edit me-1"></i> Изменить
-                    </button>
+                <button class="btn btn-outline-danger btn-edit position-absolute top-0 end-0 m-3"
+                    onclick="location.href='/profile/edit'">
+                    <i class="fas fa-edit me-1"></i> Изменить
+                </button>
                 {% endif %}
                 <div class="card-body text-center p-5">
                     <!-- Аватар пользователя -->
                     <div class="mb-4">
-                        {% if user.avatar %}
-                        <img src="{{ user.avatar.url }}" alt="Аватар пользователя"
+                        {% if avatar %} <img
+                            src="{{ url_for('uploaded_file', filename=avatar) }}"
                             class="rounded-circle img-fluid border border-3 border-primary"
                             style="width: 150px; height: 150px; object-fit: cover;">
                         {% else %}

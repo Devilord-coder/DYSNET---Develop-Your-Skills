@@ -4,6 +4,7 @@ from flask import Blueprint, make_response, jsonify, request
 from backend.database import db_session
 from backend.database.models.users_model import User
 
+# Отдельная ветка
 blueprint = Blueprint("users_api", __name__, template_folder="templates")
 
 
@@ -59,6 +60,7 @@ def get_one_user(user_id):
 @blueprint.route("/api/users", methods=["POST"])
 def create_user():
     """Создание пользователя"""
+
     if not request.json:
         return make_response(jsonify({"error": "Empty request"}), 400)
     elif not all(

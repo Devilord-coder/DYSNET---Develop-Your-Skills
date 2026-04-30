@@ -1,0 +1,756 @@
+/* Global Styles */
+:root {
+    --primary-dark: #0a0e27;
+    --primary-blue: #1a237e;
+    --accent-blue: #2196f3;
+    --light-blue: #64b5f6;
+    --dark-gray: #1e1e2f;
+    --text-light: #e0e0e0;
+    --text-white: #ffffff;
+    --border-dark: #2c3e50;
+    --gradient-start: #667eea;
+    --gradient-end: #764ba2;
+    --success-green: #4caf50;
+    --error-red: #f44336;
+    --warning-orange: #ff9800;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--dark-gray) 100%);
+    color: var(--text-white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(33, 150, 243, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Контейнер для таблицы */
+.test-results-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Glass morphism effect для основной карточки */
+.results-card {
+    background: rgba(30, 30, 47, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.results-card:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    border-color: rgba(33, 150, 243, 0.3);
+}
+
+/* Заголовок */
+.results-header {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.95), rgba(15, 26, 79, 0.95));
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.results-header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--text-white), var(--light-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.results-header p {
+    color: var(--light-blue);
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Статистика */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 25px 30px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+}
+
+.stat-card {
+    text-align: center;
+    flex: 1;
+    padding: 10px;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.stat-label {
+    color: var(--light-blue);
+    margin-top: 8px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+/* Обёртка таблицы */
+.table-wrapper {
+    overflow-x: auto;
+    padding: 20px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+/* Таблица */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-white);
+    background-color: transparent;
+}
+
+.table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table thead tr {
+    background: linear-gradient(135deg, var(--primary-blue), var(--dark-gray));
+    border-bottom: 2px solid var(--accent-blue);
+}
+
+.table thead th {
+    background-color: transparent;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-white);
+    font-size: 1em;
+    border: none;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(33, 150, 243, 0.1);
+    transform: scale(1.01);
+}
+
+.table tbody td {
+    padding: 15px;
+    color: var(--text-white);
+    border: none;
+}
+
+/* Стили для статусов */
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85em;
+    text-align: center;
+    min-width: 180px;
+}
+
+.status-ok {
+    background: linear-gradient(135deg, var(--success-green), #45a049);
+    color: white;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.status-error {
+    background: linear-gradient(135deg, var(--error-red), #da190b);
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.status-wrong {
+    background: linear-gradient(135deg, var(--warning-orange), #fb8c00);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+}
+
+.test-id {
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+.time-cell {
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+    color: var(--light-blue);
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: rgba(30, 30, 47, 0.95);
+    backdrop-filter: blur(10px);
+    margin: 5% auto;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 20px;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-blue), var(--dark-gray));
+    padding: 20px 25px;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    background: linear-gradient(135deg, var(--text-white), var(--light-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border: none;
+    padding: 0;
+}
+
+.close {
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-white);
+    transition: transform 0.2s ease;
+}
+
+.close:hover {
+    transform: scale(1.2);
+    color: var(--error-red);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.error-section {
+    margin-bottom: 20px;
+}
+
+.error-section h3 {
+    color: var(--light-blue);
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    border-left: 3px solid var(--accent-blue);
+    padding-left: 12px;
+}
+
+.error-content {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 4px solid var(--error-red);
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--text-light);
+}
+
+.input-content {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 4px solid var(--success-green);
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--text-light);
+}
+
+.returncode {
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.returncode-zero {
+    background: rgba(76, 175, 80, 0.2);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+.returncode-nonzero {
+    background: rgba(244, 67, 54, 0.2);
+    color: var(--error-red);
+    border: 1px solid var(--error-red);
+}
+
+/* Кнопки в модальном окне */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(33, 150, 243, 0.2);
+}
+
+.btn-modal-close {
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
+    border: none;
+    border-radius: 25px;
+    padding: 8px 20px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-modal-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+}
+
+/* Стили для строк с ошибками */
+.table tbody tr.status-error-row {
+    border-left: 3px solid var(--error-red);
+}
+
+.table tbody tr.status-wrong-row {
+    border-left: 3px solid var(--warning-orange);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .stat-card {
+        padding: 5px;
+    }
+
+    .stat-value {
+        font-size: 1.8em;
+    }
+
+    .status-badge {
+        min-width: 140px;
+        font-size: 0.75em;
+        padding: 4px 10px;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+
+    .results-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Стилизация скроллбара */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-gray);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--accent-blue), var(--gradient-end));
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--light-blue);
+}
+
+/* Highlight selection */
+::selection {
+    background: var(--accent-blue);
+    color: var(--text-white);
+}
+
+::-moz-selection {
+    background: var(--accent-blue);
+    color: var(--text-white);
+}
+
+/* Добавьте эти стили к существующим */
+
+/* Синий цвет для номера теста */
+.test-id {
+    color: #2196f3 !important;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Синий цвет для времени */
+.time-cell {
+    color: #2196f3 !important;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+/* Убедимся, что текст в таблице читаемый */
+.table tbody td {
+    color: #333;
+    /* Тёмный цвет для остального текста на белом фоне */
+}
+
+/* Для строк с ошибками сохраняем читаемость */
+.status-error-row td,
+.status-wrong-row td {
+    color: #333;
+}
+
+/* Иконки в ячейках */
+.table tbody td i {
+    margin-right: 8px;
+    color: #2196f3;
+}
+
+/* Стиль для иконки времени */
+.time-cell i {
+    color: #2196f3;
+}
+
+/* Общий стиль для текста в таблице (кроме статусов) */
+.table tbody td:first-child,
+.table tbody td:last-child {
+    color: #2196f3;
+}
+
+/* Стиль для кнопки деталей ошибки */
+.details-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ff9800;
+    margin-left: 8px;
+    padding: 4px 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.details-btn:hover {
+    background-color: rgba(255, 152, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.details-btn i {
+    pointer-events: none;
+    /* Чтобы иконка не перехватывала клик */
+}
+
+/* Стиль для строк с ошибками при наведении */
+.status-error-row:hover,
+.status-wrong-row:hover {
+    background-color: rgba(255, 152, 0, 0.05);
+    cursor: pointer;
+}
+
+/* ========== СТИЛИ ДЛЯ ОШИБОК ========== */
+
+/* Контейнер ошибки в модальном окне */
+.error-section .error-content {
+    background: #0a0a0a !important;
+    /* Чёрный фон */
+    border-left: 4px solid #f44336 !important;
+    /* Красная полоса слева */
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: #ff6b6b !important;
+    /* Ярко-красный текст */
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Стиль для текста ошибки */
+.error-content {
+    background: #0a0a0a;
+    color: #ff4444 !important;
+    font-weight: 500;
+}
+
+/* Дополнительный стиль для stderr в модальном окне */
+.modal-body .error-section .error-content {
+    background: #000000 !important;
+    color: #ff3333 !important;
+    border-left: 4px solid #ff0000 !important;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Заголовок секции ошибки */
+.error-section h3 {
+    color: #ff6b6b;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    border-left: 3px solid #f44336;
+    padding-left: 12px;
+}
+
+/* Иконка ошибки */
+.error-section h3 i {
+    color: #f44336;
+    margin-right: 8px;
+}
+
+/* Стиль для кода возврата при ошибке */
+.returncode-nonzero {
+    background: rgba(244, 67, 54, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #f44336;
+}
+
+/* Стиль для стека вызова ошибки */
+.error-stack-trace {
+    background: #0a0a0a;
+    color: #ff8888;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 12px;
+    overflow-x: auto;
+}
+
+/* Красная подсветка для строк с ошибкой в таблице */
+.status-error-row {
+    border-left: 3px solid #f44336;
+    background: rgba(244, 67, 54, 0.05);
+}
+
+.status-error-row:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+/* Бейдж ошибки */
+.status-badge.status-error {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Стиль для скроллбара в блоке ошибки */
+.error-content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.error-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.error-content::-webkit-scrollbar-thumb {
+    background: #f44336;
+    border-radius: 4px;
+}
+
+.error-content::-webkit-scrollbar-thumb:hover {
+    background: #ff6666;
+}
+
+/* ========== СТИЛИ ДЛЯ ПОДСВЕТКИ PYTHON КОДА ========== */
+
+.code-container {
+    background: #0a0a0a;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+    border: 1px solid #333;
+}
+
+.code-header {
+    background: #1a1a1a;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.code-header span {
+    color: #fff;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.copy-code-btn {
+    background: #2196f3;
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.copy-code-btn:hover {
+    background: #1976d2;
+    transform: translateY(-1px);
+}
+
+.python-code {
+    margin: 0;
+    padding: 15px;
+    overflow-x: auto;
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #fff;
+    background: #0a0a0a;
+}
+
+/* Цвета для подсветки синтаксиса Python */
+.python-code .python-keyword {
+    color: #c792ea;
+    font-weight: bold;
+}
+
+.python-code .python-string {
+    color: #c3e88d;
+}
+
+.python-code .python-comment {
+    color: #546e7a;
+    font-style: italic;
+}
+
+.python-code .python-number {
+    color: #f78c6c;
+}
+
+.python-code .python-function {
+    color: #82aaff;
+}
+
+.python-code .python-operator {
+    color: #89ddff;
+}
+
+/* Стиль для скроллбара в блоке кода */
+.python-code::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.python-code::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.python-code::-webkit-scrollbar-thumb {
+    background: #2196f3;
+    border-radius: 4px;
+}
+
+.python-code::-webkit-scrollbar-thumb:hover {
+    background: #64b5f6;
+}

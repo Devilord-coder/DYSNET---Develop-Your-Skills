@@ -2,8 +2,19 @@
 
 {% block content %}
 <h1>Регистрация</h1>
-<form action="" method="post">
+<form action="{{ url_for("edit_profile") }}" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
+
+    <p>
+        {{ form.avatar.label }}<br>
+        <input type="file" name="file"><br>
+        {% for error in form.avatar.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
     <p>
         {{ form.name.label }}<br>
         {{ form.name(class="form-control") }}<br>
@@ -13,6 +24,7 @@
     </p>
     {% endfor %}
     </p>
+
     <p>
         {{ form.surname.label }}<br>
         {{ form.surname(class="form-control") }}<br>
@@ -22,16 +34,18 @@
     </p>
     {% endfor %}
     </p>
+
     <p>
         {{ form.aboutme.label }}<br>
         {{ form.aboutme(class="form-control") }}<br>
-        {% for error in form.surname.errors %}
+        {% for error in form.aboutme.errors %}
     <p class="alert alert-danger" role="alert">
         {{ error }}
     </p>
     {% endfor %}
     </p>
+
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
+    {{ message }}
 </form>
 {% endblock %}
