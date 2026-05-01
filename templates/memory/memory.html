@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/memory/memory.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1>Мемори</h1>
+        <p class="text-muted">Тренировка памяти — найди все пары животных</p>
+    </div>
+
+    <div class="top-bar mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex gap-3">
+                <a href="{{ url_for('memory.statistics') }}" class="btn btn-outline-success btn-lg">
+                    <i class="bi bi-graph-up"></i> Просмотр статистики
+                </a>
+            </div>
+            
+            <div class="stats-text">
+                <span>Ходов: <strong id="moves">0</strong></span>
+                <span>| Найдено пар: <strong id="found">0</strong></span>
+            </div>
+
+            <div class="size-selector">
+                <label for="gridSize" class="me-2 fw-bold">Размер сетки:</label>
+                <select id="gridSize" class="form-select form-select-sm">
+                    <option value="2">2×2 (2 пары)</option>
+                    <option value="4" selected>4×4 (8 пар)</option>
+                    <option value="6">6×6 (18 пар)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="memory-board" id="memoryBoard">
+        <!-- Здесь будет сетка карточек -->
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="btn btn-primary btn-lg" id="newGameBtn">
+            <i class="fas fa-redo"></i> Новая игра
+        </button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/memory.js') }}"></script>
+{% endblock %}
