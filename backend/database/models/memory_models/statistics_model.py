@@ -8,7 +8,7 @@ class MemoryStatistics(SqlAlchemyBase):
     __tablename__ = "memory_statistics"
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    datetime = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    datetime = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     grid_size = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
     moves = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
     found_pairs = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)

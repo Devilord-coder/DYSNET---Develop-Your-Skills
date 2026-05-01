@@ -9,7 +9,7 @@ class EnglishStatistics(SqlAlchemyBase):
     __tablename__ = "english_statistics"
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    datetime = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    datetime = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     quantity_correct_answers = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     category = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     english_word = sqlalchemy.Column(sqlalchemy.String, nullable=True)
