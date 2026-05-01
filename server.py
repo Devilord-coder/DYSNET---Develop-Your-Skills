@@ -85,22 +85,6 @@ def send_email(to_email, subject, body_html):
     msg["Subject"] = subject
     msg.attach(MIMEText(body_html, "html"))
 
-    try:
-        if MAIL_USE_SSL:
-            server = smtplib.SMTP_SSL(MAIL_SERVER, MAIL_PORT)
-        else:
-            server = smtplib.SMTP(MAIL_SERVER, MAIL_PORT)
-            if MAIL_USE_TLS:
-                server.starttls()
-
-        server.login(MAIL_USERNAME, MAIL_PASSWORD)
-        server.send_message(msg)
-        server.quit()
-        return True
-    except Exception as e:
-        print(f"Ошибка отправки: {e}")
-        return False
-
 
 def send_confirmation_email(email, token):
     """Отправка письма для подтвержения почты"""
@@ -341,7 +325,9 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user)
+    return render_template(
+        "profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user
+    )
 
 
 @app.route("/mobile_app")
