@@ -352,6 +352,28 @@ def download_physics_app():
     )
 
 
+@app.route("/mobile_app")
+def mobile_app():
+    return render_template("mobile_app.html")
+
+
+@app.route('/download/physics-app')
+def download_physics_app():
+    downloads_dir = os.path.join(app.root_path, 'static', 'downloads')
+    filename = 'Windows_Experimentarium.zip'
+
+    # Проверяем существование файла
+    if not os.path.exists(os.path.join(downloads_dir, filename)):
+        return abort(404)
+
+    return send_from_directory(
+        downloads_dir,
+        filename,
+        as_attachment=True,
+        download_name='Windows_Experimentarium.zip'
+    )
+
+
 @app.route("/profile/edit", methods=["GET", "POST"])
 @login_required
 def edit_profile():

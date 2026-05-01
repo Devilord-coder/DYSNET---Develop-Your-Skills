@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -13,8 +13,8 @@
         </h1>
         <p class="hero-subtitle">Развивай навыки, становись лучше каждый день</p>
         <div class="hero-description">
-            <p>DYSNET — это платформа для тренировки ключевых навыков, которые пригодятся в IT и повседневной жизни. 
-            Выбирай упражнение, развивай скорость, память, реакцию и логику — всё в одном месте!</p>
+            <p>DYSNET — это платформа для тренировки ключевых навыков, которые пригодятся в IT и повседневной жизни.
+                Выбирай упражнение, развивай скорость, память, реакцию и логику — всё в одном месте!</p>
         </div>
     </div>
 
@@ -79,9 +79,9 @@
                 <i class="fas fa-newspaper"></i> Новости проекта
             </h2>
             {% if current_user.is_authenticated and current_user.role == 'admin' %}
-                <a href="{{ url_for('news.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Добавить новость
-                </a>
+            <a href="{{ url_for('news.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Добавить новость
+            </a>
             {% endif %}
         </div>
 
@@ -113,14 +113,31 @@
                                     </form>
                                 </div>
                             {% endif %}
-                        </div>
                     </div>
-                {% endfor %}
+                </div>
+                <div class="news-content">
+                    <p>{{ item.content }}</p>
+                </div>
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                <div class="news-actions">
+                    <a href="{{ url_for('news.edit', news_id=item.id) }}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Редактировать
+                    </a>
+                    <form action="{{ url_for('news.delete', news_id=item.id) }}" method="POST" style="display: inline;"
+                        onsubmit="return confirm('Удалить новость «{{ item.title }}»? Это действие нельзя отменить!');">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle"></i> Пока нет новостей. Загляните позже!
-            </div>
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> Пока нет новостей. Загляните позже!
+        </div>
         {% endif %}
     </div>
 </div>
