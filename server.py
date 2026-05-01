@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask, request, g, send_from_directory, session
+from flask import Flask, request, g, send_from_directory, flash
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -72,28 +72,14 @@ MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
 
-def send_confirmation_email(email, token):
-    """Отправка письма для подтвержения почты"""
-
-    link = f"http://127.0.0.1:8080/confirm/{token}"
+def send_email(to_email, subject, body_html):
+    """Универсальная отправка писем"""
 
     msg = MIMEMultipart()
     msg["From"] = MAIL_USERNAME
-    msg["To"] = email
-    msg["Subject"] = "Подтверждение регистрации"
-
-    body = f"""
-    <html>
-        <body>
-            <h2>Добро пожаловать!</h2>
-            <p>Для подтверждения регистрации перейдите по ссылке:</p>
-            <a href="{link}">{link}</a>
-            <p>Если вы не регистрировались, просто проигнорируйте это письмо.</p>
-        </body>
-    </html>
-    """
-
-    msg.attach(MIMEText(body, "html"))
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body_html, "html"))
 
     try:
         if MAIL_USE_SSL:
@@ -110,6 +96,43 @@ def send_confirmation_email(email, token):
     except Exception as e:
         print(f"Ошибка отправки: {e}")
         return False
+
+
+def send_confirmation_email(email, token):
+    """Отправка письма для подтвержения почты"""
+
+    link = f"http://127.0.0.1:8080/confirm/{token}"
+    subject = "Подтверждение регистрации"
+    body = f"""
+    <html>
+        <body>
+            <h2>Добро пожаловать!</h2>
+            <p>Для подтверждения регистрации перейдите по ссылке:</p>
+            <a href="{link}">{link}</a>
+            <p>Если вы не регистрировались, просто проигнорируйте это письмо.</p>
+        </body>
+    </html>
+    """
+    return send_email(email, subject, body)
+
+
+def send_reset_email(email, token):
+    """Отправка письма для восстановления пароля"""
+
+    link = f"http://127.0.0.1:8080/reset_password/{token}"
+    subject = "Восстановление пароля"
+    body = f"""
+    <html>
+        <body>
+            <h2>Восстановление пароля</h2>
+            <p>Вы запросили сброс пароля. Для установки нового пароля перейдите по ссылке:</p>
+            <a href="{link}">{link}</a>
+            <p>Ссылка действительна 2 часа.</p>
+            <p>Если вы не запрашивали сброс, просто проигнорируйте это письмо.</p>
+        </body>
+    </html>
+    """
+    return send_email(email, subject, body)
 
 
 @app.route("/uploads/<filename>")
@@ -231,7 +254,7 @@ def reqister():
 def confirm_page():
     """Страница ожидания для подтверждения"""
 
-    return render_template("confirm_page.html")
+    return render_template("confirm_page.html", title="Ожидание подтверждения")
 
 
 @app.route("/confirm/<token>")
@@ -247,6 +270,59 @@ def confirm_email(token):
         login_user(user)
         return redirect("/")
     return render_template("error.html", message="Неверная ссылка")
+
+
+@app.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+    """Получение почты пользователя, отправка письма"""
+
+    if request.method == "POST":
+        email = request.form.get("email")
+        db_sess = g.db_session
+        user = db_sess.query(User).filter(User.email == email).first()
+        if user:
+            token = secrets.token_urlsafe(32)
+            user.reset_token = token
+            user.reset_token_expires = datetime.datetime.now() + datetime.timedelta(
+                hours=2
+            )
+            db_sess.commit()
+            send_reset_email(user.email, token)
+        return render_template("reset_sent.html", title="Ожидание подтверждения")
+    return render_template("forgot_password.html", title="Смена пароля")
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    """Проверяем правильность токена, меняем пароль"""
+
+    db_sess = g.db_session
+    user = db_sess.query(User).filter(User.reset_token == token).first()
+
+    # Проверяем существование токена и срока действия
+    if not user or user.reset_token_expires < datetime.datetime.now():
+        flash("Ссылка устарела или неверна", "danger")
+        return redirect("/forgot_password")
+
+    if request.method == "POST":
+        password = request.form.get("password")
+        password_again = request.form.get("password_again")
+
+        if password != password_again:
+            flash("Пароли не совпадают", "danger")
+            return render_template(
+                "reset_password.html", token=token, title="Смена пароля"
+            )
+
+        user.set_password(password)
+        user.reset_token = None
+        user.reset_token_expires = None
+        db_sess.commit()
+
+        flash("Пароль успешно изменён! Войдите с новым паролем.", "success")
+        return redirect("/login")
+
+    return render_template("reset_password.html", token=token)
 
 
 @app.route("/profile", methods=["GET", "POST"])
