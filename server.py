@@ -27,6 +27,7 @@ from backend.errors import *
 # Работа с rest
 from backend.api import *
 from backend.utils.secure_email import secure_email
+from backend.utils.download_files import download_apps
 
 # ENV
 import os
@@ -39,6 +40,9 @@ DATABASE_PATH = os.getenv("DATABASE_PATH", "data/server.db")
 # Хост и порт
 HOST = os.getenv("FLASK_HOST", "0.0.0.0")
 PORT = os.getenv("FLASK_PORT", 8080)
+
+# Токен для скачивания файлов с диска
+DISK_AUTH_TOKEN = os.getenv("DISK_AUTH_TOKEN")
 
 # Приложение
 app = Flask(__name__)
@@ -174,6 +178,28 @@ def profile():
                            avatar=get_user_avatar(), user=current_user)
 
 
+@app.route("/mobile_app")
+def mobile_app():
+    return render_template("mobile_app.html")
+
+
+@app.route('/download/physics-app')
+def download_physics_app():
+    downloads_dir = os.path.join(app.root_path, 'static', 'downloads')
+    filename = 'Windows_Experimentarium.zip'
+
+    # Проверяем существование файла
+    if not os.path.exists(os.path.join(downloads_dir, filename)):
+        return abort(404)
+
+    return send_from_directory(
+        downloads_dir,
+        filename,
+        as_attachment=True,
+        download_name='Windows_Experimentarium.zip'
+    )
+
+
 @app.route("/profile/edit", methods=["GET", "POST"])
 @login_required
 def edit_profile():
@@ -276,8 +302,12 @@ def blueprint_init():
 def main():
     """Главная функция"""
 
+    # регистрация ошибок
     error_init()
+    # регистрация отдельных веток
     blueprint_init()
+    # скачивание файлов приложений из интернета
+    download_apps(DISK_AUTH_TOKEN)
     db_session.global_init(DATABASE_PATH)
     app.run(host=HOST, port=PORT)
 
