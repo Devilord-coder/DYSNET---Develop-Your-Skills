@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_app.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1>Скачивайте наши мобильные приложения</h1>
+<!-- Контейнер для нескольких карточек -->
+<div class="apps-container">
+    <!-- Карточка приложения -->
+    <div class="app-card">
+        <!-- Иконка Windows -->
+        <div class="app-icon windows-icon">
+            <i class="fab fa-windows"></i>
+        </div>
+
+        <!-- Заголовок -->
+        <h3>Приложение по физике</h3>
+
+        <!-- Описание -->
+        <div class="app-description">
+            Интерактивное приложение для изучения физики.
+        </div>
+
+        <!-- Информация о файле -->
+        <div class="app-info">
+            <span><i class="fas fa-code-branch"></i> v1.0.0</span>
+            <span><i class="fas fa-hdd"></i> 102 MB</span>
+            <span><i class="fas fa-calendar"></i> 2025</span>
+        </div>
+
+        <!-- Кнопка скачивания -->
+        <a href="{{ url_for('static', filename='downloads/Windows_Experimentarium.zip') }}" class="btn-windows-app"
+            download>
+            <i class="fab fa-windows"></i>
+            <span>Скачать приложение</span>
+            <i class="fas fa-download"></i>
+        </a>
+
+        <!-- Версия ОС -->
+        <div class="app-version">
+            <i class="fab fa-windows"></i> Windows 10/11
+        </div>
+    </div>
+</div>
+{% endblock %}

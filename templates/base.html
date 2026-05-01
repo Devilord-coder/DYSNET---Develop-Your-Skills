@@ -10,6 +10,8 @@
     <!-- Font Awesome Icons (локально или CDN) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/all.css') }}">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
@@ -30,7 +32,66 @@
                         <span class="brand-subtitle">- сайт для развития навыков</span>
                     </a>
 
-                    <div class="auth-buttons-wrapper ml-auto">
+                    <!-- Кнопки навигации с круглой рамкой -->
+                    <div class="nav-buttons">
+                        <a href="/" class="nav-btn {% if request.endpoint == 'index' %}active{% endif %}">
+                            <i class="fas fa-home"></i>
+                            <span>Главная</span>
+                        </a>
+                        <a href="/skills"
+                            class="nav-btn {% if request.endpoint == 'skills' or request.path == '/skills' %}active{% endif %}">
+                            <i class="fas fa-code"></i>
+                            <span>Навыки</span>
+                        </a>
+                        <a href="/mobile_app"
+                            class="nav-btn {% if request.endpoint == 'mobile_app' or request.path == '/mobile_app' %}active{% endif %}">
+                            <i class="fas fa-mobile-app"></i>
+                            <span>Мобильное приложение</span>
+                        </a>
+                        <a href="/contacts"
+                            class="nav-btn {% if request.endpoint == 'contacts' or request.path == '/contacts' %}active{% endif %}">
+                            <i class="fas fa-address-card"></i>
+                            <span>Контакты</span>
+                        </a>
+                    </div>
+
+                    <!-- Бургер-меню (только для мобильных) -->
+                    <button class="burger-menu" id="burgerMenu">
+                        <span class="burger-line"></span>
+                        <span class="burger-line"></span>
+                        <span class="burger-line"></span>
+                    </button>
+
+                    <!-- Контейнер для мобильного меню -->
+                    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+                    <div class="mobile-menu" id="mobileMenu">
+                        <div class="mobile-menu-header">
+                            <i class="fas fa-bars"></i> Меню
+                        </div>
+                        <div class="mobile-nav-buttons">
+                            <a href="/" class="nav-btn-mobile">
+                                <i class="fas fa-home"></i>
+                                <span>Главная</span>
+                            </a>
+                            <a href="/skills" class="nav-btn-mobile">
+                                <i class="fas fa-code"></i>
+                                <span>Навыки</span>
+                            </a>
+                            <a href="/contacts" class="nav-btn-mobile">
+                                <i class="fas fa-address-card"></i>
+                                <span>Контакты</span>
+                            </a>
+                        </div>
+                        <div class="mobile-divider"></div>
+                        <div id="mobileAuthButtons"></div>
+                    </div>
+
+                    <!-- Подключение CSS и JS -->
+                    <link rel="stylesheet" href="{{ url_for('static', filename='css/burger-menu.css') }}">
+                    <script src="{{ url_for('static', filename='js/burger-menu.js') }}"></script>
+
+                    <!-- Оригинальные кнопки авторизации (скрываются на мобильных) -->
+                    <div class="auth-buttons-wrapper ml-auto" id="authButtonsWrapper">
                         {% if current_user.is_authenticated %}
                         <div class="user-info">
                             <div class="user-actions">

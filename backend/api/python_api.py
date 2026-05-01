@@ -4,7 +4,7 @@ from flask import (
     g, jsonify, make_response,
     url_for
 )
-from flask_login import current_user
+from flask_login import current_user, login_required
 import json
 
 from backend.utils.secure_email import secure_email
@@ -34,15 +34,22 @@ def check_answer():
     code = request.form.get('code')
     task_id = request.form.get('task_id')
     task_name = request.form.get('task_name')
+    print("Получены данные")
+    print('Код:', code, '', sep='\n')
+    print(f'task_id - {task_id}')
+    print(f"task_name - {task_name}")
     filename = f"tests/solution_{secure_email(current_user)}_{task_id}"
     result = check_task(code, task_id, filename)
     data_json = json.dumps(result, ensure_ascii=False)
     for test in result:
         print(test)
+    if all(map(lambda x: x['accept'], result)):
+        print("Все тесты пройдены ✅")
     return render_template(
         'python/task_results.html',
         data_json=data_json,
-        task_name=task_name
+        task_name=task_name,
+        title=f"Задание {task_name}"
     )
 
 
@@ -56,7 +63,8 @@ def get_task(task_id):
     return render_template(
         "python/task.html", task_title=task.name,
         task_text=task.text, form=form,
-        task_id=task_id
+        task_id=task_id,
+        title=f"Задание {task.name}"
         )
 
 
@@ -76,6 +84,7 @@ def get_tasks(level):
 
 
 @bp.route("/choose_level")
+@login_required
 def choose_level():
     """Выбор уровня сложности"""
 

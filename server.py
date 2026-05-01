@@ -27,6 +27,7 @@ from backend.errors import *
 # Работа с rest
 from backend.api import *
 from backend.utils.secure_email import secure_email
+from backend.utils.download_files import download_apps
 
 # ENV
 import os
@@ -39,6 +40,9 @@ DATABASE_PATH = os.getenv("DATABASE_PATH", "data/server.db")
 # Хост и порт
 HOST = os.getenv("FLASK_HOST", "0.0.0.0")
 PORT = os.getenv("FLASK_PORT", 8080)
+
+# Токен для скачивания файлов с диска
+DISK_AUTH_TOKEN = os.getenv("DISK_AUTH_TOKEN")
 
 # Приложение
 app = Flask(__name__)
@@ -87,6 +91,20 @@ def index():
     """Главная страница"""
 
     return render_template("index.html", title="Главная страница")
+
+
+@app.route("/contacts")
+def contacts():
+    """Страница с контактами"""
+
+    return render_template("contacts.html", title="Контакты")
+
+
+@app.route("/skills")
+def skills():
+    """Страница навыков"""
+
+    return render_template("skills.html", title="Улучшение навыков")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -155,7 +173,31 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar())
+    return render_template("profile.html",
+                           title=f'Профиль пользователя "{current_user.name}"',
+                           avatar=get_user_avatar(), user=current_user)
+
+
+@app.route("/mobile_app")
+def mobile_app():
+    return render_template("mobile_app.html")
+
+
+@app.route('/download/physics-app')
+def download_physics_app():
+    downloads_dir = os.path.join(app.root_path, 'static', 'downloads')
+    filename = 'Windows_Experimentarium.zip'
+
+    # Проверяем существование файла
+    if not os.path.exists(os.path.join(downloads_dir, filename)):
+        return abort(404)
+
+    return send_from_directory(
+        downloads_dir,
+        filename,
+        as_attachment=True,
+        download_name='Windows_Experimentarium.zip'
+    )
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -186,7 +228,7 @@ def edit_profile():
         db_sess.commit()
         return redirect("/profile")
 
-    return render_template("edit_profile.html", title="Профиль", form=form)
+    return render_template("edit_profile.html", title=f'Профиль пользователя "{current_user.name}"', form=form)
 
 
 @app.route("/profile/<int:user_id>")
@@ -260,8 +302,12 @@ def blueprint_init():
 def main():
     """Главная функция"""
 
+    # регистрация ошибок
     error_init()
+    # регистрация отдельных веток
     blueprint_init()
+    # скачивание файлов приложений из интернета
+    download_apps(DISK_AUTH_TOKEN)
     db_session.global_init(DATABASE_PATH)
     app.run(host=HOST, port=PORT)
 
