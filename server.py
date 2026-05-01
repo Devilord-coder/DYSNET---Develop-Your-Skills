@@ -166,21 +166,6 @@ def reqister():
     return render_template("register_form.html", title="Регистрация", form=form)
 
 
-@app.route("/profile", methods=["GET", "POST"])
-@login_required
-def profile():
-    """Профиль пользователя"""
-
-    def get_user_avatar():
-        for file in os.listdir("data/uploads"):
-            if secure_email(current_user) in file:
-                print(file)
-                return file
-        return None
-
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar())
-
-
 @app.route("/mobile_app")
 def mobile_app():
     return render_template("mobile_app.html")
@@ -201,6 +186,26 @@ def download_physics_app():
         as_attachment=True,
         download_name='Windows_Experimentarium.zip'
     )
+
+
+@app.route("/articles")
+def articles():
+    return render_template("articles.html", title="Научные статьи")
+
+
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    """Профиль пользователя"""
+
+    def get_user_avatar():
+        for file in os.listdir("data/uploads"):
+            if secure_email(current_user) in file:
+                print(file)
+                return file
+        return None
+
+    return render_template("profile.html", title=f"Профиль пользователя {current_user.name}", avatar=get_user_avatar())
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -232,7 +237,7 @@ def edit_profile():
         db_sess.commit()
         return redirect("/profile")
 
-    return render_template("edit_profile.html", title="Профиль", form=form)
+    return render_template("edit_profile.html", title=f"Изменение профиля {current_user.name}", form=form)
 
 
 @app.route("/profile/<int:user_id>")

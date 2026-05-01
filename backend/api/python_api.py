@@ -146,16 +146,6 @@ def add_task():
         name_error = None
         text_error = None
 
-        if not form.name.data or len(form.name.data) < 3:
-            name_error = 'Название должно содержать минимум 3 символа'
-            form.name.errors = list(form.name.errors)
-            form.name.errors.append(name_error)
-
-        if not form.text.data or len(form.text.data) < 10:
-            text_error = 'Текст задания должен содержать минимум 10 символов'
-            form.text.errors = list(form.text.errors)
-            form.text.errors.append(text_error)
-
         # Собираем тесты из формы
         tests_data = []
 
@@ -199,13 +189,9 @@ def add_task():
 
             # Проверяем, заполнен ли тест (хотя бы одно поле не пустое)
             if input_val or output_val:
-                if input_val and output_val:
-                    has_valid_test = True
-                else:
-                    test_errors.append(f'Тест {idx + 1}: заполнены не все поля (ввод: {"есть" if input_val else "пусто"}, вывод: {"есть" if output_val else "пусто"})')
-
-        if not has_valid_test and len(tests_data) > 0:
-            test_errors.append('Необходимо добавить хотя бы один полностью заполненный тест')
+                has_valid_test = True
+            else:
+                test_errors.append(f'Тест {idx + 1}: заполнены не все поля (ввод: {"есть" if input_val else "пусто"}, вывод: {"есть" if output_val else "пусто"})')
 
         if test_errors:
             form.tests.errors = test_errors
@@ -242,7 +228,7 @@ def add_task():
             input_val = test_data.get('input', '').strip()
             output_val = test_data.get('output', '').strip()
 
-            if input_val and output_val:  # Сохраняем только полностью заполненные тесты
+            if input_val or output_val:  # Сохраняем только полностью заполненные тесты
                 test = PythonTest(
                     task_id=task.id,
                     args=input_val,

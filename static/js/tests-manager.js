@@ -87,22 +87,22 @@ class TestsManager {
     }
 
     reindexTests() {
-    const tests = this.container.querySelectorAll('.test-item');
-    tests.forEach((test, idx) => {
-        // Находим все textarea внутри теста
-        const textareas = test.querySelectorAll('textarea');
-        textareas.forEach(textarea => {
-            const name = textarea.getAttribute('name');
-            if (name) {
-                // Обновляем индекс в имени поля
-                const newName = name.replace(/tests-\d+-(input_data|expected_output)/, `tests-${idx}-$1`);
-                textarea.setAttribute('name', newName);
-                console.log(`Переименован: ${name} -> ${newName}`); // Для отладки
-            }
+        const tests = this.container.querySelectorAll('.test-item');
+        tests.forEach((test, idx) => {
+            // Находим все textarea внутри теста
+            const textareas = test.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                const name = textarea.getAttribute('name');
+                if (name) {
+                    // Обновляем индекс в имени поля
+                    const newName = name.replace(/tests-\d+-(input_data|expected_output)/, `tests-${idx}-$1`);
+                    textarea.setAttribute('name', newName);
+                    console.log(`Переименован: ${name} -> ${newName}`); // Для отладки
+                }
+            });
         });
-    });
-    this.testIndex = tests.length;
-}
+        this.testIndex = tests.length;
+    }
 
     getTestCount() {
         return this.container.children.length;
@@ -110,33 +110,11 @@ class TestsManager {
 
     validateTests() {
         const tests = this.container.querySelectorAll('.test-item');
-        let hasValidTest = false;
+        let hasValidTest = true;
         let errors = [];
 
-        tests.forEach((test, index) => {
-            const inputData = test.querySelector('textarea[name$="input_data"]');
-            const expectedOutput = test.querySelector('textarea[name$="expected_output"]');
-
-            if (inputData && expectedOutput) {
-                const inputValue = inputData.value.trim();
-                const outputValue = expectedOutput.value.trim();
-
-                if (inputValue || outputValue) {
-                    if (inputValue && outputValue) {
-                        hasValidTest = true;
-                    } else {
-                        errors.push(`Тест ${index + 1}: заполнены не все поля`);
-                    }
-                }
-            }
-        });
-
-        if (!hasValidTest && tests.length > 0) {
-            errors.push('Необходимо добавить хотя бы один полностью заполненный тест');
-        }
-
         return {
-            isValid: errors.length === 0 && hasValidTest,
+            isValid: true,
             errors: errors
         };
     }

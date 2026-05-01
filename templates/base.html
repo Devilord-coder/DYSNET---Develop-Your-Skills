@@ -15,6 +15,7 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aricles.css') }}">
 
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <title>{{ title }}</title>
@@ -45,10 +46,15 @@
                             <i class="fas fa-code"></i>
                             <span>Навыки</span>
                         </a>
+                        <a href="/articles"
+                            class="nav-btn {% if request.endpoint == 'articles' or request.path == '/articles' %}active{% endif %}">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Научные статьи</span>
+                        </a>
                         <a href="/mobile_app"
                             class="nav-btn {% if request.endpoint == 'mobile_app' or request.path == '/mobile_app' %}active{% endif %}">
                             <i class="fab fa-apple"></i>
-                            <span>Мобильное приложение</span>
+                            <span>Приложение</span>
                         </a>
                         <a href="/contacts"
                             class="nav-btn {% if request.endpoint == 'contacts' or request.path == '/contacts' %}active{% endif %}">
@@ -79,9 +85,13 @@
                                 <i class="fas fa-code"></i>
                                 <span>Навыки</span>
                             </a>
+                            <a href="/articles" class="nav-btn-mobile">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Научные статьи</span>
+                            </a>
                             <a href="/mobile_app" class="nav-btn-mobile">
                                 <i class="fab fa-apple"></i>
-                                <span>Мобильное приложение</span>
+                                <span>Приложение</span>
                             </a>
                             <a href="/contacts" class="nav-btn-mobile">
                                 <i class="fas fa-address-card"></i>
