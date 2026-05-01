@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask, request, g, send_from_directory
+from flask import Flask, request, g, send_from_directory, session
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -14,6 +14,7 @@ from sqlalchemy import desc
 # Встроенные библиотеки
 import os
 import datetime
+import secrets
 
 # Формы регистрации/авторизации
 from backend.forms import *
@@ -32,6 +33,11 @@ from backend.utils.secure_email import secure_email
 # ENV
 import os
 from dotenv import load_dotenv
+
+# Работа с почтой
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 load_dotenv()
 
@@ -55,6 +61,55 @@ app.config["UPLOAD_FOLDER"] = "data/uploads"
 login_manager = LoginManager()
 login_manager.init_app(app)
 api = Api(app)
+
+# Настройки почты из .env
+MAIL_SERVER = os.getenv("MAIL_SERVER")
+MAIL_PORT = int(os.getenv("MAIL_PORT", 587))
+MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "True") == "True"
+MAIL_USE_SSL = os.getenv("MAIL_USE_SSL", "False") == "True"
+MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
+
+
+def send_confirmation_email(email, token):
+    """Отправка письма для подтвержения почты"""
+
+    link = f"http://127.0.0.1:8080/confirm/{token}"
+
+    msg = MIMEMultipart()
+    msg["From"] = MAIL_USERNAME
+    msg["To"] = email
+    msg["Subject"] = "Подтверждение регистрации"
+
+    body = f"""
+    <html>
+        <body>
+            <h2>Добро пожаловать!</h2>
+            <p>Для подтверждения регистрации перейдите по ссылке:</p>
+            <a href="{link}">{link}</a>
+            <p>Если вы не регистрировались, просто проигнорируйте это письмо.</p>
+        </body>
+    </html>
+    """
+
+    msg.attach(MIMEText(body, "html"))
+
+    try:
+        if MAIL_USE_SSL:
+            server = smtplib.SMTP_SSL(MAIL_SERVER, MAIL_PORT)
+        else:
+            server = smtplib.SMTP(MAIL_SERVER, MAIL_PORT)
+            if MAIL_USE_TLS:
+                server.starttls()
+
+        server.login(MAIL_USERNAME, MAIL_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        return True
+    except Exception as e:
+        print(f"Ошибка отправки: {e}")
+        return False
 
 
 @app.route("/uploads/<filename>")
@@ -117,6 +172,13 @@ def login():
         db_sess = g.db_session
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
+            if not user.is_active:
+                # Генерируем токен для неподверждённых пользователей
+                token = secrets.token_urlsafe(32)
+                user.confirmation_token = token
+                send_confirmation_email(user.email, token)
+                db_sess.commit()
+                return redirect("/confirm_page")
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template(
@@ -155,11 +217,36 @@ def reqister():
             email=form.email.data,
             aboutme=form.aboutme.data,
         )
+        token = secrets.token_urlsafe(32)  # генерируем токен для подтверждения
+        send_confirmation_email(user.email, token)
+        user.confirmation_token = token
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect("/login")
+        return redirect("/confirm_page")
     return render_template("register_form.html", title="Регистрация", form=form)
+
+
+@app.route("/confirm_page")
+def confirm_page():
+    """Страница ожидания для подтверждения"""
+
+    return render_template("confirm_page.html")
+
+
+@app.route("/confirm/<token>")
+def confirm_email(token):
+    """Проверяем правильность токена, подтверждаем вход"""
+
+    db_sess = g.db_session
+    user = db_sess.query(User).filter(User.confirmation_token == token).first()
+    if user:
+        user.is_active = True
+        user.confirmation_token = None
+        db_sess.commit()
+        login_user(user)
+        return redirect("/")
+    return render_template("error.html", message="Неверная ссылка")
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -174,7 +261,9 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user)
+    return render_template(
+        "profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user
+    )
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
