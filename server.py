@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask, request, g, send_from_directory, flash
+from flask import Flask, request, g, send_from_directory, flash, jsonify
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -384,6 +384,55 @@ def view_profile(user_id):
     if not user:
         abort(404)
     return render_template("profile.html", title=f"Профиль {user.name}", user=user)
+
+
+@app.route("/api/contacts", methods=["POST"])
+def add_contact_message():
+    """Отправка письма от пользователя со страницы контакотов"""
+
+    # Получение данных пользователя
+    data = request.get_json()
+    name = data.get("name", "")
+    email = data.get("email", "")
+    phone = data.get("phone", "")
+    subject = data.get("subject", "")
+    message = data.get("message", "")
+
+    # Тело письма админа
+    admin_body = f"""
+    <html>
+        <body>
+            <h2>Новое сообщение с сайта</h2>
+            <p><strong>Отправитель:</strong> {name}</p>
+            <p><strong>Email для ответа:</strong> {email}</p>
+            <p><strong>Телефон:</strong> {phone if phone else 'Не указан'}</p>
+            <p><strong>Тема:</strong> {subject}</p>
+            <p><strong>Сообщение:</strong></p>
+            <p>{message}</p>
+        </body>
+    </html>
+    """
+
+    # Тело письма пользователя
+    user_body = f"""
+    <html>
+        <body>
+            <h2>Здравствуйте, {name}!</h2>
+            <p>Вы отправили сообщение на сайт DYSNET. Мы получили его и ответим вам в ближайшее время.</p>
+            <h3>Копия вашего сообщения:</h3>
+            <p><strong>Тема:</strong> {subject}</p>
+            <p><strong>Текст:</strong></p>
+            <p>{message}</p>
+            <hr>
+            <p><small>Это автоматическая копия, пожалуйста, не отвечайте на это письмо.</small></p>
+        </body>
+    </html>
+    """
+
+    # Отправляем письма
+    send_email(MAIL_USERNAME, f"Обратная связь: {subject} от {name}", admin_body)
+    send_email(email, f"Копия вашего сообщения: {subject}", user_body)
+    return jsonify({"success": True, "message": "Сообщение отправлено"})
 
 
 @app.route("/logout")
