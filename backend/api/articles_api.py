@@ -36,7 +36,7 @@ def articles():
                 search_query.lower() in a.text.lower())
         ]
     return render_template("articles/articles.html", title="Научные статьи", articles=articles,
-                           search_query=search_query, datetime=datetime)
+                           search_query=search_query)
 
 
 @bp.route("/articles/<int:article_id>")
