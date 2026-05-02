@@ -22,6 +22,4 @@ class EnglishStatistics(SqlAlchemyBase):
         sqlalchemy.ForeignKey("users.id"),
         nullable=False,
     )
-    user_relationship = orm.relationship(
-        "User", back_populates="english_statistics"
-    )
+    user_relationship = orm.relationship("User", back_populates="english_statistics")
