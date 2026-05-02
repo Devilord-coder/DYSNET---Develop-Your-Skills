@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask, request, g, send_from_directory
+from flask import Flask, request, g, send_from_directory, flash, jsonify
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -14,6 +14,7 @@ from sqlalchemy import desc
 # Встроенные библиотеки
 import os
 import datetime
+import secrets
 
 # Формы регистрации/авторизации
 from backend.forms import *
@@ -33,6 +34,11 @@ from backend.utils.download_files import download_apps
 # ENV
 import os
 from dotenv import load_dotenv
+
+# Работа с почтой
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 load_dotenv()
 
@@ -59,6 +65,62 @@ app.config["UPLOAD_FOLDER"] = "data/uploads"
 login_manager = LoginManager()
 login_manager.init_app(app)
 api = Api(app)
+
+# Настройки почты из .env
+MAIL_SERVER = os.getenv("MAIL_SERVER")
+MAIL_PORT = int(os.getenv("MAIL_PORT", 587))
+MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "True") == "True"
+MAIL_USE_SSL = os.getenv("MAIL_USE_SSL", "False") == "True"
+MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
+
+
+def send_email(to_email, subject, body_html):
+    """Универсальная отправка писем"""
+
+    msg = MIMEMultipart()
+    msg["From"] = MAIL_USERNAME
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body_html, "html"))
+
+
+def send_confirmation_email(email, token):
+    """Отправка письма для подтвержения почты"""
+
+    link = f"http://127.0.0.1:8080/confirm/{token}"
+    subject = "Подтверждение регистрации"
+    body = f"""
+    <html>
+        <body>
+            <h2>Добро пожаловать!</h2>
+            <p>Для подтверждения регистрации перейдите по ссылке:</p>
+            <a href="{link}">{link}</a>
+            <p>Если вы не регистрировались, просто проигнорируйте это письмо.</p>
+        </body>
+    </html>
+    """
+    return send_email(email, subject, body)
+
+
+def send_reset_email(email, token):
+    """Отправка письма для восстановления пароля"""
+
+    link = f"http://127.0.0.1:8080/reset_password/{token}"
+    subject = "Восстановление пароля"
+    body = f"""
+    <html>
+        <body>
+            <h2>Восстановление пароля</h2>
+            <p>Вы запросили сброс пароля. Для установки нового пароля перейдите по ссылке:</p>
+            <a href="{link}">{link}</a>
+            <p>Ссылка действительна 2 часа.</p>
+            <p>Если вы не запрашивали сброс, просто проигнорируйте это письмо.</p>
+        </body>
+    </html>
+    """
+    return send_email(email, subject, body)
 
 
 @app.route("/uploads/<filename>")
@@ -121,6 +183,13 @@ def login():
         db_sess = g.db_session
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
+            if not user.is_active:
+                # Генерируем токен для неподверждённых пользователей
+                token = secrets.token_urlsafe(32)
+                user.confirmation_token = token
+                send_confirmation_email(user.email, token)
+                db_sess.commit()
+                return redirect("/confirm_page")
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template(
@@ -159,11 +228,89 @@ def reqister():
             email=form.email.data,
             aboutme=form.aboutme.data,
         )
+        token = secrets.token_urlsafe(32)  # генерируем токен для подтверждения
+        send_confirmation_email(user.email, token)
+        user.confirmation_token = token
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect("/login")
+        return redirect("/confirm_page")
     return render_template("register_form.html", title="Регистрация", form=form)
+
+
+@app.route("/confirm_page")
+def confirm_page():
+    """Страница ожидания для подтверждения"""
+
+    return render_template("confirm_page.html", title="Ожидание подтверждения")
+
+
+@app.route("/confirm/<token>")
+def confirm_email(token):
+    """Проверяем правильность токена, подтверждаем вход"""
+
+    db_sess = g.db_session
+    user = db_sess.query(User).filter(User.confirmation_token == token).first()
+    if user:
+        user.is_active = True
+        user.confirmation_token = None
+        db_sess.commit()
+        login_user(user)
+        return redirect("/")
+    return render_template("error.html", message="Неверная ссылка")
+
+
+@app.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+    """Получение почты пользователя, отправка письма"""
+
+    if request.method == "POST":
+        email = request.form.get("email")
+        db_sess = g.db_session
+        user = db_sess.query(User).filter(User.email == email).first()
+        if user:
+            token = secrets.token_urlsafe(32)
+            user.reset_token = token
+            user.reset_token_expires = datetime.datetime.now() + datetime.timedelta(
+                hours=2
+            )
+            db_sess.commit()
+            send_reset_email(user.email, token)
+        return render_template("reset_sent.html", title="Ожидание подтверждения")
+    return render_template("forgot_password.html", title="Смена пароля")
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    """Проверяем правильность токена, меняем пароль"""
+
+    db_sess = g.db_session
+    user = db_sess.query(User).filter(User.reset_token == token).first()
+
+    # Проверяем существование токена и срока действия
+    if not user or user.reset_token_expires < datetime.datetime.now():
+        flash("Ссылка устарела или неверна", "danger")
+        return redirect("/forgot_password")
+
+    if request.method == "POST":
+        password = request.form.get("password")
+        password_again = request.form.get("password_again")
+
+        if password != password_again:
+            flash("Пароли не совпадают", "danger")
+            return render_template(
+                "reset_password.html", token=token, title="Смена пароля"
+            )
+
+        user.set_password(password)
+        user.reset_token = None
+        user.reset_token_expires = None
+        db_sess.commit()
+
+        flash("Пароль успешно изменён! Войдите с новым паролем.", "success")
+        return redirect("/login")
+
+    return render_template("reset_password.html", token=token)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -178,7 +325,9 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title="Профиль", avatar=get_user_avatar())
+    return render_template(
+        "profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user
+    )
 
 
 @app.route("/mobile_app")
@@ -245,6 +394,55 @@ def view_profile(user_id):
     if not user:
         abort(404)
     return render_template("profile.html", title=f"Профиль {user.name}", user=user)
+
+
+@app.route("/api/contacts", methods=["POST"])
+def add_contact_message():
+    """Отправка письма от пользователя со страницы контакотов"""
+
+    # Получение данных пользователя
+    data = request.get_json()
+    name = data.get("name", "")
+    email = data.get("email", "")
+    phone = data.get("phone", "")
+    subject = data.get("subject", "")
+    message = data.get("message", "")
+
+    # Тело письма админа
+    admin_body = f"""
+    <html>
+        <body>
+            <h2>Новое сообщение с сайта</h2>
+            <p><strong>Отправитель:</strong> {name}</p>
+            <p><strong>Email для ответа:</strong> {email}</p>
+            <p><strong>Телефон:</strong> {phone if phone else 'Не указан'}</p>
+            <p><strong>Тема:</strong> {subject}</p>
+            <p><strong>Сообщение:</strong></p>
+            <p>{message}</p>
+        </body>
+    </html>
+    """
+
+    # Тело письма пользователя
+    user_body = f"""
+    <html>
+        <body>
+            <h2>Здравствуйте, {name}!</h2>
+            <p>Вы отправили сообщение на сайт DYSNET. Мы получили его и ответим вам в ближайшее время.</p>
+            <h3>Копия вашего сообщения:</h3>
+            <p><strong>Тема:</strong> {subject}</p>
+            <p><strong>Текст:</strong></p>
+            <p>{message}</p>
+            <hr>
+            <p><small>Это автоматическая копия, пожалуйста, не отвечайте на это письмо.</small></p>
+        </body>
+    </html>
+    """
+
+    # Отправляем письма
+    send_email(MAIL_USERNAME, f"Обратная связь: {subject} от {name}", admin_body)
+    send_email(email, f"Копия вашего сообщения: {subject}", user_body)
+    return jsonify({"success": True, "message": "Сообщение отправлено"})
 
 
 @app.route("/logout")

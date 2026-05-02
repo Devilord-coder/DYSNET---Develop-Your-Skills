@@ -32,7 +32,7 @@ def save_statistics(
     statistic = EnglishStatistics()
     statistic.skill = skill
     statistic.user = user_id
-    statistic.datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    statistic.datetime = datetime.now()
 
     # Сохранение передаваемой информации
     if category:

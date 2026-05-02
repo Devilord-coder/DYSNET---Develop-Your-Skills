@@ -22,6 +22,11 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     role = sqlalchemy.Column(sqlalchemy.String, nullable=False, default="user")
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
+    confirmation_token = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    is_active = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    reset_token = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    reset_token_expires = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
+
     cursive_printing_statistics = orm.relationship(
         "CursivePrintingStatistics", back_populates="user_relationship"
     )

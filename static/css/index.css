@@ -213,16 +213,38 @@
     display: block;
 }
 
-.news-image {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 15px;
-    margin-bottom: 18px;
+.news-card-cover {
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    min-height: 350px;
+    position: relative;
 }
 
-.news-image img {
-    width: 100%;
+.news-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
+    border-radius: 20px;
+    padding: 25px;
     height: 100%;
-    object-fit: cover;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.news-overlay .news-title {
+    color: white;
+}
+
+.news-overlay .news-meta {
+    color: rgba(255,255,255,0.8);
+    border-bottom-color: rgba(255,255,255,0.2);
+}
+
+.news-overlay .news-content p {
+    color: rgba(255,255,255,0.9);
+}
+
+.news-overlay .news-actions {
+    margin-top: 15px;
 }

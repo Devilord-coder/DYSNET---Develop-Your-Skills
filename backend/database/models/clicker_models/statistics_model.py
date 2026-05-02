@@ -9,7 +9,7 @@ class ClickerStatistics(SqlAlchemyBase):
     __tablename__ = "clicker_statistics"
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    datetime = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    datetime = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     quantity_correct_answers = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
     user = sqlalchemy.Column(
         sqlalchemy.Integer,

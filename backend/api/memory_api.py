@@ -16,7 +16,7 @@ def save_statistics(grid_size=0, moves=0, found_pairs=0):
 
     if current_user.is_authenticated:
         statistics = MemoryStatistics()
-        statistics.datetime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        statistics.datetime = datetime.now()
         statistics.grid_size = grid_size
         statistics.moves = moves
         statistics.found_pairs = found_pairs

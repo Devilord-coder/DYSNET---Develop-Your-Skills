@@ -103,7 +103,7 @@ def check_key():
         session["end_time"] = time.time()
         if current_user.is_authenticated:
             statistics = CursivePrintingStatistics()
-            statistics.datetime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            statistics.datetime = datetime.now()
             training_time = round(
                 session.get("end_time", 0) - session.get("start_time", 0), 3
             )
