@@ -11,11 +11,7 @@ class PythonTest(SqlAlchemyBase, SerializerMixin):
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     # id задания
-    task_id = sa.Column(
-        sa.Integer,
-        sa.ForeignKey("python_tasks.id"),
-        nullable=False
-    )
+    task_id = sa.Column(sa.Integer, sa.ForeignKey("python_tasks.id"), nullable=False)
     args = sa.Column(sa.String)
     result = sa.Column(sa.String)
     # связь с заданиями

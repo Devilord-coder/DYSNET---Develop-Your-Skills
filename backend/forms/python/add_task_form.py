@@ -2,11 +2,18 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, FieldList, FormField
 from wtforms.validators import DataRequired, NumberRange, ValidationError, Optional
 
+
 class TestForm(FlaskForm):
     """Форма для одного теста"""
 
-    input_data = TextAreaField("Ввод", validators=[DataRequired(message="Поле 'Ввод' обязательно")])
-    expected_output = TextAreaField("Ожидаемый результат", validators=[DataRequired(message="Поле 'Ожидаемый результат' обязательно")])
+    input_data = TextAreaField(
+        "Ввод", validators=[DataRequired(message="Поле 'Ввод' обязательно")]
+    )
+    expected_output = TextAreaField(
+        "Ожидаемый результат",
+        validators=[DataRequired(message="Поле 'Ожидаемый результат' обязательно")],
+    )
+
 
 class AddTaskForm(FlaskForm):
     """Форма для добавления заданий с тестами"""
@@ -32,4 +39,6 @@ class AddTaskForm(FlaskForm):
                 break
 
         if not has_valid_test:
-            raise ValidationError("Необходимо добавить хотя бы один полностью заполненный тест")
+            raise ValidationError(
+                "Необходимо добавить хотя бы один полностью заполненный тест"
+            )
