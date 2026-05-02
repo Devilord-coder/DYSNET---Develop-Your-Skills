@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/web_articles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Заголовок секции -->
+            <div class="articles-header mb-5 text-center">
+                <h1 class="articles-title">
+                    <i class="bi bi-journal-bookmark-fill me-3"></i>
+                    Научные статьи
+                </h1>
+                <p class="articles-subtitle">Полезные материалы по разным темам</p>
+            </div>
+
+            <!-- Поиск и фильтрация -->
+            <div class="articles-search mb-4">
+                <form method="GET" action="{{ url_for('articles.articles') }}" id="searchForm">
+                    <div class="input-group">
+                        <!--
+                        <span class="input-group-text bg-transparent border-primary">
+                            <i class="bi bi-search text-primary"></i>
+                        </span>
+                    -->
+                        <input type="text" class="form-control" name="search" placeholder="Поиск статей..."
+                            value="{{ search_query }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i> Найти
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {% if articles %}
+            <!-- Сетка статей -->
+            <div class="articles-grid" id="articlesGrid">
+                {% for article in articles %}
+                <article class="article-card" data-article-id="{{ article.id }}" data-title="{{ article.title }}">
+                    <div class="article-card-inner">
+                        <!-- Заголовок -->
+                        <h3 class="article-title">{{ article.title }}</h3>
+
+                        <!-- Иконка категории -->
+                        <div class="article-category">
+                            <i class="bi bi-{{ article.icon | default('file-text') }}"></i>
+                            <span>{{ article.theme.name | default('Статья') }}</span>
+                        </div>
+
+                        <!-- Краткое описание -->
+                        <p class="article-excerpt">{{ article.text[:150] + '...' }}</p>
+
+                        <!-- Мета-информация -->
+                        <div class="article-meta">
+                            <div class="meta-item">
+                                <i class="bi bi-calendar3"></i>
+                                <span>{{ datetime(article.created_date).strftime("%A, %d %B %Y") }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Теги -->
+                        {% if article.tags %}
+                        <div class="article-tags">
+                            {% for tag in article.tags.split(", ")[:3] %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Кнопка чтения -->
+                        <a href="{{ url_for('articles.get_article', article_id=article.id) }}"
+                            class="text-decoration-none">
+                            <div class="article-footer">
+                                <span class="read-more">
+                                    Читать статью
+                                    <i class="bi bi-arrow-right-short"></i>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="articles-header mb-5 text-center">
+                <h6 class="articles-title">
+                    <i class="bi bi-journal-bookmark-fill me-3"></i>
+                    По вашему запросу ничего не нашлось
+                </h6>
+            </div>
+            {% endif %}
+
+            <!-- Пагинация (если нужна)
+            {% if pagination and pagination.pages > 1 %}
+            <nav class="articles-pagination mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('articles.index', page=pagination.prev_num) }}">
+                            <i class="bi bi-chevron-left"></i> Назад
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                    <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('articles.index', page=page_num) }}">
+                            {{ page_num }}
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('articles.index', page=pagination.next_num) }}">
+                            Вперед <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        -->
+        </div>
+    </div>
+</div>
+<script>
+    // Если хотите автоматический поиск при вводе
+    let searchTimeout;
+    const searchInput = document.querySelector('input[name="search"]');
+    const searchForm = document.getElementById('searchForm');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchForm.submit();
+            }, 750); // Задержка 500 мс после окончания ввода
+        });
+    }
+</script>
+{% endblock %}

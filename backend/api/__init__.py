@@ -6,6 +6,7 @@ import backend.api.user_api
 import backend.api.clicker_api
 import backend.api.memory_api
 import backend.api.news_api
+import backend.api.articles_api
 
 """Пакет со всем API"""
 
@@ -18,4 +19,5 @@ __all__ = [
     "clicker_api",
     "memory_api",
     "news_api",
+    "articles_api"
 ]

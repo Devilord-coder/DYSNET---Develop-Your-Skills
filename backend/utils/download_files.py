@@ -1,6 +1,12 @@
 import requests
 import os
 
+APPS = [
+    "Windows_Experimentarium.zip",
+    "Windows_Vampire_Garden.zip",
+    "Windows_Dysnet.zip"
+]
+
 
 def download_file(Auth_token, filename, disk_folder):
     """Функция для скачивания файла с Яндекс Диска
@@ -53,9 +59,6 @@ def download_apps(Auth_token: str):
         https://education.yandex.ru/handbook/python/article/modul-requests
     """
     disk_folder = "/Dysnet/" # папка на Яндекс Диске
-    filenames = [
-        "Windows_Experimentarium.zip"
-    ]
     if os.path.exists("static/downloads"):
         continue_downloading = input("Папка static/downloads уже существует. Нужно загружать файлы? (y/n)")
         if continue_downloading.lower().strip() == "y":
@@ -70,7 +73,7 @@ def download_apps(Auth_token: str):
         os.mkdir("static/downloads")
     print(f"Скачивание приложений в static/downloads/")
     try:
-        for filename in filenames:
+        for filename in APPS:
             if filename in os.listdir("static/downloads"):
                 delete_file = input(f"Файл {filename} уже существует, перезаписать его? (y/n)")
                 if delete_file.lower().strip() == "y":

@@ -1,5 +1,5 @@
 # Подключение flask
-from flask import Flask, request, g, send_from_directory
+from flask import Flask, request, g, send_from_directory, jsonify
 from flask import render_template, redirect
 from flask_login import (
     LoginManager,
@@ -20,7 +20,7 @@ from backend.forms import *
 
 # База данных
 from backend.database import db_session
-from backend.database.__all_models import User, News
+from backend.database.__all_models import User, News, Article, Theme
 
 # Обработчик ошибок
 from backend.errors import *
@@ -168,7 +168,7 @@ def reqister():
 
 @app.route("/mobile_app")
 def mobile_app():
-    return render_template("mobile_app.html")
+    return render_template("mobile_app.html", title="Наши приложения")
 
 
 @app.route('/download/physics-app')
@@ -188,11 +188,6 @@ def download_physics_app():
     )
 
 
-@app.route("/articles")
-def articles():
-    return render_template("articles.html", title="Научные статьи")
-
-
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
@@ -205,7 +200,10 @@ def profile():
                 return file
         return None
 
-    return render_template("profile.html", title=f"Профиль пользователя {current_user.name}", avatar=get_user_avatar())
+    return render_template("profile.html",
+                           title=f"Профиль пользователя {current_user.name}",
+                           avatar=get_user_avatar(),
+                           user=current_user)
 
 
 @app.route("/profile/edit", methods=["GET", "POST"])
@@ -241,15 +239,24 @@ def edit_profile():
 
 
 @app.route("/profile/<int:user_id>")
-@login_required
+@admin_api.admin_required
 def view_profile(user_id):
     """Просмотр профиля пользователя по ID"""
 
-    db_sess = db_session.create_session()
+    db_sess = g.db_session
     user = db_sess.query(User).get(user_id)
     if not user:
         abort(404)
-    return render_template("profile.html", title=f"Профиль {user.name}", user=user)
+
+    def get_user_avatar():
+        for file in os.listdir("data/uploads"):
+            if secure_email(user) in file:
+                print(file)
+                return file
+        return None
+
+    return render_template("profile.html", title=f"Профиль {user.name}", user=user,
+                           avatar=get_user_avatar())
 
 
 @app.route("/logout")
@@ -308,6 +315,7 @@ def blueprint_init():
     app.register_blueprint(clicker_api.blueprint)
     app.register_blueprint(memory_api.blueprint)
     app.register_blueprint(news_api.blueprint)
+    app.register_blueprint(articles_api.bp)
 
 
 def main():

@@ -109,7 +109,8 @@ def tasks():
     return render_template(
         "python/tasks.html",
         tasks=tasks,
-        level=session['level']
+        level=session['level'],
+        title="Просмотр заданий"
     )
 
 
@@ -199,11 +200,15 @@ def add_task():
 
         # Если есть ошибки, показываем форму снова
         if has_errors:
-            return render_template("python/add_task.html", level=session['level'], form=form)
+            return render_template("python/add_task.html", level=session['level'],
+                                   form=form,
+                                   title="Добавление заданий")
 
         # Если есть ошибки, показываем форму
         if not form.is_submitted():
-            return render_template("python/add_task.html", level=session['level'], form=form)
+            return render_template("python/add_task.html", level=session['level'],
+                                   form=form,
+                                   title="Добавление заданий")
         """
         if name_error or text_error or test_errors:
             # Добавляем ошибки тестов в форму
@@ -241,7 +246,8 @@ def add_task():
         db_sess.commit()
         return redirect(url_for('python.tasks'))
 
-    return render_template("python/add_task.html", level=session['level'], form=form)
+    return render_template("python/add_task.html", level=session['level'], form=form,
+                           title="Добавление заданий")
 
 
 @bp.route("/tasks/junior")
@@ -254,7 +260,8 @@ def junior():
     return render_template(
         "python/tasks.html",
         tasks=tasks,
-        level="junior"
+        level="junior",
+        title="Задания уровня Junior"
     )
 
 
@@ -268,7 +275,8 @@ def middle():
     return render_template(
         "python/tasks.html",
         tasks=tasks,
-        level="middle"
+        level="middle",
+        title="Задания уровня Middle"
     )
 
 
@@ -282,5 +290,6 @@ def senior():
     return render_template(
         "python/tasks.html",
         tasks=tasks,
-        level="senior"
+        level="senior",
+        title="Задания уровня Senior"
     )

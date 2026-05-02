@@ -1,0 +1,212 @@
+/* ========== Автодополнение (Autocomplete) ========== */
+
+.autocomplete-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.autocomplete-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    background: rgba(30, 30, 47, 0.9);
+    border: 2px solid rgba(33, 150, 243, 0.2);
+    border-radius: 12px;
+    color: var(--text-white);
+    transition: all 0.3s ease;
+}
+
+.autocomplete-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    background: rgba(30, 30, 47, 1);
+}
+
+.autocomplete-input.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 8px;
+    background: rgba(30, 30, 47, 0.98);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: hidden;
+    animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.autocomplete-header {
+    padding: 10px 15px;
+    background: rgba(33, 150, 243, 0.1);
+    border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+    font-size: 0.85rem;
+    color: var(--light-blue);
+    font-weight: 500;
+}
+
+.autocomplete-header i {
+    margin-right: 8px;
+    font-size: 0.9rem;
+}
+
+.autocomplete-options {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+/* Стилизация скроллбара */
+.autocomplete-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.autocomplete-options::-webkit-scrollbar-track {
+    background: rgba(30, 30, 47, 0.5);
+    border-radius: 3px;
+}
+
+.autocomplete-options::-webkit-scrollbar-thumb {
+    background: var(--accent-blue);
+    border-radius: 3px;
+}
+
+.autocomplete-options::-webkit-scrollbar-thumb:hover {
+    background: var(--light-blue);
+}
+
+.autocomplete-option {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.autocomplete-option:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-option:hover {
+    background: rgba(33, 150, 243, 0.1);
+    padding-left: 20px;
+}
+
+.autocomplete-option.selected {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(118, 75, 162, 0.2));
+    border-left: 3px solid var(--accent-blue);
+}
+
+.autocomplete-option i {
+    color: var(--light-blue);
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.autocomplete-option:hover i {
+    opacity: 1;
+}
+
+.autocomplete-option mark {
+    background: rgba(33, 150, 243, 0.3);
+    color: var(--accent-blue);
+    padding: 0 2px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+.autocomplete-loading {
+    padding: 20px;
+    text-align: center;
+    color: var(--light-blue);
+}
+
+.autocomplete-no-results {
+    padding: 20px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.autocomplete-no-results i {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+.autocomplete-footer {
+    padding: 8px 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(33, 150, 243, 0.2);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.autocomplete-footer i {
+    margin-right: 5px;
+    font-size: 0.7rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .autocomplete-dropdown {
+        position: fixed;
+        top: auto;
+        left: 15px;
+        right: 15px;
+        margin-top: 5px;
+        max-height: 60vh;
+    }
+
+    .autocomplete-options {
+        max-height: 40vh;
+    }
+
+    .autocomplete-option {
+        padding: 12px 15px;
+    }
+}
+
+/* Анимация для индикатора загрузки */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.autocomplete-loading .spinner-border {
+    animation: spinner-border 0.75s linear infinite;
+}

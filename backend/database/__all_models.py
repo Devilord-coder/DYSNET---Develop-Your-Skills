@@ -12,3 +12,5 @@ from .models.english_models.texts_model import EnglishTexts
 from .models.english_models.statistic_model import EnglishStatistics
 from .models.clicker_models.statistics_model import ClickerStatistics
 from .models.news_model import News
+from .models.articles_model import Article
+from .models.themes_model import Theme

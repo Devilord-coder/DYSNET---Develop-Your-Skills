@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="{{ url_for('articles.add_article') }}" method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.title.label }}<br>
+        {{ form.title(class="form-control") }}<br>
+        {% for error in form.title.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <!-- Поле с автодополнением -->
+    <div class="mb-4">
+        <label for="topic" class="form-label">
+            <i class="bi bi-tag me-1"></i>Тема <span class="text-danger">*</span>
+        </label>
+        <div class="autocomplete-wrapper">
+            <input type="text" class="form-control autocomplete-input" id="topic" name="topic"
+                placeholder="Начните вводить название темы..." value="" autocomplete="off">
+            <div class="autocomplete-dropdown" id="topicDropdown" style="display: none;">
+                <div class="autocomplete-header">
+                    <i class="bi bi-lightbulb"></i> Предлагаемые темы
+                </div>
+                <div class="autocomplete-options" id="topicOptions">
+                    <!-- Варианты будут добавлены через JS -->
+                    <div class="autocomplete-loading">
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        Загрузка вариантов...
+                    </div>
+                </div>
+                <div class="autocomplete-footer">
+                    <small>Можно ввести свою тему, если её нет в списке</small>
+                </div>
+            </div>
+        </div>
+        <div class="form-text text-muted mt-2">
+            <i class="bi bi-info-circle"></i>
+            Начните вводить, чтобы увидеть подсказки. Вы можете выбрать из списка или ввести свою тему.
+        </div>
+        <div class="invalid-feedback" id="topicError"></div>
+    </div>
+
+    <p>
+        {{ form.tags.label }}<br>
+        {{ form.tags(class="form-control") }}<br>
+        {% for error in form.tags.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.type.label }}<br>
+        {{ form.type(class="form-control") }}<br>
+        {% for error in form.type.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.text.label }}<br>
+        {{ form.text(class="form-control") }}<br>
+        {% for error in form.text.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{ message }}
+</form>
+
+<!-- Подключаем стили и скрипты -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/autocomplete.css') }}">
+<script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Данные для автодополнения (можно получить из Flask или через API)
+        const topicsData = {
+            // Пример данных - в реальном приложении загрузите из БД
+            suggestions: {{ themes | safe
+    }}
+        };
+
+    // Загрузка данных из API
+    fetch('/api/topics/suggestions')
+        .then(response => response.json())
+        .then(data => {
+            const topicAutocomplete = new Autocomplete('topic', {
+                data: data.suggestions,
+                maxItems: 10,
+                minChars: 1,
+                onSelect: function (value) {
+                    console.log('Выбрана тема:', value);
+                }
+            });
+        });
+
+    // Валидация формы
+    const form = document.getElementById('topicForm');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            const topicInput = document.getElementById('topic');
+            if (!topicInput.value.trim()) {
+                e.preventDefault();
+                topicInput.classList.add('is-invalid');
+                document.getElementById('topicError').textContent = 'Пожалуйста, укажите тему';
+            } else {
+                topicInput.classList.remove('is-invalid');
+            }
+        });
+    }
+    });
+</script>
+{% endblock %}

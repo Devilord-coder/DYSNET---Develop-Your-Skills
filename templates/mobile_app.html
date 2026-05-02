@@ -8,7 +8,7 @@
 <h1>Скачивайте наши приложения по разным темам</h1>
 <!-- Контейнер для нескольких карточек -->
 <div class="apps-container">
-    <!-- Карточка приложения -->
+    <!-- Карточка Vampire Garden -->
     <div class="app-card">
         <!-- Иконка Windows -->
         <div class="app-icon windows-icon">
@@ -16,11 +16,47 @@
         </div>
 
         <!-- Заголовок -->
-        <h3>Приложение по физике</h3>
+        <h3>Игра Vampire Garden</h3>
 
         <!-- Описание -->
         <div class="app-description">
-            Интерактивное приложение для изучения физики.
+            Игра в жанре фермы, которая помогает развивать навыки финансовой грамотности
+        </div>
+
+        <!-- Информация о файле -->
+        <div class="app-info">
+            <span><i class="fas fa-code-branch"></i> v1.1.0</span>
+            <span><i class="fas fa-hdd"></i> 246 MB</span>
+            <span><i class="fas fa-calendar"></i> 2026</span>
+        </div>
+
+        <!-- Кнопка скачивания -->
+        <a href="{{ url_for('static', filename='downloads/Windows_Vampire_Garden.zip') }}" class="btn-windows-app"
+            download>
+            <i class="fab fa-windows"></i>
+            <span>Скачать приложение</span>
+            <i class="fas fa-download"></i>
+        </a>
+
+        <!-- Версия ОС -->
+        <div class="app-version">
+            <i class="fab fa-windows"></i> Windows 10/11
+        </div>
+    </div>
+
+    <!-- Карточка Experimentarium -->
+    <div class="app-card">
+        <!-- Иконка Windows -->
+        <div class="app-icon windows-icon">
+            <i class="fab fa-windows"></i>
+        </div>
+
+        <!-- Заголовок -->
+        <h3>Приложение Experimentarium</h3>
+
+        <!-- Описание -->
+        <div class="app-description">
+            Скачивайте интерактивное приложение для постановки экспериментов по физике.
         </div>
 
         <!-- Информация о файле -->
@@ -33,6 +69,41 @@
         <!-- Кнопка скачивания -->
         <a href="{{ url_for('static', filename='downloads/Windows_Experimentarium.zip') }}" class="btn-windows-app"
             download>
+            <i class="fab fa-windows"></i>
+            <span>Скачать приложение</span>
+            <i class="fas fa-download"></i>
+        </a>
+
+        <!-- Версия ОС -->
+        <div class="app-version">
+            <i class="fab fa-windows"></i> Windows 10/11
+        </div>
+    </div>
+
+    <!-- Карточка Dysnet -->
+    <div class="app-card">
+        <!-- Иконка Windows -->
+        <div class="app-icon windows-icon">
+            <i class="fab fa-windows"></i>
+        </div>
+
+        <!-- Заголовок -->
+        <h3>Приложение Dysnet</h3>
+
+        <!-- Описание -->
+        <div class="app-description">
+            Наше приложение с основными заданиями с сайта
+        </div>
+
+        <!-- Информация о файле -->
+        <div class="app-info">
+            <span><i class="fas fa-code-branch"></i> v1.0.0</span>
+            <span><i class="fas fa-hdd"></i> 38 MB</span>
+            <span><i class="fas fa-calendar"></i> 2025</span>
+        </div>
+
+        <!-- Кнопка скачивания -->
+        <a href="{{ url_for('static', filename='downloads/Windows_Dysnet.zip') }}" class="btn-windows-app" download>
             <i class="fab fa-windows"></i>
             <span>Скачать приложение</span>
             <i class="fas fa-download"></i>
