@@ -25,49 +25,59 @@
         </h2>
         <div class="row g-4">
             <div class="col-md-6 col-lg-4">
-                <div class="skill-item">
-                    <i class="fas fa-keyboard"></i>
-                    <div>
-                        <h4>Скоропечатание</h4>
-                        <p>Тренируйте скорость набора текста</p>
+                <a href="{{ url_for('cursive_printing.choose_mode') }}" class="skill-link">
+                    <div class="skill-item">
+                        <i class="fas fa-keyboard"></i>
+                        <div>
+                            <h4>Скоропечатание</h4>
+                            <p>Тренируйте скорость набора текста</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="skill-item">
-                    <i class="fas fa-language"></i>
-                    <div>
-                        <h4>Иностранные слова</h4>
-                        <p>Карточки, сопоставление, вставка слов</p>
+                <a href="{{ url_for('english.choose_english_mode') }}" class="skill-link">
+                    <div class="skill-item">
+                        <i class="fas fa-language"></i>
+                        <div>
+                            <h4>Иностранные слова</h4>
+                            <p>Карточки, сопоставление, вставка слов</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="skill-item">
-                    <i class="fab fa-python"></i>
-                    <div>
-                        <h4>Программирование Python</h4>
-                        <p>Тесты и задачи разного уровня</p>
+                <a href="{{ url_for('python.choose_level') }}" class="skill-link">
+                    <div class="skill-item">
+                        <i class="fab fa-python"></i>
+                        <div>
+                            <h4>Программирование Python</h4>
+                            <p>Тесты и задачи разного уровня</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="skill-item">
-                    <i class="fas fa-mouse-pointer"></i>
-                    <div>
-                        <h4>Кликер</h4>
-                        <p>Реакция и внимание</p>
+                <a href="{{ url_for('clicker.clicker') }}" class="skill-link">
+                    <div class="skill-item">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <div>
+                            <h4>Кликер</h4>
+                            <p>Реакция и внимание</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="skill-item">
-                    <i class="fas fa-brain"></i>
-                    <div>
-                        <h4>Мемори</h4>
-                        <p>Тренировка памяти</p>
+                <a href="{{ url_for('memory.memory') }}" class="skill-link">
+                    <div class="skill-item">
+                        <i class="fas fa-brain"></i>
+                        <div>
+                            <h4>Мемори</h4>
+                            <p>Тренировка памяти</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>

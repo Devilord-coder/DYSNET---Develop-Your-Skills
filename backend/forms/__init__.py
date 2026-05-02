@@ -6,10 +6,4 @@ from .python.code_form import CodeForm
 
 """Все формы"""
 
-__all__ = [
-    "LoginForm",
-    "RegisterForm",
-    "EditProfileForm",
-    "AddTaskForm",
-    "CodeForm"
-]
+__all__ = ["LoginForm", "RegisterForm", "EditProfileForm", "AddTaskForm", "CodeForm"]

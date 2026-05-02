@@ -177,7 +177,7 @@ def flip():
     game["first_opened"] = None
     game["moves"] += 1
     session["memory_game"] = game
-    
+
     # Проверка конца игры
     if game["found_pairs"] == len(game["cards"]) // 2:
         if current_user.is_authenticated:

@@ -4,7 +4,8 @@ from ...db_session import SqlAlchemyBase
 
 
 class MemoryStatistics(SqlAlchemyBase):
-    '''Модель таблицы статистики памяти'''
+    """Модель таблицы статистики памяти"""
+
     __tablename__ = "memory_statistics"
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)

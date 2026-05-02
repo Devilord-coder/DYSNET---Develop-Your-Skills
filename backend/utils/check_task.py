@@ -12,11 +12,11 @@ def check_task(code: str, task_id: int, filename: str) -> str:
     print(f"Проверяем задание {task_id}")
 
     def del_file():
-        os.remove(filename + '.py')
+        os.remove(filename + ".py")
 
     db_sess = g.db_session
 
-    with open(filename + '.py', 'w', encoding='utf-8') as solution:
+    with open(filename + ".py", "w", encoding="utf-8") as solution:
         solution.write(code)
 
     results = []
@@ -26,7 +26,9 @@ def check_task(code: str, task_id: int, filename: str) -> str:
         print(f"test {test.id} - {start_time}")
 
         if test.args:
-            input_data = '\n'.join(list(map(lambda x: x.strip(), test.args.split('\n'))))
+            input_data = "\n".join(
+                list(map(lambda x: x.strip(), test.args.split("\n")))
+            )
         else:
             input_data = ""
         result_data = ""
@@ -34,13 +36,16 @@ def check_task(code: str, task_id: int, filename: str) -> str:
         try:
             # Запускаем процесс solution.py, передаём input_data в stdin
             result = subprocess.run(
-                [sys.executable, filename + '.py'],  # sys.executable для кросс-платформенности
+                [
+                    sys.executable,
+                    filename + ".py",
+                ],  # sys.executable для кросс-платформенности
                 input=input_data,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True,          # Работаем с текстом (строки), а не с байтами
-                encoding='utf-8',
-                check=False         # Не вызывать исключение при ненулевом коде возврата
+                text=True,  # Работаем с текстом (строки), а не с байтами
+                encoding="utf-8",
+                check=False,  # Не вызывать исключение при ненулевом коде возврата
             )
         except Exception as e:
             elapsed_time = time.perf_counter() - start_time
@@ -62,18 +67,19 @@ def check_task(code: str, task_id: int, filename: str) -> str:
 
         if result.stdout.strip() == test.result.strip():
             accept = True
-        results.append({
+        results.append(
+            {
                 "test_id": test.id,
                 "accept": accept,
                 "stdin": stdin,
                 "stdout": stdout,
                 "stderr": stderr,
                 "time": time_remained,
-                'returncode': returncode,
+                "returncode": returncode,
                 "answer": test.result,
-                "code": code
-
-            })
+                "code": code,
+            }
+        )
         if not accept:
             print("Данные не сходятся")
             del_file()
