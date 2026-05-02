@@ -32,7 +32,7 @@ def articles():
             if (search_query.lower() in a.title.lower() or
                 search_query.lower() in a.theme.name.lower() or
                 search_query.lower() in a.tags.lower() or
-                search_query.lower() in current_user.name.lower() or
+                search_query.lower() in a.author.name.lower() or
                 search_query.lower() in a.text.lower())
         ]
     return render_template("articles/articles.html", title="Научные статьи", articles=articles,
