@@ -365,3 +365,413 @@
     color: var(--light-blue);
     font-size: 1.1rem;
 }
+
+/* Дополнительные стили для страницы статьи */
+.article-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.article-wrapper {
+    background: rgba(30, 30, 47, 0.75);
+    backdrop-filter: blur(8px);
+    border-radius: 24px;
+    border: 1px solid rgba(33, 150, 243, 0.25);
+    overflow: hidden;
+    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+}
+
+.article-header {
+    padding: 2rem 2rem 1rem 2rem;
+    border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+}
+
+.article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 1.2rem;
+    font-size: 0.85rem;
+}
+
+.badge-theme {
+    background: linear-gradient(135deg, #1a237e, #0d47a1);
+    padding: 0.25rem 0.9rem;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+    border-left: 2px solid #64b5f6;
+}
+
+.badge-type {
+    background: rgba(33, 150, 243, 0.2);
+    border: 1px solid rgba(33, 150, 243, 0.4);
+    padding: 0.25rem 0.9rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #90caf9;
+}
+
+.article-id {
+    color: #6c7a91;
+    font-size: 0.7rem;
+}
+
+.article-title {
+    font-size: 2.3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #b3e5fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0.5rem 0;
+    letter-spacing: -0.3px;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.author-avatar {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.author-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.author-name {
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.date {
+    font-size: 0.75rem;
+    color: #90a4ae;
+}
+
+.tags-cloud {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    background: rgba(100, 126, 234, 0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: #bbdef5;
+    border: 0.5px solid rgba(100, 126, 234, 0.4);
+}
+
+/* Содержимое статьи */
+.article-content {
+    padding: 2rem;
+    color: #f0f0f0;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+}
+
+.article-content h1 {
+    font-size: 2rem;
+    -webkit-text-fill-color: initial;
+    background: none;
+    color: var(--text-white);
+}
+
+.article-content h2 {
+    font-size: 1.75rem;
+    border-left: 4px solid var(--accent-blue);
+    padding-left: 15px;
+}
+
+.article-content p {
+    margin-bottom: 1rem;
+}
+
+.article-content pre {
+    background: #0a0e1a;
+    padding: 1rem;
+    border-radius: 14px;
+    overflow-x: auto;
+    border-left: 3px solid #667eea;
+}
+
+.article-content code {
+    background: #1e1e2f;
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+.article-content img {
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+.article-content blockquote {
+    border-left: 4px solid #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    margin: 1rem 0;
+    padding: 0.8rem 1.2rem;
+    font-style: italic;
+}
+
+.article-content ul,
+.article-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.article-content th,
+.article-content td {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem;
+}
+
+.article-content th {
+    background: rgba(33, 150, 243, 0.2);
+}
+
+/* Action bar */
+.action-bar {
+    padding: 1.2rem 2rem 1.5rem 2rem;
+    border-top: 1px solid rgba(33, 150, 243, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.like-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.like-form {
+    display: inline;
+}
+
+.btn-like {
+    background: rgba(255, 71, 87, 0.15);
+    border: 1px solid rgba(255, 71, 87, 0.5);
+    color: #ff6b81;
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.btn-like:hover {
+    background: #ff4757;
+    color: white;
+    transform: scale(1.02);
+    border-color: #ff4757;
+}
+
+.btn-like.liked {
+    background: #ff4757;
+    color: white;
+    border-color: #ff4757;
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
+}
+
+.likes-count {
+    font-size: 1.2rem;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 16px;
+    border-radius: 40px;
+    letter-spacing: 0.5px;
+}
+
+.comments-count {
+    color: #90caf9;
+}
+
+/* Комментарии */
+.comments-section {
+    padding: 1rem 2rem 2rem 2rem;
+    background: rgba(15, 20, 35, 0.6);
+    border-top: 1px solid rgba(33, 150, 243, 0.15);
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.comment-input {
+    background: rgba(20, 25, 45, 0.9);
+    border: 1px solid #2c3e50;
+    border-radius: 20px;
+    padding: 12px 18px;
+    color: white;
+    font-family: inherit;
+    resize: vertical;
+    transition: 0.2s;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    color: white;
+    width: fit-content;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(102, 126, 234, 0.4);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.comment-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    padding: 1rem 1.2rem;
+    border-left: 3px solid #667eea;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #a5d6ff;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.comment-date {
+    font-size: 0.7rem;
+    color: #7e8c8d;
+    font-weight: normal;
+}
+
+.comment-text {
+    color: #ddd;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.no-comments {
+    color: #7f8c8d;
+    text-align: center;
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Flash сообщения */
+.flash-messages {
+    max-width: 1200px;
+    margin: 1rem auto;
+    padding: 0 20px;
+}
+
+.flash-message {
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    background: rgba(30, 30, 47, 0.95);
+    border-left: 4px solid;
+}
+
+.flash-message.success {
+    border-left-color: #28a745;
+}
+
+.flash-message.error {
+    border-left-color: #dc3545;
+}
+
+.flash-message.info {
+    border-left-color: #17a2b8;
+}
+
+/* Адаптивность */
+@media (max-width: 700px) {
+    .article-title {
+        font-size: 1.8rem;
+    }
+
+    .article-header,
+    .article-content,
+    .action-bar,
+    .comments-section {
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+    }
+
+    .action-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

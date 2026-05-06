@@ -1,4 +1,117 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/web_articles.css') }}">
+{% endblock %}
+
 {% block content %}
+<div class="article-container">
+    <div class="article-wrapper">
+        <!-- Заголовок статьи -->
+        <div class="article-header">
+            <div class="article-meta">
+                <span class="badge-theme">
+                    <i class="fas fa-layer-group"></i>
+                    {{ article.theme.name if article.theme else 'Без темы' }}
+                </span>
+                <span class="badge-type">
+                    <i class="fas fa-code"></i>
+                    Формат: {{ article.type.upper() }}
+                </span>
+                <span class="article-id">ID: {{ article.id }}</span>
+            </div>
+
+            <h1 class="article-title">{{ article.title }}</h1>
+
+            <div class="author-info">
+                <div class="author-avatar">
+                    {{ article.author.fullname[0] if article.author and article.author.fullname else 'A' }}
+                </div>
+                <div class="author-details">
+                    <span class="author-name">
+                        <i class="fas fa-pen-fountain"></i>
+                        {{ article.author.fullname if article.author and article.author.fullname else 'Автор' }}
+                    </span>
+                    <span class="date">
+                        <i class="far fa-calendar-alt"></i>
+                        {{ article.created_date.strftime('%d %B %Y, %H:%M') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Теги -->
+            {% if article.tags %}
+            <div class="tags-cloud">
+                {% for tag in article.tags.split(',') %}
+                <span class="tag"><i class="fas fa-tag"></i> {{ tag.strip() }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Содержимое статьи (рендерится на сервере) -->
+        <div class="article-content">
+            {{ rendered_content|safe }}
+        </div>
+
+        <!-- Блок лайков и комментариев -->
+        <div class="action-bar">
+            <div class="like-section">
+                <form action="{{ url_for('like_article', article_id=article.id) }}" method="POST" class="like-form"
+                    id="likeForm">
+                    <button type="submit" class="btn-like {% if user_liked %}liked{% endif %}" id="likeButton">
+                        <i class="fas fa-heart"></i>
+                        <span id="likeText">{% if user_liked %}Лайкнут{% else %}Нравится{% endif %}</span>
+                    </button>
+                </form>
+                <div class="likes-count">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span id="likesValue">{{ likes_count }}</span>
+                </div>
+            </div>
+            <div class="comments-count">
+                <i class="fas fa-comment-dots"></i>
+                Комментарии • <span id="commentsCount">{{ comments|length }}</span>
+            </div>
+        </div>
+
+        <!-- Блок комментариев -->
+        <div class="comments-section">
+            <!-- Форма добавления комментария -->
+            <form action="{{ url_for('add_comment', article_id=article.id) }}" method="POST" class="comment-form"
+                id="commentForm">
+                <textarea name="comment_text" rows="3" class="comment-input" placeholder="Напишите комментарий..."
+                    required></textarea>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane"></i> Отправить
+                </button>
+            </form>
+
+            <!-- Список комментариев -->
+            <div class="comments-list" id="commentsList">
+                {% if comments %}
+                {% for comment in comments %}
+                <div class="comment-item" data-comment-id="{{ comment.id }}">
+                    <div class="comment-author">
+                        <i class="fas fa-user-circle"></i>
+                        {{ comment.author.fullname if comment.author else 'Аноним' }}
+                        <span class="comment-date">
+                            {{ comment.created_date.strftime('%d.%m.%Y %H:%M') }}
+                        </span>
+                    </div>
+                    <div class="comment-text">{{ comment.text }}</div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="no-comments">
+                    <i class="far fa-comment-dots"></i>
+                    Пока нет комментариев. Будьте первым!
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/article.js') }}"></script>
 {% endblock %}

@@ -12,6 +12,7 @@ from backend.forms import ArticleForm
 from backend.database.__all_models import Article, Theme
 
 from datetime import datetime
+# import markdown
 
 # Отдельная ветка
 bp = Blueprint("articles", __name__, template_folder="templates")
@@ -39,9 +40,23 @@ def articles():
                            search_query=search_query)
 
 
+# Рендеринг статьи в зависимости от типа
+def render_article_content(article):
+    """Рендерит текст статьи в зависимости от типа"""
+    if article.type == 'md':
+        return "" # markdown.markdown(article.text, extensions=['fenced_code', 'tables', 'nl2br'])
+    elif article.type == 'html':
+        return article.text  # HTML уже готов, но нужно экранировать опасный контент
+    else:  # 'text' или другой
+        return f'<pre style="white-space: pre-wrap; font-family: inherit;">{article.text}</pre>'
+
+
 @bp.route("/articles/<int:article_id>")
 def get_article(article_id):
-    return render_template("articles/article.html")
+    db_sess = g.db_session
+    article = db_sess.get(Article, article_id)
+    return render_template("articles/article.html", title=article.title,
+                           article=article)
 
 
 @bp.route("/api/topics/suggestions")
@@ -94,3 +109,18 @@ def add_article():
         db_sess.commit()
         return redirect('/articles/publish')
     return render_template("articles/add_article.html", title="Написание статьи", form=form)
+
+
+@bp.route("/artices/delete/<int:article_id>", methods=["GET", "POST"])
+def delete(article_id):
+    db_sess = g.db_session
+    article = db_sess.get(Article, article_id)
+    db_sess.delete(article)
+    db_sess.commit()
+
+    return redirect("/articles")
+
+
+@bp.route("/articles/edit/<int:article_id>", methods=["GET", "POST"])
+def edit(article_id):
+    return redirect("/articles")

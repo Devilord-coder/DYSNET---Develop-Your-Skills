@@ -36,6 +36,7 @@ class User(SqlAlchemyBase, UserMixin):
     )
     news = orm.relationship("News", back_populates="author")
     articles = orm.relationship("Article", back_populates='author')
+    python_statistics = orm.relationship("PythonStatistics", back_populates='user')
 
     def set_password(self, password):
         """Создание пароля"""

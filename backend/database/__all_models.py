@@ -14,3 +14,4 @@ from .models.clicker_models.statistics_model import ClickerStatistics
 from .models.news_model import News
 from .models.articles_model import Article
 from .models.themes_model import Theme
+from .models.python_models.python_statistics_model import PythonStatistics

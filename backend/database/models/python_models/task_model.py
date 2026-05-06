@@ -15,3 +15,5 @@ class PythonTask(SqlAlchemyBase, SerializerMixin):
     text = sa.Column(sa.String, nullable=False)
     # связь с тестами
     tests = orm.relationship("PythonTest", back_populates="task")
+    # связь с решениями
+    answers = orm.relationship("PythonStatistics", back_populates='task')

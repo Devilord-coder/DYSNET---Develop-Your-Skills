@@ -59,6 +59,10 @@
                                 <i class="bi bi-calendar3"></i>
                                 <span>{{ article.created_date.strftime("%A, %d %B %Y") }}</span>
                             </div>
+                            <div class="meta-item">
+                                <i class="far fa-user"></i>
+                                <span>{{ article.author.name + ' ' + article.author.surname }}</span>
+                            </div>
                         </div>
 
                         <!-- Теги -->
@@ -80,6 +84,24 @@
                                 </span>
                             </div>
                         </a>
+                        <p></p>
+                        <div class="news-actions">
+                            {% if current_user.is_authenticated and article.author.id == current_user.id %}
+                            <a href="{{ url_for('articles.edit', article_id=article.id) }}"
+                                class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Редактировать
+                            </a>
+                            {% endif %}
+                            {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                            <form action="{{ url_for('articles.delete', article_id=article.id) }}" method="POST"
+                                style="display: inline;"
+                                onsubmit="return confirm('Удалить статью «{{ article.title }}»? Это действие нельзя отменить!');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
                     </div>
                 </article>
                 {% endfor %}

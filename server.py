@@ -8,7 +8,7 @@ from flask_login import (
     login_required,
     current_user,
 )
-from flask_restful import reqparse, abort, Api, Resource
+from flask_restful import abort, Api
 from sqlalchemy import desc
 
 # Встроенные библиотеки
@@ -20,7 +20,7 @@ from backend.forms import *
 
 # База данных
 from backend.database import db_session
-from backend.database.__all_models import User, News, Article, Theme
+from backend.database.__all_models import User, News
 
 # Обработчик ошибок
 from backend.errors import *

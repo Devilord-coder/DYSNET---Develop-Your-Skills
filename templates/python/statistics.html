@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/english/statistic.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="statistics-container">
+    <div class="navigation-buttons">
+        <button class="btn btn-primary" onclick="window.location.href='{{ url_for('python.tasks') }}'">
+            К заданиям
+        </button>
+    </div>
+    <h1>Статистика по заданиям на Python</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="level1">Junior</button>
+        <button class="tab-btn" data-tab="level2">Middle</button>
+        <button class="tab-btn" data-tab="level3">Senior</button>
+    </div>
+
+    <!-- JUNIOR -->
+    <div id="level1" class="tab-content active">
+        <h3>Результаты заданий уровня сложности "Junior"</h3>
+        <table class="statistics-table">
+            <thead>
+                <tr>
+                    <th>Задание</th>
+                    <th>Дата и время</th>
+                    <th>Статус</th>
+                    <th>Всего тестов</th>
+                    <th>Тестов пройдено</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in junior_tasks %}
+                <tr>
+                    <td>{{ stat.task.name }}</td>
+                    <td>{{ stat.datetime }}</td>
+                    {% if stat.status %}
+                    <td>✅ OK</td>
+                    {% else %}
+                    <td>❌ Доработать</td>
+                    {% endif %}
+                    <td>{{ len(stat.task.tests) }}</td>
+                    <td>{{ correct_tests(stat.tests_json) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MIDDLE -->
+    <div id="level2" class="tab-content">
+        <h3>Результаты заданий уровня сложности "Middle"</h3>
+        <table class="statistics-table">
+            <thead>
+                <tr>
+                    <th>Задание</th>
+                    <th>Дата и время</th>
+                    <th>Статус</th>
+                    <th>Всего тестов</th>
+                    <th>Тестов пройдено</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in middle_tasks %}
+                <tr>
+                    <td>{{ stat.task.name }}</td>
+                    <td>{{ stat.datetime }}</td>
+                    {% if stat.status %}
+                    <td>✅ OK</td>
+                    {% else %}
+                    <td>❌ Доработать</td>
+                    {% endif %}
+                    <td>{{ len(stat.task.tests) }}</td>
+                    <td>{{ correct_tests(stat.tests_json) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SENIOR -->
+    <div id="level3" class="tab-content">
+        <h3>Результаты заданий уровня сложности "Junior"</h3>
+        <table class="statistics-table">
+            <thead>
+                <tr>
+                    <th>Задание</th>
+                    <th>Дата и время</th>
+                    <th>Статус</th>
+                    <th>Всего тестов</th>
+                    <th>Тестов пройдено</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in senior_tasks %}
+                <tr>
+                    <td>{{ stat.task.name }}</td>
+                    <td>{{ stat.datetime }}</td>
+                    {% if stat.status %}
+                    <td>✅ OK</td>
+                    {% else %}
+                    <td>❌ Доработать</td>
+                    {% endif %}
+                    <td>{{ len(stat.task.tests) }}</td>
+                    <td>{{ correct_tests(stat.tests_json) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.dataset.tab;
+
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

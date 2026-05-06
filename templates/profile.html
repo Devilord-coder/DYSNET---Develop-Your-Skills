@@ -36,6 +36,7 @@
                     <p class="mb-3"> {{ user.aboutme }} </p>
                 </div>
             </div>
+            {% if user.email == current_user.email %}
             <div class="mt-4">
                 <a href="/articles/add" class="btn btn-lg"
                     style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: 2px solid #3b82f6; border-radius: 25px; padding: 10px 30px; font-weight: 600;">
@@ -43,6 +44,7 @@
                     Написать статью
                 </a>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

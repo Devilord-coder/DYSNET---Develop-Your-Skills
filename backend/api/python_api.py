@@ -14,8 +14,7 @@ from backend.utils.check_task import check_task
 from backend.forms import AddTaskForm, CodeForm
 
 # БД
-from backend.database.__all_models import PythonTask, PythonTest
-from backend.database import db_session
+from backend.database.__all_models import PythonTask, PythonTest, PythonStatistics
 
 # Работа с admin_api
 from .admin_api import admin_required
@@ -31,6 +30,9 @@ def debug_form():
 
 @bp.route("/tasks/check", methods=["GET", "POST"])
 def check_answer():
+    """Проверка задания"""
+
+    db_sess = g.db_session
     code = request.form.get('code')
     task_id = request.form.get('task_id')
     task_name = request.form.get('task_name')
@@ -41,10 +43,24 @@ def check_answer():
     filename = f"tests/solution_{secure_email(current_user)}_{task_id}"
     result = check_task(code, task_id, filename)
     data_json = json.dumps(result, ensure_ascii=False)
+    status = all(map(lambda x: x['accept'], result))
+    task_stat = db_sess.query(PythonStatistics).filter(PythonStatistics.task_id == task_id).first()
+    if task_stat:
+        db_sess.delete(task_stat)
+        db_sess.flush()
+    new_task_stat = PythonStatistics(
+        user_id=current_user.id,
+        task_id=task_id,
+        status=status,
+        code=code,
+        tests_json=json.dumps(result)
+    )
+    db_sess.add(new_task_stat)
     for test in result:
         print(test)
-    if all(map(lambda x: x['accept'], result)):
+    if status:
         print("Все тесты пройдены ✅")
+    db_sess.commit()
     return render_template(
         'python/task_results.html',
         data_json=data_json,
@@ -81,6 +97,26 @@ def get_tasks(level):
             )) for task in tasks]
         }
     )
+
+
+@bp.route("/tasks/statistics")
+def statistics():
+    db_sess = g.db_session
+    cur_tasks = db_sess.query(PythonStatistics).filter(PythonStatistics.user_id == current_user.id).all()
+    junior_tasks = filter(lambda x: x.task.task_type == 'junior', cur_tasks)
+    middle_tasks = filter(lambda x: x.task.task_type == 'middle', cur_tasks)
+    senior_tasks = filter(lambda x: x.task.task_type == 'senior', cur_tasks)
+    return render_template('python/statistics.html',
+                            title="Статистика заданий по Python",
+                            correct_tests=lambda x: len(
+                                list(
+                                    filter(
+                                        lambda y: y['accept'],
+                                        json.loads(x)))),
+                            len=len,
+                            junior_tasks=junior_tasks,
+                            middle_tasks=middle_tasks,
+                            senior_tasks=senior_tasks)
 
 
 @bp.route("/choose_level")
