@@ -106,7 +106,7 @@ def send_email(to_email, subject, body_html):
 def send_confirmation_email(email, token):
     """Отправка письма для подтвержения почты"""
 
-    link = f"http://127.0.0.1:8080/confirm/{token}"
+    link = f"http://danya.42post.ru:18080/confirm/{token}"
     subject = "Подтверждение регистрации"
     body = f"""
     <html>
@@ -124,7 +124,7 @@ def send_confirmation_email(email, token):
 def send_reset_email(email, token):
     """Отправка письма для восстановления пароля"""
 
-    link = f"http://127.0.0.1:8080/reset_password/{token}"
+    link = f"http://danya.42post.ru:18080/reset_password/{token}"
     subject = "Восстановление пароля"
     body = f"""
     <html>

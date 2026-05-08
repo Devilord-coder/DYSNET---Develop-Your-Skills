@@ -1,7 +1,8 @@
 from flask import (
     Blueprint, render_template,
     request, redirect,
-    g, jsonify
+    g, jsonify,
+    abort
 )
 from flask_login import current_user
 
@@ -12,10 +13,38 @@ from backend.forms import ArticleForm
 from backend.database.__all_models import Article, Theme
 
 from datetime import datetime
-# import markdown
+import markdown
+import html
 
 # Отдельная ветка
 bp = Blueprint("articles", __name__, template_folder="templates")
+
+
+def render_article_content(article):
+    """Рендерит текст статьи с экранированием"""
+    
+    if article.type.lower() == 'md':
+        # Markdown сам генерирует безопасный HTML
+        return markdown.markdown(
+            article.text, 
+            extensions=['fenced_code', 'tables', 'nl2br']
+        )
+    
+    elif article.type.lower() == 'html':
+        from bleach import clean
+        return clean(
+            article.text,
+            tags=['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'h1', 'h2', 'h3'],
+            attributes={'*': ['class', 'id']},
+            strip=True
+        )
+    
+    else:
+        # Экранируем ВСЕ специальные символы
+        escaped_text = html.escape(article.text)
+        # Заменяем \n на <br> только если нужно
+        formatted_text = escaped_text.replace('\n', '<br>\n')
+        return f'<div style="white-space: pre-wrap; font-family: inherit;">{formatted_text}</div>'
 
 
 @bp.route("/articles")
@@ -40,23 +69,23 @@ def articles():
                            search_query=search_query)
 
 
-# Рендеринг статьи в зависимости от типа
-def render_article_content(article):
-    """Рендерит текст статьи в зависимости от типа"""
-    if article.type == 'md':
-        return "" # markdown.markdown(article.text, extensions=['fenced_code', 'tables', 'nl2br'])
-    elif article.type == 'html':
-        return article.text  # HTML уже готов, но нужно экранировать опасный контент
-    else:  # 'text' или другой
-        return f'<pre style="white-space: pre-wrap; font-family: inherit;">{article.text}</pre>'
-
-
 @bp.route("/articles/<int:article_id>")
 def get_article(article_id):
     db_sess = g.db_session
     article = db_sess.get(Article, article_id)
     return render_template("articles/article.html", title=article.title,
-                           article=article)
+                           article=article,
+                           render_article_content=render_article_content)
+    
+
+@bp.route("/articles/like/<int:article_id>", methods=["POST"])
+def like_article(article_id):
+    return ""
+
+
+@bp.route("/articles/comment/<int:article_id>", methods=["POST"])
+def add_comment(article_id):
+    return ""
 
 
 @bp.route("/api/topics/suggestions")
@@ -123,4 +152,8 @@ def delete(article_id):
 
 @bp.route("/articles/edit/<int:article_id>", methods=["GET", "POST"])
 def edit(article_id):
+    db_sess = g.db_session
+    article = db_sess.get(Article, article_id)
+    if current_user.id != article.author.id:
+        abort(403)
     return redirect("/articles")

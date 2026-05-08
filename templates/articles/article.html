@@ -9,28 +9,23 @@
     <div class="article-wrapper">
         <!-- Заголовок статьи -->
         <div class="article-header">
+            <h1 class="article-title">{{ article.title }}</h1>
+
             <div class="article-meta">
                 <span class="badge-theme">
                     <i class="fas fa-layer-group"></i>
                     {{ article.theme.name if article.theme else 'Без темы' }}
                 </span>
-                <span class="badge-type">
-                    <i class="fas fa-code"></i>
-                    Формат: {{ article.type.upper() }}
-                </span>
-                <span class="article-id">ID: {{ article.id }}</span>
             </div>
-
-            <h1 class="article-title">{{ article.title }}</h1>
 
             <div class="author-info">
                 <div class="author-avatar">
-                    {{ article.author.fullname[0] if article.author and article.author.fullname else 'A' }}
+                    {{ article.author.name[0] }}
                 </div>
                 <div class="author-details">
                     <span class="author-name">
                         <i class="fas fa-pen-fountain"></i>
-                        {{ article.author.fullname if article.author and article.author.fullname else 'Автор' }}
+                        {{ article.author.name + ' ' + article.author.surname}}
                     </span>
                     <span class="date">
                         <i class="far fa-calendar-alt"></i>
@@ -47,17 +42,26 @@
                 {% endfor %}
             </div>
             {% endif %}
+
+            <p></p>
+            
+            {% if current_user.is_authenticated and article.author.id == current_user.id %}
+            <a href="{{ url_for('articles.edit', article_id=article.id) }}"
+                class="btn btn-sm btn-warning">
+                <i class="fas fa-edit"></i> Редактировать
+            </a>
+            {% endif %}
         </div>
 
         <!-- Содержимое статьи (рендерится на сервере) -->
         <div class="article-content">
-            {{ rendered_content|safe }}
+            {{ render_article_content(article) | safe }}
         </div>
 
         <!-- Блок лайков и комментариев -->
         <div class="action-bar">
             <div class="like-section">
-                <form action="{{ url_for('like_article', article_id=article.id) }}" method="POST" class="like-form"
+                <form action="{{ url_for('articles.like_article', article_id=article.id) }}" method="POST" class="like-form"
                     id="likeForm">
                     <button type="submit" class="btn-like {% if user_liked %}liked{% endif %}" id="likeButton">
                         <i class="fas fa-heart"></i>
@@ -78,7 +82,7 @@
         <!-- Блок комментариев -->
         <div class="comments-section">
             <!-- Форма добавления комментария -->
-            <form action="{{ url_for('add_comment', article_id=article.id) }}" method="POST" class="comment-form"
+            <form action="{{ url_for('articles.add_comment', article_id=article.id) }}" method="POST" class="comment-form"
                 id="commentForm">
                 <textarea name="comment_text" rows="3" class="comment-input" placeholder="Напишите комментарий..."
                     required></textarea>
