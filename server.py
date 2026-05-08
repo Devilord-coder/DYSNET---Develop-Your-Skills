@@ -85,6 +85,22 @@ def send_email(to_email, subject, body_html):
     msg["To"] = to_email
     msg["Subject"] = subject
     msg.attach(MIMEText(body_html, "html"))
+    try:
+        if MAIL_USE_SSL:
+            server = smtplib.SMTP_SSL(MAIL_SERVER, MAIL_PORT)
+        else:
+            server = smtplib.SMTP(MAIL_SERVER, MAIL_PORT)
+            if MAIL_USE_TLS:
+                server.starttls()
+
+        server.login(MAIL_USERNAME, MAIL_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        print(f"Отправлено письмо от {msg['From']} для {msg['To']}")
+        return True
+    except Exception as e:
+        print(f"Ошибка отправки: {e}")
+        return False
 
 
 def send_confirmation_email(email, token):
@@ -314,23 +330,6 @@ def reset_password(token):
     return render_template("reset_password.html", token=token)
 
 
-@app.route("/profile", methods=["GET", "POST"])
-@login_required
-def profile():
-    """Профиль пользователя"""
-
-    def get_user_avatar():
-        for file in os.listdir("data/uploads"):
-            if secure_email(current_user) in file:
-                print(file)
-                return file
-        return None
-
-    return render_template(
-        "profile.html", title="Профиль", avatar=get_user_avatar(), user=current_user
-    )
-
-
 @app.route("/mobile_app")
 def mobile_app():
     return render_template("mobile_app.html", title="Наши приложения")
@@ -426,7 +425,7 @@ def view_profile(user_id):
 
 @app.route("/api/contacts", methods=["POST"])
 def add_contact_message():
-    """Отправка письма от пользователя со страницы контакотов"""
+    """Отправка письма от пользователя со страницы контактов"""
 
     # Получение данных пользователя
     data = request.get_json()
