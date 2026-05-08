@@ -19,7 +19,7 @@ def save_statistics(quantity_correct):
 
     if current_user.is_authenticated:
         statistics = ClickerStatistics()
-        statistics.datetime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        statistics.datetime = datetime.now()
         statistics.quantity_correct_answers = quantity_correct
         statistics.user = current_user.id
         db_sess = db_session.create_session()

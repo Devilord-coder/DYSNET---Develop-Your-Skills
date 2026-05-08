@@ -1,8 +1,13 @@
 from flask import (
-    Blueprint, render_template,
-    request, redirect, session,
-    g, jsonify, make_response,
-    url_for
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    session,
+    g,
+    jsonify,
+    make_response,
+    url_for,
 )
 from flask_login import current_user, login_required
 import json
@@ -23,7 +28,7 @@ from .admin_api import admin_required
 bp = Blueprint("python", __name__, template_folder="templates")
 
 
-@bp.route("/tasks/debug", methods=['POST'])
+@bp.route("/tasks/debug", methods=["POST"])
 def debug_form():
     return jsonify(dict(request.form))
 
@@ -37,8 +42,8 @@ def check_answer():
     task_id = request.form.get('task_id')
     task_name = request.form.get('task_name')
     print("Получены данные")
-    print('Код:', code, '', sep='\n')
-    print(f'task_id - {task_id}')
+    print("Код:", code, "", sep="\n")
+    print(f"task_id - {task_id}")
     print(f"task_name - {task_name}")
     filename = f"tests/solution_{secure_email(current_user)}_{task_id}"
     result = check_task(code, task_id, filename)
@@ -62,10 +67,10 @@ def check_answer():
         print("Все тесты пройдены ✅")
     db_sess.commit()
     return render_template(
-        'python/task_results.html',
+        "python/task_results.html",
         data_json=data_json,
         task_name=task_name,
-        title=f"Задание {task_name}"
+        title=f"Задание {task_name}",
     )
 
 
@@ -74,14 +79,16 @@ def get_task(task_id):
     db_sess = g.db_session
     task = db_sess.get(PythonTask, task_id)
     if not task:
-        return make_response(jsonify({'error': 'Not found'}), 404)
+        return make_response(jsonify({"error": "Not found"}), 404)
     form = CodeForm()
     return render_template(
-        "python/task.html", task_title=task.name,
-        task_text=task.text, form=form,
+        "python/task.html",
+        task_title=task.name,
+        task_text=task.text,
+        form=form,
         task_id=task_id,
-        title=f"Задание {task.name}"
-        )
+        title=f"Задание {task.name}",
+    )
 
 
 @bp.route("/api/tasks/<string:level>", methods=["GET"])
@@ -89,13 +96,9 @@ def get_tasks(level):
     db_sess = g.db_session
     tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == level).all()
     if not tasks:
-        return make_response(jsonify({'error': 'Not found'}), 404)
+        return make_response(jsonify({"error": "Not found"}), 404)
     return jsonify(
-        {
-            'tasks': [task.to_dict(only=(
-                "name", "task_type", "text"
-            )) for task in tasks]
-        }
+        {"tasks": [task.to_dict(only=("name", "task_type", "text")) for task in tasks]}
     )
 
 
@@ -133,12 +136,14 @@ def tasks():
 
     if request.method == "POST":
         level = request.form.get("level")
-        session['level'] = level
-        print(session['level'])
+        session["level"] = level
+        print(session["level"])
         return redirect(f"tasks/{session['level']}")
 
     db_sess = g.db_session
-    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == session['level']).all()
+    tasks = (
+        db_sess.query(PythonTask).filter(PythonTask.task_type == session["level"]).all()
+    )
 
     ...
 
@@ -149,36 +154,38 @@ def tasks():
         title="Просмотр заданий"
     )
 
-
-@bp.route("/tasks/add", methods=['GET', 'POST'])
+@bp.route("/tasks/add", methods=["GET", "POST"])
 @admin_required
 def add_task():
     """Добавление заданий"""
 
     # Проверяем, выбран ли уровень
-    if 'level' not in session:
-        return redirect(url_for('python.choose_level'))
+    if "level" not in session:
+        return redirect(url_for("python.choose_level"))
 
     form = AddTaskForm()
     db_sess = g.db_session
 
     # При GET-запросе добавляем один пустой тест
-    if request.method == 'GET' and len(form.tests) == 0:
+    if request.method == "GET" and len(form.tests) == 0:
         form.tests.append_entry()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         # Вручную валидируем CSRF
         from flask_wtf.csrf import validate_csrf
+
         try:
-            validate_csrf(request.form.get('csrf_token'))
+            validate_csrf(request.form.get("csrf_token"))
         except:
-            form.csrf_token.errors.append('CSRF token missing or invalid')
+            form.csrf_token.errors.append("CSRF token missing or invalid")
             print()
-            return render_template("python/add_task.html", level=session['level'], form=form)
+            return render_template(
+                "python/add_task.html", level=session["level"], form=form
+            )
 
         # Валидируем основные поля
-        form.name.data = request.form.get('name')
-        form.text.data = request.form.get('text')
+        form.name.data = request.form.get("name")
+        form.text.data = request.form.get("text")
 
         name_error = None
         text_error = None
@@ -189,40 +196,42 @@ def add_task():
         # Проходим по всем полям формы
         for key, value in request.form.items():
             # Ищем поля с input_data
-            if key.endswith('input_data'):
+            if key.endswith("input_data"):
                 import re
+
                 # Извлекаем индекс: tests-0-input_data -> 0
-                match = re.search(r'tests-(\d+)-input_data', key)
+                match = re.search(r"tests-(\d+)-input_data", key)
                 if match:
                     idx = int(match.group(1))
                     # Убеждаемся, что список достаточно большой
                     while len(tests_data) <= idx:
-                        tests_data.append({'input': '', 'output': ''})
-                    tests_data[idx]['input'] = value.strip()
+                        tests_data.append({"input": "", "output": ""})
+                    tests_data[idx]["input"] = value.strip()
 
             # Ищем поля с expected_output
-            elif key.endswith('expected_output'):
+            elif key.endswith("expected_output"):
                 import re
-                match = re.search(r'tests-(\d+)-expected_output', key)
+
+                match = re.search(r"tests-(\d+)-expected_output", key)
                 if match:
                     idx = int(match.group(1))
                     while len(tests_data) <= idx:
-                        tests_data.append({'input': '', 'output': ''})
-                    tests_data[idx]['output'] = value.strip()
+                        tests_data.append({"input": "", "output": ""})
+                    tests_data[idx]["output"] = value.strip()
 
         # Отладка: выводим собранные тесты
         print(f"Собрано тестов: {len(tests_data)}")
         for i, test in enumerate(tests_data):
             print(f"Тест {i}: input='{test['input']}', output='{test['output']}'")
 
-                # Валидируем тесты
+            # Валидируем тесты
         has_valid_test = False
         test_errors = []
         has_errors = False
 
         for idx, test_data in enumerate(tests_data):
-            input_val = test_data.get('input', '')
-            output_val = test_data.get('output', '')
+            input_val = test_data.get("input", "")
+            output_val = test_data.get("output", "")
 
             # Проверяем, заполнен ли тест (хотя бы одно поле не пустое)
             if input_val or output_val:
@@ -256,9 +265,7 @@ def add_task():
 
         # Сохраняем задание
         task = PythonTask(
-            name=form.name.data,
-            task_type=session['level'],
-            text=form.text.data
+            name=form.name.data, task_type=session["level"], text=form.text.data
         )
         db_sess.add(task)
         print(f"Добавлено задание {task.name}")
@@ -266,8 +273,8 @@ def add_task():
 
         saved_tests_count = 0
         for test_data in tests_data:
-            input_val = test_data.get('input', '').strip()
-            output_val = test_data.get('output', '').strip()
+            input_val = test_data.get("input", "").strip()
+            output_val = test_data.get("output", "").strip()
 
             if input_val or output_val:  # Сохраняем только полностью заполненные тесты
                 test = PythonTest(
@@ -280,8 +287,7 @@ def add_task():
                 print(f"Добавлен тест {saved_tests_count}: {input_val} -> {output_val}")
 
         db_sess.commit()
-        return redirect(url_for('python.tasks'))
-
+        return redirect(url_for("python.tasks"))
     return render_template("python/add_task.html", level=session['level'], form=form,
                            title="Добавление заданий")
 
@@ -291,7 +297,7 @@ def junior():
     """Уровень сложности Junior"""
 
     db_sess = g.db_session
-    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == 'junior').all()
+    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == "junior").all()
 
     return render_template(
         "python/tasks.html",
@@ -306,7 +312,7 @@ def middle():
     """Уровень сложности Middle"""
 
     db_sess = g.db_session
-    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == 'middle').all()
+    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == "middle").all()
 
     return render_template(
         "python/tasks.html",
@@ -321,7 +327,7 @@ def senior():
     """Уровень сложности Senior"""
 
     db_sess = g.db_session
-    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == 'senior').all()
+    tasks = db_sess.query(PythonTask).filter(PythonTask.task_type == "senior").all()
 
     return render_template(
         "python/tasks.html",
