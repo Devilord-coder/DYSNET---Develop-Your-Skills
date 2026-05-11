@@ -157,3 +157,12 @@ def edit(article_id):
     if current_user.id != article.author.id:
         abort(403)
     return redirect("/articles")
+
+
+@bp.route("/articles/author/<int:user_id>")
+def article_author(user_id):
+    articles = g.db_session.query(Article).filter(Article.user_id == current_user.id)
+    return render_template(
+        "articles/article_author.html", title=f"Статьи от {current_user.name}",
+        articles=articles
+    )

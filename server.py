@@ -10,6 +10,8 @@ from flask_login import (
     current_user,
 )
 from flask_restful import abort, Api
+from backend.api.news_resources import NewsListResource, NewsResource
+
 from sqlalchemy import desc
 
 # Встроенные библиотеки
@@ -481,6 +483,13 @@ def logout():
     return redirect("/")
 
 
+def resources_init():
+    """Добавление всех ресурсов"""
+    
+    api.add_resource(NewsResource, '/api/v2/news/<int:news_id>')
+    api.add_resource(NewsListResource, '/api/v2/news')
+
+
 def error_init():
     """Обработка ошибок"""
 
@@ -538,6 +547,8 @@ def main():
     error_init()
     # регистрация отдельных веток
     blueprint_init()
+    # регистрация api-ресурсов
+    resources_init()
     # скачивание файлов приложений из интернета
     download_apps(DISK_AUTH_TOKEN)
     db_session.global_init(DATABASE_PATH)
